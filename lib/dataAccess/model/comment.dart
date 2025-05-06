@@ -1,7 +1,7 @@
 import 'dart:core';
 
 
-import 'package:localnewsapp/dataAccess/Model/reply.dart';
+import 'package:localnewsapp/dataAccess/model/reply.dart';
 import 'package:localnewsapp/dataAccess/model/ls.dart';
 
 

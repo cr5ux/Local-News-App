@@ -1,5 +1,5 @@
 
-import 'package:localnewsapp/dataAccess/Model/ls.dart';
+import 'package:localnewsapp/dataAccess/model/ls.dart';
 
 class Document
 {
