@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "553354265917",
+    "project_id": "local-news-app-451a0",
+    "storage_bucket": "local-news-app-451a0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:553354265917:android:6f4d119104044f4c0eb154",
+        "android_client_info": {
+          "package_name": "com.example.localnewsapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABIPuqZG-QeLiLz4lMk3MX-73bzbDb_oo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
