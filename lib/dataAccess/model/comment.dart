@@ -1,8 +1,5 @@
 import 'dart:core';
-
-
-import 'package:localnewsapp/dataAccess/model/reply.dart';
-import 'package:localnewsapp/dataAccess/model/ls.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 class Comment
@@ -11,12 +8,44 @@ class Comment
   final String commentID;
   final String message;
   final DateTime registrationDate;
-  final String usersID;
+  final String userID;
   final String documentID;
-  final List<LS> like;
-  final List<Reply> reply;
 
-  Comment({required this.commentID, required this.message, required this.registrationDate, required this.usersID, required this.documentID,required this.like, required this.reply});
+
+  Comment({required this.commentID, required this.message, required this.registrationDate, required this.userID, required this.documentID});
   
+
+  factory Comment.fromFirestore(
+      DocumentSnapshot<Map<String, dynamic>> snapshot,
+      SnapshotOptions? options,
+
+  )
+  {
+      final data = snapshot.data();
+
+      return Comment(
+        commentID: snapshot.id, 
+        message: data?['message'],
+        registrationDate: data?['registrationDate'], 
+        userID: data?['userID'], 
+        documentID: data?['documentID'], 
+      
+      );
+
+  }
+
+  Map<String, dynamic> toFirestore()
+  {
+    return{
+
+        "id": commentID, 
+        "message": message,
+        "registrationDate": registrationDate, 
+        "userID": userID, 
+        "documentID": documentID, 
+
+
+    };
+  }
 
 }
