@@ -29,7 +29,7 @@ class LS
   Map<String, dynamic> toFirestore()
   {
     return {
-        "id":id,
+        if(id !=null)"id":id,
         "userID":userID,
         "date":date
     };

@@ -51,7 +51,7 @@ class Document
   {
     return
     {
-        "id": documentID, 
+        if(documentID !=null)"id": documentID, 
         "documentName": documentName, 
         "title": title, 
         "documentPath": documentPath, 

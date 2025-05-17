@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+// import 'package:localnewsapp/dataAccess/comment_repo.dart';
+// import 'package:localnewsapp/dataAccess/model/comment.dart';
+// import 'package:localnewsapp/dataAccess/model/reply.dart';
 //import 'package:localnewsapp/dataAccess/document_repo.dart';
 //import 'package:localnewsapp/dataAccess/users_repo.dart';
 
@@ -47,6 +50,20 @@ class Home extends StatelessWidget {
           // dR.getDocumentViewByAUser("9kwEiPS2NbyEZfUN57kF");
 
       */
+
+      /*
+        final cR= CommentRepo();
+        
+        // cR.addAComment(Comment(message: "I like it, very informative", registrationDate: "17/5/2025", userID: "9kwEiPS2NbyEZfUN57kF", documentID:"jtyjvG4rrWwuP1YV0vTD"));
+        // cR.addAReply("83mYl6fKQuovR3QkaXCa", Reply(message: "isn't it", date: "17/5/2025", userID: "9kwEiPS2NbyEZfUN57kF"));      
+       
+        // cR.getAComment("83mYl6fKQuovR3QkaXCa");
+        // cR.getACommentReply("83mYl6fKQuovR3QkaXCa");
+        // cR.getCommentByDocumentID("jtyjvG4rrWwuP1YV0vTD");
+        // cR.getCommentByUserID("9kwEiPS2NbyEZfUN57kF");
+      */ 
+
+
   }
 
   @override

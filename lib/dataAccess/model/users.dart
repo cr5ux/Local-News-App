@@ -45,7 +45,7 @@ class Users{
     
   Map<String, dynamic> toFirestore() {
     return {
-      "id":userID,
+      if(userID != null)"id":userID,
       "fullName": fullName,
       "birthday": birthday,
       "address": address,

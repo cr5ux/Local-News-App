@@ -24,8 +24,8 @@ class CommentRepo
             
                   for (var snap in docCommentSnap.docs)
                   {
-                   
                     comment.add(snap.data());
+                    
                   }
                 }
             
@@ -52,7 +52,6 @@ class CommentRepo
             
                   for (var snap in docCommentSnap.docs)
                   {
-                   
                     comment.add(snap.data());
                   }
                 }
@@ -79,6 +78,7 @@ class CommentRepo
                 (commentSnap)
                 {
                   comment=commentSnap.data();
+                 
                 }
             
               );
@@ -102,10 +102,8 @@ class CommentRepo
             await commentRef.get().then(
                 (commentSnap)
                 {
-            
                   for (var snap in commentSnap.docs)
                   {
-                   
                     commentReplies.add(snap.data());
                   }
                 }
@@ -151,6 +149,78 @@ class CommentRepo
 
 
   
+//add
+
+Future<String> addAComment(comment) async
+ {
+    
+      String message="";
+      try{
+          final commentRef= db.collection("Comment").withConverter(fromFirestore: Comment.fromFirestore, toFirestore: (Comment comment, _)=>comment.toFirestore());
+      
+          var m=await commentRef.add(comment);
+          
+          message= "$m registration sucessfull";
+
+          return message;
+
+          }
+      catch(e)
+      {
+          
+          rethrow; 
+        
+      }
+
+} 
+
+Future<String> addAReply(commentID, reply) async
+ {
+    
+      String message="";
+      try{
+          final replyRef= db.collection("Comment").doc(commentID).collection("Reply").withConverter(fromFirestore: Reply.fromFirestore, toFirestore: (Reply reply, _)=>reply.toFirestore());
+      
+          var m=await replyRef.add(reply);
+          
+          message= "$m registration sucessful";
+
+          
+          return message;
+
+          }
+      catch(e)
+      {
+          
+          rethrow; 
+        
+      }
+
+} 
+
+Future<String> addALike(commentID, like) async
+ {
+    
+      String message="";
+      try{
+          final likeRef= db.collection("Comment").doc(commentID).collection("Like").withConverter(fromFirestore: LS.fromFirestore, toFirestore: (LS ls, _)=>ls.toFirestore());
+      
+          var m=await likeRef.add(like);
+          
+          message= "$m registration sucessful";
+
+          
+          return message;
+
+          }
+      catch(e)
+      {
+          
+          rethrow; 
+        
+      }
+
+} 
 
 
 }

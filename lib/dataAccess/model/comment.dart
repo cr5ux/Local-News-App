@@ -5,14 +5,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Comment
 {
 
-  final String commentID;
+  final String? commentID;
   final String message;
-  final DateTime registrationDate;
+  final String registrationDate;
   final String userID;
   final String documentID;
 
 
-  Comment({required this.commentID, required this.message, required this.registrationDate, required this.userID, required this.documentID});
+  Comment({this.commentID, required this.message, required this.registrationDate, required this.userID, required this.documentID});
   
 
   factory Comment.fromFirestore(
@@ -38,7 +38,7 @@ class Comment
   {
     return{
 
-        "id": commentID, 
+       if (commentID != null) "id": commentID, 
         "message": message,
         "registrationDate": registrationDate, 
         "userID": userID, 
