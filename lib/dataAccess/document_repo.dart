@@ -420,9 +420,9 @@ Future<String> addDocument(document) async
     
       String message="";
       try{
-          final userRef= db.collection("Document").withConverter(fromFirestore: Document.fromFirestore, toFirestore: (Document doc, _)=>doc.toFirestore());
+          final docRef= db.collection("Document").withConverter(fromFirestore: Document.fromFirestore, toFirestore: (Document doc, _)=>doc.toFirestore());
       
-          var m=await userRef.add(document);
+          var m=await docRef.add(document);
           
           message= "$m registration sucessfull";
 
@@ -444,9 +444,9 @@ Future<String> addAShare(documentID,ls) async
     
       String message="";
       try{
-          final userRef= db.collection("Document").doc(documentID).collection("Share").withConverter(fromFirestore: LS.fromFirestore, toFirestore: (LS ls, _)=>ls.toFirestore());
+          final docRef= db.collection("Document").doc(documentID).collection("Share").withConverter(fromFirestore: LS.fromFirestore, toFirestore: (LS ls, _)=>ls.toFirestore());
       
-          var m=await userRef.add(ls);
+          var m=await docRef.add(ls);
           
           message= "$m registration sucessful";
 
@@ -468,9 +468,9 @@ Future<String> addALike(documentID,ls) async
     
       String message="";
       try{
-          final userRef= db.collection("Document").doc(documentID).collection("Like").withConverter(fromFirestore: LS.fromFirestore, toFirestore: (LS ls, _)=>ls.toFirestore());
+          final docRef= db.collection("Document").doc(documentID).collection("Like").withConverter(fromFirestore: LS.fromFirestore, toFirestore: (LS ls, _)=>ls.toFirestore());
       
-          var m=await userRef.add(ls);
+          var m=await docRef.add(ls);
           
           message= "$m registration sucessful";
 
@@ -491,9 +491,9 @@ Future<String> addAView(documentID,ls) async
     
       String message="";
       try{
-          final userRef= db.collection("Document").doc(documentID).collection("View").withConverter(fromFirestore: LS.fromFirestore, toFirestore: (LS ls, _)=>ls.toFirestore());
+          final docRef= db.collection("Document").doc(documentID).collection("View").withConverter(fromFirestore: LS.fromFirestore, toFirestore: (LS ls, _)=>ls.toFirestore());
       
-          var m=await userRef.add(ls);
+          var m=await docRef.add(ls);
           
           message= "$m registration sucessful";
 
