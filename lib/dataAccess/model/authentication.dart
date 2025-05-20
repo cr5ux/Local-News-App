@@ -1,19 +1,17 @@
-
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 class Authentication{
 
 
-  final String authID;
+  final String? authID;
   final String userID;
   final List<String> location;
-  final DateTime loginTime;
-  final DateTime logOutTime;
+  final String loginTime;
+  final String? logOutTime;
 
 
-  Authentication({required this.authID, required this.userID, required this.location, required this.logOutTime, required this.loginTime});
+  Authentication({this.authID, required this.userID, required this.location, this.logOutTime, required this.loginTime});
 
   factory Authentication.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -23,14 +21,12 @@ class Authentication{
  
     return Authentication(
    
-       authID: data?['authID'], 
+       authID: snapshot.id, 
        userID: data?['userID'],
        location: data?['location'],
        logOutTime: data?['logOutTime'],
        loginTime: data?['loginTime'],
        
-
-    
       );
     
   }
@@ -38,7 +34,7 @@ class Authentication{
   Map<String, dynamic> toFirestore() {
     return {
     
-      "authID":authID,
+      if(authID != null)"id":authID,
       "userID":userID,
       "location":location,
       "logOutTime":logOutTime,
