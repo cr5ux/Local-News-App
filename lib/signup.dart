@@ -28,7 +28,7 @@ class  SignupState extends State <Signup> {
     
     return  value.isEmpty?'Item is Required':null;
   }
-  void onSubmit() async
+  void _onSubmit({required BuildContext context, bool fullscreenDialog = false}) async
   {
     if(_formStateKey.currentState!.validate())
     {
@@ -37,7 +37,8 @@ class  SignupState extends State <Signup> {
        String? value= await auth.adduser(logdto.email, logdto.password);
         if (value!.startsWith("failure"))
         {
-               // ignore: use_build_context_synchronously
+              
+              // ignore: use_build_context_synchronously
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(value)));
         }
         else
@@ -47,13 +48,15 @@ class  SignupState extends State <Signup> {
             String result=await ur.addUser(user);
             if (result.startsWith("failure"))
             {
+               
                // ignore: use_build_context_synchronously
                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result)));
             }
             else
             {
+              
               // ignore: use_build_context_synchronously
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>const Login())); 
+              Navigator.push(context, MaterialPageRoute(fullscreenDialog: fullscreenDialog,builder: (context)=>const Login())); 
             }
         }
        
@@ -165,7 +168,10 @@ class  SignupState extends State <Signup> {
                                           width: 250.0,
                                           
                                           child:ElevatedButton(
-                                                    onPressed: onSubmit, 
+                                                    onPressed: ()=>_onSubmit(
+                                                      context: context,
+                                                      fullscreenDialog: false,
+                                                    ), 
                                                     style:const ButtonStyle(
                                                       backgroundColor:WidgetStatePropertyAll<Color>(Colors.black),
                                                       foregroundColor:WidgetStatePropertyAll<Color>(Colors.white),

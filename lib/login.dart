@@ -28,7 +28,7 @@ class _LoginState extends State<Login> {
     return  value.isEmpty?'Item is Required':null;
   }
  
-  void submitOrder() async
+  void _submitOrder({required BuildContext context, bool fullscreenDialog = false}) async
   {
     String? result ="";
     if(_formStateKey.currentState!.validate())
@@ -43,12 +43,14 @@ class _LoginState extends State<Login> {
           
           if(result =='Success')
           {
-              // ignore: use_build_context_synchronously
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>const HomeContainer(title:'Zena')));
+            
+                // ignore: use_build_context_synchronously
+                Navigator.push(context, MaterialPageRoute(fullscreenDialog: fullscreenDialog,builder: (context)=>const HomeContainer(title:'Zena')));
           }
           else
           {
-              // ignore: use_build_context_synchronously
+              
+             // ignore: use_build_context_synchronously
              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$result')));
           }
           
@@ -176,7 +178,8 @@ class _LoginState extends State<Login> {
                                           width: 250.0,
                                           
                                           child:ElevatedButton(
-                                                    onPressed: submitOrder, 
+                                                    onPressed:()=> _submitOrder(context: context,
+                                                                fullscreenDialog: false), 
                                                     style:const ButtonStyle(
                                                       backgroundColor:WidgetStatePropertyAll<Color>(Colors.black),
                                                       foregroundColor:WidgetStatePropertyAll<Color>(Colors.white),
