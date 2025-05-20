@@ -1,9 +1,8 @@
 import 'dart:core';
 
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:localnewsapp/dataAccess/model/users.dart';
-import 'package:localnewsapp/dataAccess/dto/login_dto.dart';
+// import 'package:localnewsapp/dataAccess/dto/login_dto.dart';
 
 class UsersRepo
 {
@@ -69,65 +68,6 @@ Future<Users> getAUserByID(userID) async
 
 } 
 
-Future<Users> getAUserByEmail(email) async
- {
-    
-    // ignore: prefer_typing_uninitialized_variables
-    var user;
-      try{
-          final userRef= db.collection("Users").where("email",isEqualTo:email).withConverter(fromFirestore: Users.fromFirestore, toFirestore: (Users user, _)=>user.toFirestore());
-      
-          await userRef.get().then(
-              (userSnap)
-              {
-                for (var snap in userSnap.docs)
-                {
-                   user=snap.data();
-                }
-              }
-          
-            );
-
-          }
-      catch(e)
-      {
-          rethrow;   
-      }
-
-      
-      return user;
-
-
-
-} 
-
-Future<Users> getAUserByPhonenumber(phonenumber) async
- {
-    
-    // ignore: prefer_typing_uninitialized_variables
-    var user;
-      try{
-          final userRef= db.collection("Users").where("phonenumber",isEqualTo:phonenumber).withConverter(fromFirestore: Users.fromFirestore, toFirestore: (Users user, _)=>user.toFirestore());
-      
-          await userRef.get().then(
-              (userSnap)
-              {
-                for (var snap in userSnap.docs)
-                {
-                   user=snap.data();
-                }
-              }
-          
-            );
-
-          }
-      catch(e)
-      {
-          rethrow;   
-      }
- 
-      return user;
-} 
 
 Future<List<dynamic>> getUserPreferenceTags(userID) async
  {
@@ -192,6 +132,70 @@ Future<List<dynamic>> getUserForbiddenTags(userID) async
 
 } 
 
+
+
+/*
+Future<Users> getAUserByEmail(email) async
+ {
+    
+    // ignore: prefer_typing_uninitialized_variables
+    var user;
+      try{
+          final userRef= db.collection("Users").where("email",isEqualTo:email).withConverter(fromFirestore: Users.fromFirestore, toFirestore: (Users user, _)=>user.toFirestore());
+      
+          await userRef.get().then(
+              (userSnap)
+              {
+                for (var snap in userSnap.docs)
+                {
+                   user=snap.data();
+                }
+              }
+          
+            );
+
+          }
+      catch(e)
+      {
+          rethrow;   
+      }
+
+      
+      return user;
+
+
+
+} 
+
+Future<Users> getAUserByPhonenumber(phonenumber) async
+ {
+    
+    // ignore: prefer_typing_uninitialized_variables
+    var user;
+      try{
+          final userRef= db.collection("Users").where("phonenumber",isEqualTo:phonenumber).withConverter(fromFirestore: Users.fromFirestore, toFirestore: (Users user, _)=>user.toFirestore());
+      
+          await userRef.get().then(
+              (userSnap)
+              {
+                for (var snap in userSnap.docs)
+                {
+                   user=snap.data();
+                }
+              }
+          
+            );
+
+          }
+      catch(e)
+      {
+          rethrow;   
+      }
+ 
+      return user;
+} 
+
+
 Future<LoginDTO> getAUserLogin(userID) async
  {
     
@@ -221,6 +225,66 @@ Future<LoginDTO> getAUserLogin(userID) async
       return logindto;
 } 
 
+Future<LoginDTO> getAUserLoginByEmail(email) async
+ {
+    
+    // ignore: prefer_typing_uninitialized_variables
+    var logindto;
+      try{
+          final userRef= db.collection("Users").where("email",isEqualTo: email).withConverter(fromFirestore: LoginDTO.fromFirestore, toFirestore: (LoginDTO login, _)=>login.toFirestore());
+      
+          await userRef.get().then(
+              (userSnap)
+              {
+                for (var snap in userSnap.docs)
+                {
+                   logindto=snap.data();
+               
+                }
+              }
+          
+            );
+
+          }
+      catch(e)
+      {
+          rethrow;   
+      }
+
+      return logindto;
+} 
+
+Future<LoginDTO> getAUserLoginByPhonenumber(phonenumber) async
+ {
+    
+    // ignore: prefer_typing_uninitialized_variables
+    var logindto;
+      try{
+          final userRef= db.collection("Users").where("phonenumber",isEqualTo: phonenumber).withConverter(fromFirestore: LoginDTO.fromFirestore, toFirestore: (LoginDTO login, _)=>login.toFirestore());
+      
+          await userRef.get().then(
+              (userSnap)
+              {
+                for (var snap in userSnap.docs)
+                {
+                   logindto=snap.data();
+               
+                }
+              }
+          
+            );
+
+          }
+      catch(e)
+      {
+          rethrow;   
+      }
+
+      return logindto;
+} 
+
+*/
+
 
 //Add
 
@@ -241,7 +305,7 @@ Future<String> addUser(user) async
       catch(e)
       {
           
-          rethrow; 
+          return "failure $e.toString()";
         
       }
 

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:localnewsapp/dataAccess/filemanipulation_repo.dart';
+// import 'package:localnewsapp/business/login_verification.dart';
 // import 'package:localnewsapp/dataAccess/comment_repo.dart';
 // import 'package:localnewsapp/dataAccess/model/comment.dart';
 // import 'package:localnewsapp/dataAccess/model/reply.dart';
 //import 'package:localnewsapp/dataAccess/document_repo.dart';
 //import 'package:localnewsapp/dataAccess/users_repo.dart';
+
+
 
 
 class Home extends StatelessWidget {
@@ -64,8 +66,8 @@ class Home extends StatelessWidget {
         // cR.getCommentByUserID("9kwEiPS2NbyEZfUN57kF");
       */ 
 
-      final fm=FilemanipulationRepo();
-      fm.uploadFile("C:/Users/sarma/OneDrive/Desktop/HilCoE CS Notes/T11 Notes/CS485/Chapter 1.pdf", "Text", "doc number one");
+   // final ut=Loginverification();
+   // print( ut.passwordHash("senaitM@gmail.com", "963524178"));
 
   }
 

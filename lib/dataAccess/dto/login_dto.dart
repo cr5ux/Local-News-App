@@ -4,11 +4,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class LoginDTO{
 
 
-  final String userID;
-  final String email;
-  final String password;
+  String? userID;
+  String? email;
+  String? phonenumber;
+  String? password;
 
-  LoginDTO({required this.userID, required this.email, required this.password});
+  LoginDTO({this.userID,  this.email, this.phonenumber, this.password});
 
   factory LoginDTO.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -20,6 +21,7 @@ class LoginDTO{
    
        userID: snapshot.id, 
        email: data?['email'], 
+       phonenumber: data?['phonenumber'],
        password: data?['password'] 
       );
     
@@ -28,9 +30,11 @@ class LoginDTO{
   Map<String, dynamic> toFirestore() {
     return {
     
-      "authUserID":userID,
-      "email": email,
-      "password": password,
+      if(userID != null)"id":userID,
+      if(email !=null)"email": email,
+      if(phonenumber !=null)"phonenumber":phonenumber,
+      if(password !=null)"password": password,
+      
     };
   }
 

@@ -435,7 +435,6 @@ Future<String> addDocument(document) async
 
 } 
 
-
 Future<String> addAShare(documentID,ls) async
  {
     

@@ -1,6 +1,7 @@
-
+import 'package:localnewsapp/dataAccess/authentication_repo.dart';
 import 'package:localnewsapp/homecontainer.dart';
 import 'package:flutter/material.dart';
+import 'package:localnewsapp/signup.dart';
 
 
 class Login extends StatefulWidget {
@@ -16,62 +17,51 @@ class _LoginState extends State<Login> {
 
   final LoginData _logindata = LoginData();
 
+  List<bool> isEmail=[true,false];
+
+
+  final  access= AuthenticationRepo();
+
   // ignore: non_constant_identifier_names
   String? _validate_item_required(String value){
     
     return  value.isEmpty?'Item is Required':null;
   }
-  // ignore: non_constant_identifier_names
-  String? _validate_item_email(String value)
+ 
+  void submitOrder() async
   {
-      if(value.isEmpty)
-      {
-        return "Item is required";
-      }
-      else if(!(value.contains('@')&& value.contains('.')&&value.indexOf('@')>0&& value.indexOf('.')>0 ) )
-      {
-        return "Wrong Email format";
-      }
-      return null;
-   
-  
-  }
-
-  void submitOrder()
-  {
-    List<LoginData> ld= [
-      LoginData(emailAddress:"ab@gmail.com" ,password:"12345678"),
-      LoginData(emailAddress:"cd@gmail.com" , password:"12345678"),
-      LoginData(emailAddress:"ef@gmail.com" , password:"12345678")
-
-    ];
-  
-  
-    bool isfound=false;
+    String? result ="";
     if(_formStateKey.currentState!.validate())
     {
       _formStateKey.currentState!.save();
-      for (var element in ld) {
-          
-           //print(element);
-           if(_logindata.emailAddress==element.emailAddress && _logindata.password==element.password)
-           {
-               isfound=true;
-               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Successful login!! \n Email is  ${_logindata.emailAddress}\n password  ${_logindata.password} ')));
-              
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>const HomeContainer(title:'Zena'))); 
-           }
-          
-        }
-
-      if(!isfound)
-      {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('wrong Email or password \n Email is  ${_logindata.emailAddress}\n password  ${_logindata.password} ')));
-      }
-
-
-     
       
+
+      if(isEmail[0])
+      {
+          result= await access.loginwithEmailandPassword( _logindata.address,  _logindata.password);
+
+          
+          if(result =='Success')
+          {
+              // ignore: use_build_context_synchronously
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>const HomeContainer(title:'Zena')));
+          }
+          else
+          {
+              // ignore: use_build_context_synchronously
+             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$result')));
+          }
+          
+      }
+      else
+      {
+       
+      }
+      
+    
+
+      
+
     }
   }
 
@@ -106,6 +96,8 @@ class _LoginState extends State<Login> {
                                     crossAxisAlignment: CrossAxisAlignment.center,
 
                                     children: [
+
+                                        
                                         const Text(
                                           "Log in",
                                           style: TextStyle(fontSize: 48),
@@ -115,19 +107,42 @@ class _LoginState extends State<Login> {
                                           "Sign in to your account",
                                           style: TextStyle(fontSize: 22),
                                         ),
+                                        
+                                        const Padding(padding: EdgeInsets.all(20.0)),
+
+                                        ToggleButtons(
+                                            direction: Axis.horizontal,
+                                            onPressed: (int index) {
+                                              setState(() {
+                                                for (int i = 0; i < isEmail.length; i++) {
+                                                  isEmail[i] = i == index;
+                                                }
+                                              });
+                                            },
+                                            
+                                            selectedColor: Colors.white,
+                                            fillColor: Colors.black,
+                                            color: Colors.black,
+                                            constraints: const BoxConstraints(minHeight: 40.0, minWidth: 100.0),
+                                            isSelected: isEmail,
+                                            children:const [
+                                                  Text("Email"),
+                                                  Text("Phone Number")
+                                            ],
+                                        ),
                                         const Padding(padding: EdgeInsets.all(20.0)),
 
                                         TextFormField(
                                             decoration: const InputDecoration(
-                                                      hintText: "Email Address",
-                                                      label: Text("Email"),
+                                                      hintText: "Email Address or Phonenumber",
+                                                      label: Text("Address"),
                                                       icon: Icon(Icons.person),
                                                       constraints: BoxConstraints(maxHeight: 80, maxWidth: 500)
                                               
                                             ),
-                                            validator:(value)=> _validate_item_email(value!),
+                                            validator:(value)=> _validate_item_required(value!),
                                             keyboardType: TextInputType.emailAddress,
-                                            onSaved:(value)=>_logindata.emailAddress=value
+                                            onSaved:(value)=>_logindata.address=value
                                         ),
 
                                         const Padding(padding: EdgeInsets.all(20.0)),
@@ -174,11 +189,21 @@ class _LoginState extends State<Login> {
                                         const Padding(padding: EdgeInsets.all(10.0)),
 
 
-                                        const Text(
-                                          "Don't have an account? sign Up",
-                    
-                                        ),
+                                        ElevatedButton(
+                                          
+                                          onPressed: ()
+                                          {
+                                                Navigator.push(context, MaterialPageRoute(builder: (context)=>const Signup())); 
 
+                                          }, 
+                                          child:  const Text(
+                                                  "Don't have an account? sign Up", 
+                                                  style: TextStyle(color: Colors.black),
+                                        
+                                                  ),
+                                        )
+                                       
+                                        
 
                                       
                                     ],
@@ -196,10 +221,10 @@ class _LoginState extends State<Login> {
 
 class LoginData
 {
-  String? emailAddress='';
+  String? address='';
   String? password='';
 
 
-  LoginData({this.emailAddress, this.password});
+  LoginData({this.address, this.password});
   
 }

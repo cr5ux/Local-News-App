@@ -6,7 +6,8 @@ class Document
   final String? documentID;
   final String documentName;
   final String title;
-  final String documentPath;
+  final List<dynamic> documentPath;
+  final String? content;
   final String language;
   final List<dynamic> indexTermsAM;
   final List<dynamic> indexTermsEN;
@@ -17,7 +18,7 @@ class Document
   final String documentType;
 
 
-  Document({this.documentID, required this.documentName, required this.title, required this.documentPath, required this.language, required this.indexTermsAM, required this.indexTermsEN, required this.registrationDate, required this.isActive, required this.authorID, required this.tags, required this.documentType });
+  Document({this.documentID, required this.documentName, required this.title, this.content,required this.documentPath, required this.language, required this.indexTermsAM, required this.indexTermsEN, required this.registrationDate, required this.isActive, required this.authorID, required this.tags, required this.documentType });
 
 
   factory Document.fromFirestore(
@@ -63,7 +64,6 @@ class Document
         "authorID": authorID,
         "tags": tags, 
         "documentType":documentType
-
     };
     
   }

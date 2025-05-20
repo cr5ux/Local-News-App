@@ -2,19 +2,22 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Users{
 
-  final String? userID;
-  final String fullName;
-  final String birthday;
-  final List<dynamic> address; 
-  final String phonenumber;
+   String? userID;
+   String fullName;
+ 
+   String  uniqueID;
 
- final List<dynamic> preferenceTags;
-  final List<dynamic> forbiddenTags;
+   String phonenumber;
 
-  final String email;
-  final String password;
+   List<dynamic>? preferenceTags;
+   List<dynamic>? forbiddenTags;
 
-  Users({this.userID, required this.fullName, required this.birthday, required this.address, required this.phonenumber,  required this.preferenceTags, required this.forbiddenTags, required this.email, required this.password});
+  bool isAdmin ;
+   //  String birthday;
+  // final String email;
+  // final String password;
+
+  Users({this.userID,required this.uniqueID,required this.phonenumber, required this.isAdmin, required this.fullName,  this.preferenceTags, this.forbiddenTags});//, required this.birthday, required this.email, required this.password});
 
   factory Users.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -26,15 +29,18 @@ class Users{
     return Users(
        userID: snapshot.id, 
        fullName: data?['fullName'], 
-       birthday: data?['birthday'], 
-       address: data?['address'],
-       phonenumber: data?['phonenumber'],
 
+       uniqueID: data?['uniqueID'],
+
+     
+      isAdmin: data?['isAdmin'],
        preferenceTags: data?['preferenceTags'],
        forbiddenTags: data?['forbiddenTags'], 
   
-       email: data?['email'], 
-       password: data?['password'] ,
+      phonenumber: data?['phonenumber'],
+
+      //  email: data?['email'], 
+      //  password: data?['password'] ,
 
 
 
@@ -47,14 +53,19 @@ class Users{
     return {
       if(userID != null)"id":userID,
       "fullName": fullName,
-      "birthday": birthday,
-      "address": address,
-      "phonenumber": phonenumber ,
+      
+      "uniqueID":uniqueID,
+      
+      "isAdmin":isAdmin,
       "preferenceTags":preferenceTags,
       "forbiddenTags":forbiddenTags,
- 
-      "email": email,
-      "password": password,
+
+
+     "phonenumber": phonenumber ,
+
+     
+      // "email": email,
+      // "password": password,
     };
   }
 
