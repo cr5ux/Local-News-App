@@ -10,13 +10,12 @@ class DocumentRepo
 
   final db = FirebaseFirestore.instance;
 
-
 //read
 Future<List<Document>> getAllDocuments() async
   {
         List<Document> docs=[];
         try{
-            final docRef= db.collection("Document").withConverter(fromFirestore: Document.fromFirestore, toFirestore: (Document doc, _)=>doc.toFirestore());  
+            final docRef= db.collection("Document").where("isActive",isEqualTo: "true").withConverter(fromFirestore: Document.fromFirestore, toFirestore: (Document doc, _)=>doc.toFirestore());  
             
             await docRef.get().then(
                 (docSnap)
@@ -141,7 +140,7 @@ Future<List<LS>> getDocumentLikes(documentID) async
     
      List<LS> docLikes=[];
       try{
-          final docLikeRef= db.collection("Document").doc(documentID).collection("Like").withConverter(fromFirestore: LS.fromFirestore, toFirestore: (LS ls, _)=>ls.toFirestore());
+          final docLikeRef= db.collection("Document").doc(documentID).collection("Like").where("isActive",isEqualTo: "true").withConverter(fromFirestore: LS.fromFirestore, toFirestore: (LS ls, _)=>ls.toFirestore());
       
           await docLikeRef.get().then(
                 (docSnap)
@@ -173,7 +172,7 @@ Future<List<LS>> getDocumentShare(documentID) async
     
      List<LS> docShare=[];
       try{
-          final docShareRef= db.collection("Document").doc(documentID).collection("Share").withConverter(fromFirestore: LS.fromFirestore, toFirestore: (LS ls, _)=>ls.toFirestore());
+          final docShareRef= db.collection("Document").doc(documentID).collection("Share").where("isActive",isEqualTo: "true").withConverter(fromFirestore: LS.fromFirestore, toFirestore: (LS ls, _)=>ls.toFirestore());
       
           await docShareRef.get().then(
                 (docSnap)
@@ -205,7 +204,7 @@ Future<List<LS>> getDocumentView(documentID) async
     
      List<LS> docView=[];
       try{
-          final docViewRef= db.collection("Document").doc(documentID).collection("View").withConverter(fromFirestore: LS.fromFirestore, toFirestore: (LS ls, _)=>ls.toFirestore());
+          final docViewRef= db.collection("Document").doc(documentID).collection("View").where("isActive",isEqualTo: "true").withConverter(fromFirestore: LS.fromFirestore, toFirestore: (LS ls, _)=>ls.toFirestore());
       
           await docViewRef.get().then(
                 (docSnap)
@@ -348,12 +347,11 @@ Future<List<Document>> getDocumentViewByAUser(userID) async
 } 
 
 
-
 Future<List<Document>> getDocumentByAuthorID(userID) async
   {
         List<Document> docs=[];
         try{
-            final docRef= db.collection("Document").where("authorID",isEqualTo: userID).withConverter(fromFirestore: Document.fromFirestore, toFirestore: (Document doc, _)=>doc.toFirestore());  
+            final docRef= db.collection("Document").where("authorID",isEqualTo: userID).where("isActive",isEqualTo: "true").withConverter(fromFirestore: Document.fromFirestore, toFirestore: (Document doc, _)=>doc.toFirestore());  
             
             await docRef.get().then(
                 (docSnap)
@@ -378,12 +376,11 @@ Future<List<Document>> getDocumentByAuthorID(userID) async
   }
 
 
-
 Future<List<Document>> getDocumentByRegistrationDate(date) async
   {
         List<Document> docs=[];
         try{
-            final docRef= db.collection("Document").where("registrationDate",isEqualTo: date).withConverter(fromFirestore: Document.fromFirestore, toFirestore: (Document doc, _)=>doc.toFirestore());  
+            final docRef= db.collection("Document").where("registrationDate",isEqualTo: date).where("isActive",isEqualTo: "true").withConverter(fromFirestore: Document.fromFirestore, toFirestore: (Document doc, _)=>doc.toFirestore());  
             
             await docRef.get().then(
                 (docSnap)

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localnewsapp/dataAccess/filemanipulation_repo.dart';
 // import 'package:localnewsapp/dataAccess/comment_repo.dart';
 // import 'package:localnewsapp/dataAccess/model/comment.dart';
 // import 'package:localnewsapp/dataAccess/model/reply.dart';
@@ -63,6 +64,8 @@ class Home extends StatelessWidget {
         // cR.getCommentByUserID("9kwEiPS2NbyEZfUN57kF");
       */ 
 
+      final fm=FilemanipulationRepo();
+      fm.uploadFile("C:/Users/sarma/OneDrive/Desktop/HilCoE CS Notes/T11 Notes/CS485/Chapter 1.pdf", "Text", "doc number one");
 
   }
 

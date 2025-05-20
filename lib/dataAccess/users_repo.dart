@@ -247,7 +247,6 @@ Future<String> addUser(user) async
 
 } 
 
-
 Future<String> addPreferenceTags(userID,preferenceTags) async
  {
       List<dynamic> preference= await getUserPreferenceTags(userID);
