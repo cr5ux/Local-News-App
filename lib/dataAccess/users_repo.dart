@@ -132,6 +132,40 @@ Future<List<dynamic>> getUserForbiddenTags(userID) async
 
 } 
 
+Future<String> getAUserByuniqueID(uniqueID) async
+ {
+    
+    // ignore: prefer_typing_uninitialized_variables
+    var user;
+      try{
+          final userRef= db.collection("Users").where("uniqueID",isEqualTo: uniqueID).withConverter(fromFirestore: Users.fromFirestore, toFirestore: (Users user, _)=>user.toFirestore());
+      
+          await userRef.get().then(
+              (userSnap)
+              {
+                  for (var snap in userSnap.docs)
+                  {
+                    user=snap.data().userID;
+                    
+                  }
+                
+              }
+          
+            );
+
+          }
+      catch(e)
+      {
+          rethrow;   
+      }
+
+
+      return user;
+
+
+
+} 
+
 
 
 /*

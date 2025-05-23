@@ -41,18 +41,19 @@ class CommentRepo
   }
 
   Future<List<Comment>> getCommentByUserID(userID) async
-  {
+  { 
         List<Comment> comment=[];
         try{
-            final docCommentRef= db.collection("Comment").where("userID",isEqualTo:userID ).withConverter(fromFirestore: Comment.fromFirestore, toFirestore: (Comment comment, _)=>comment.toFirestore());  
+            final docCommentRef= db.collection("Comment").where("userID",isEqualTo:userID).withConverter(fromFirestore: Comment.fromFirestore, toFirestore: (Comment comment, _)=>comment.toFirestore());  
             
             await docCommentRef.get().then(
                 (docCommentSnap)
                 {
-            
+                              
                   for (var snap in docCommentSnap.docs)
                   {
                     comment.add(snap.data());
+                  
                   }
                 }
             
@@ -66,6 +67,8 @@ class CommentRepo
         return comment;
   
   }
+
+
 
   Future<Comment> getAComment(commentID) async
   {

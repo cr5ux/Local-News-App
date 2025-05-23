@@ -11,7 +11,7 @@ class Document
   final String language;
   final List<dynamic> indexTermsAM;
   final List<dynamic> indexTermsEN;
-  final String registrationDate;
+   String registrationDate;
   final bool isActive;
   final String authorID;
   final List<dynamic> tags;

@@ -1,7 +1,9 @@
+
 import 'package:localnewsapp/dataAccess/authentication_repo.dart';
 import 'package:localnewsapp/homecontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:localnewsapp/signup.dart';
+
 
 
 class Login extends StatefulWidget {
@@ -41,17 +43,16 @@ class _LoginState extends State<Login> {
       if(isEmail[0])
       {
           result= await access.loginwithEmailandPassword( _logindata.address,  _logindata.password);
-
           
-          if(result =='Success')
+          if(!result.contains("Failure"))
           {
                 // ignore: use_build_context_synchronously
-                Navigator.push(context, MaterialPageRoute(fullscreenDialog: fullscreenDialog,builder: (context)=>const HomeContainer(title:'Zena')));
+            Navigator.push(context, MaterialPageRoute(fullscreenDialog: fullscreenDialog,builder: (context)=>const HomeContainer(title:'Zena')));
           }
           else
           {
              // ignore: use_build_context_synchronously
-             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$result')));
+             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result)));
           }
           
       }
@@ -230,3 +231,4 @@ class LoginData
   LoginData({this.address, this.password});
   
 }
+

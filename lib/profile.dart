@@ -16,22 +16,7 @@ class Profile extends StatelessWidget{
         // mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-      
-          UserAccountsDrawerHeader(
-         
-                    accountName: Text("user"),
-                    accountEmail: Text("ab@gmail.com"),
-                    currentAccountPicture:Icon(Icons.person,size: 150,),
-                
-                    arrowColor: Colors.black,
-                    
-                    decoration: BoxDecoration(
-                      color: Colors.black45,
-
-                    ),
-          ),
-          
-        
+ 
           Divider(),
           Padding(padding: EdgeInsets.all(30.0)),
 

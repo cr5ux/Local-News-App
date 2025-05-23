@@ -54,7 +54,7 @@ class Explore extends StatelessWidget {
                         categoryName: entry.key,
                         articleCount: entry.value,
                         onTap: () {
-                          // TODO: Navigate to category page
+                       
                         },
                       );
                     }).toList(),
