@@ -7,17 +7,20 @@ class Users{
  
    String  uniqueID;
 
-   String phonenumber;
+
 
    List<dynamic>? preferenceTags;
    List<dynamic>? forbiddenTags;
 
-  bool isAdmin ;
+    bool isAdmin ;
+    
+    //  String phonenumber;
+    // List<dynamic> Address;
    //  String birthday;
   // final String email;
   // final String password;
 
-  Users({this.userID,required this.uniqueID,required this.phonenumber, required this.isAdmin, required this.fullName,  this.preferenceTags, this.forbiddenTags});//, required this.birthday, required this.email, required this.password});
+  Users({this.userID,required this.uniqueID, required this.isAdmin, required this.fullName,  this.preferenceTags, this.forbiddenTags});//,required this.phonenumber, required this.birthday, required this.email, required this.password});
 
   factory Users.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -37,7 +40,7 @@ class Users{
        preferenceTags: data?['preferenceTags'],
        forbiddenTags: data?['forbiddenTags'], 
   
-      phonenumber: data?['phonenumber'],
+      // phonenumber: data?['phonenumber'],
 
       //  email: data?['email'], 
       //  password: data?['password'] ,
@@ -57,11 +60,12 @@ class Users{
       "uniqueID":uniqueID,
       
       "isAdmin":isAdmin,
+
       "preferenceTags":preferenceTags,
       "forbiddenTags":forbiddenTags,
 
 
-     "phonenumber": phonenumber ,
+    //  "phonenumber": phonenumber ,
 
      
       // "email": email,
