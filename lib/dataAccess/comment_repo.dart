@@ -226,4 +226,37 @@ Future<String> addALike(commentID, like) async
 } 
 
 
+
+//update
+Future<String> updateCommentReply(commentID,message,replyID) async
+ {
+  
+    
+      String mes="";
+  
+      try{
+
+
+          final docRef= db.collection("Comment").doc(commentID).collection("Reply").doc(replyID).withConverter(fromFirestore: Reply.fromFirestore, toFirestore: (Reply reply, _)=>reply.toFirestore());
+          
+          await docRef.update({"message": message});
+          
+          mes= "update sucessful";
+
+          
+         
+
+          return mes;
+
+          }
+      catch(e)
+      {
+          
+          rethrow; 
+          
+        
+      }
+
+} 
+
 }

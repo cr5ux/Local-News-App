@@ -529,5 +529,76 @@ Future<String> addAView(documentID,ls) async
 
 //update
 
+Future<String> updateDocumentActive(documentID,isActive) async
+ {
+  
+    
+      String message="";
+      try{
+
+
+          final docRef= db.collection("Document").doc(documentID).withConverter(fromFirestore: Document.fromFirestore, toFirestore: (Document doc, _)=>doc.toFirestore());
+      
+          await docRef.update({"isActive": isActive});
+          
+          message= "update sucessful";
+
+          return message;
+
+          }
+      catch(e)
+      {
+          
+          rethrow; 
+        
+      }
+
+} 
+Future<String> updateDocumentLike(documentID,userID) async
+ {
+  
+    
+      String message="";
+      String? lsid="";
+      try{
+
+
+          final docRef= db.collection("Document").doc(documentID).collection("Like").where("userID",isEqualTo: userID).limit(1).withConverter(fromFirestore: LS.fromFirestore, toFirestore: (LS ls, _)=>ls.toFirestore());
+      
+          await docRef.get().then(
+                (docSnap)
+                {
+            
+                  for (var snap in docSnap.docs)
+                  {
+                   
+                    lsid=snap.data().id;
+                  }
+                }
+            
+              );
+
+          await db.collection("Document").doc(documentID).collection("Like").doc(lsid).delete().then(
+
+             (val)=>message="deletion successful"
+          );
+
+         
+         
+
+          return message;
+
+          }
+      catch(e)
+      {
+          
+          rethrow; 
+          
+        
+      }
+
+} 
+
+
 
 }

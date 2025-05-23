@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:localnewsapp/activity.dart';
+
 import 'package:localnewsapp/explore.dart';
 import 'package:localnewsapp/add.dart';
 import 'package:localnewsapp/home.dart';
@@ -51,7 +51,7 @@ class HomeContainer extends StatelessWidget
             //    useMaterial3: true,
             // ),
             home: DefaultTabController(
-                 length: 5,
+                 length: 4,
                  child:Scaffold(
                          appBar: AppBar(
                                 leading: const Popupmenu(),
@@ -89,10 +89,7 @@ class HomeContainer extends StatelessWidget
                                               icon: Icon(Icons.person),
                                           
                                               ),
-                                            Tab(
-                                              icon: Icon(Icons.settings),
-                                          
-                                              )
+                                           
                                           ],
                                         ),
                           ), 
@@ -102,7 +99,7 @@ class HomeContainer extends StatelessWidget
                                     const Explore(),
                                     const Add(),
                                     const Profile(),
-                                    Activity()
+                                    
                                   ],
                           
                           ) 

@@ -108,6 +108,30 @@ Future<String> loginwithEmailandPassword(email, password) async {
     
   }
 
+Future<String> resetPassword(email) async {
+
+    try {
+      
+      await FirebaseAuth.instance.sendPasswordResetEmail(
+          email: email
+        );
+
+        return "Password Reset Link sent";
+    
+
+    } on FirebaseAuthException catch (e) {
+
+      return "Failure ${e.code}";
+    } 
+    
+    catch (e) {
+      return "Failure ${e.toString()}";
+    }
+    
+  }
+
+
+
 
 
 }
