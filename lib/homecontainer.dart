@@ -89,12 +89,12 @@ class HomeContainer extends StatelessWidget
                                           ],
                                         ),
                           ), 
-                          body:const TabBarView(
+                          body:TabBarView(
                                   children: [
                                     Home(),
-                                    Explore(),
-                                    Add(),
-                                    Profile()
+                                    const Explore(),
+                                    const Add(),
+                                    const Profile()
                                   ],
                           
                           ) 

@@ -124,15 +124,15 @@ class  SignupState extends State <Signup> {
     {
       _formStateKey.currentState!.save();
 
-       String? value= await auth.adduser(logdto.email, logdto.password);
-        if (value!.startsWith("failure"))
+       String? value = await auth.adduser(logdto.email, logdto.password);
+        if (value != null && value.startsWith("failure"))
         {
               // ignore: use_build_context_synchronously
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(value)));
         }
-        else
+        else if (value != null)
         {
-            user.uniqueID=value;
+            user.uniqueID = value;
             user.isAdmin=false;
             String result=await ur.addUser(user);
             if (result.startsWith("failure"))

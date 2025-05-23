@@ -1,96 +1,38 @@
 import 'package:flutter/material.dart';
-// import 'package:localnewsapp/business/login_verification.dart';
-// import 'package:localnewsapp/dataAccess/comment_repo.dart';
-// import 'package:localnewsapp/dataAccess/model/comment.dart';
-// import 'package:localnewsapp/dataAccess/model/reply.dart';
-//import 'package:localnewsapp/dataAccess/document_repo.dart';
-//import 'package:localnewsapp/dataAccess/users_repo.dart';
-
-
-
+import 'package:localnewsapp/dataAccess/document_repo.dart';
+import 'package:localnewsapp/dataAccess/model/document.dart';
+import 'package:localnewsapp/widgets/article_card.dart';
 
 class Home extends StatelessWidget {
-  const Home({super.key});
+  final DocumentRepo _documentRepo = DocumentRepo();
 
-  getAllUsers()
-  {
-      
-        //final uR= UsersRepo();
-        /*
-          // uR.getAllUsers();
-          // uR.getAUserByID("9kwEiPS2NbyEZfUN57kF") as Iterable;
-          // uR.getAUserByEmail("armatemsamuel@gmail.com");
-          // uR.getAUserByPhonenumber("+251925364879");
-          // uR.getUserPreferenceTags("9kwEiPS2NbyEZfUN57kF");
-          // uR.getUserForbiddenTags("9kwEiPS2NbyEZfUN57kF");
-          // uR.getAUserLogin("9kwEiPS2NbyEZfUN57kF");
-        
-          //change the data for the next trial //uR.addUser(new Users(fullName: "Senait Mekonnen Yelma", birthday: "6/7/1990", address: ["Ethiopia","Amhara","Gonder"], phonenumber: "+251785963214", preferenceTags: ["Politics"], forbiddenTags: ["Sports"], email: "senaitM@gmail.com", password: "963524178"));
-          // uR.addForbiddenTags("9kwEiPS2NbyEZfUN57kF", ["Cooking","Politics"]);
-          // uR.addPreferenceTags("9kwEiPS2NbyEZfUN57kF", ["Sport","Medical"]);
-      */
-
-
-      
-        //final dR= DocumentRepo();
-      /*
-          // dR.addDocument(Document(documentName: "Document One", title: "Live and Lives", documentPath: "/doc/name/path", language: "Amharic", indexTermsAM: ["ቃል አንድ", "ቃል ሁለት","ቃል ሶስት"], indexTermsEN: ["Term1", "Term2","Term3"], registrationDate: "17/5/2025", isActive:true , authorID: "9kwEiPS2NbyEZfUN57kF", tags: ["#sport","#arsenal"], documentType: "Text"));
-          // dR.addAView("jtyjvG4rrWwuP1YV0vTD", LS(userID: "9kwEiPS2NbyEZfUN57kF", date: "17/5/2025"));
-          // dR.addALike("jtyjvG4rrWwuP1YV0vTD", LS(userID: "9kwEiPS2NbyEZfUN57kF", date: "17/5/2025"));
-          // dR.addAShare("jtyjvG4rrWwuP1YV0vTD", LS(userID: "9kwEiPS2NbyEZfUN57kF", date: "17/5/2025"));
-          
-          // dR.getAllDocuments();
-          // dR.getADocumentByID("jtyjvG4rrWwuP1YV0vTD");
-          // dR.getDocumentByDocumentType("Text");
-          // dR.getDocumentByAuthorID("9kwEiPS2NbyEZfUN57kF");
-          // dR.getDocumentByRegistrationDate("17/5/2025");
-          // dR.getDocumentByTags("#sport");
-          // dR.getDocumentLikes("jtyjvG4rrWwuP1YV0vTD");
-          // dR.getDocumentLikesByAUser("9kwEiPS2NbyEZfUN57kF");
-          // dR.getDocumentShare("jtyjvG4rrWwuP1YV0vTD");
-          // dR.getDocumentShareByAUser("9kwEiPS2NbyEZfUN57kF");
-          // dR.getDocumentView("jtyjvG4rrWwuP1YV0vTD");
-          // dR.getDocumentViewByAUser("9kwEiPS2NbyEZfUN57kF");
-
-      */
-
-      /*
-        final cR= CommentRepo();
-        
-        // cR.addAComment(Comment(message: "I like it, very informative", registrationDate: "17/5/2025", userID: "9kwEiPS2NbyEZfUN57kF", documentID:"jtyjvG4rrWwuP1YV0vTD"));
-        // cR.addAReply("83mYl6fKQuovR3QkaXCa", Reply(message: "isn't it", date: "17/5/2025", userID: "9kwEiPS2NbyEZfUN57kF"));      
-       
-        // cR.getAComment("83mYl6fKQuovR3QkaXCa");
-        // cR.getACommentReply("83mYl6fKQuovR3QkaXCa");
-        // cR.getCommentByDocumentID("jtyjvG4rrWwuP1YV0vTD");
-        // cR.getCommentByUserID("9kwEiPS2NbyEZfUN57kF");
-      */ 
-
-   // final ut=Loginverification();
-   // print( ut.passwordHash("senaitM@gmail.com", "963524178"));
-
-  }
+  Home({super.key});
 
   @override
-  Widget build (BuildContext context)
-  {
-  
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<Document>>(
+      future: _documentRepo.getAllDocuments(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-   return Center(
-      child: Column(
-        children: [
-            const Text("Home", style: TextStyle(fontSize: 24)),
-            const Padding(padding: EdgeInsets.all(15)),
-            ElevatedButton(
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
 
-              onPressed: getAllUsers,
-              child: const Text("Press")
-            ),
-        ],
-      )
-      
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('No articles available'));
+        }
+
+        return ListView.builder(
+          padding: const EdgeInsets.only(top: 16),
+          itemCount: snapshot.data!.length,
+          itemBuilder: (context, index) {
+            return ArticleCard(document: snapshot.data![index]);
+          },
+        );
+      },
     );
-              
-
   }
 }

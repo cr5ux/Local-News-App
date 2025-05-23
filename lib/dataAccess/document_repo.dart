@@ -11,32 +11,34 @@ class DocumentRepo
   final db = FirebaseFirestore.instance;
 
 //read
-Future<List<Document>> getAllDocuments() async
-  {
-        List<Document> docs=[];
-        try{
-            final docRef= db.collection("Document").where("isActive",isEqualTo: "true").withConverter(fromFirestore: Document.fromFirestore, toFirestore: (Document doc, _)=>doc.toFirestore());  
-            
-            await docRef.get().then(
-                (docSnap)
-                {
-            
-                  for (var snap in docSnap.docs)
-                  {
-                    docs.add(snap.data());
-                  }
-                }
-            
-              );
-            }
-        catch(e)
-        {
-            rethrow;
-        }
+Future<List<Document>> getAllDocuments() async {
+  List<Document> docs = [];
+  try {
+    // Define the query with a converter
+    final docRef = db.collection("Document")
+        .where("isActive", isEqualTo: true) // Note: "true" should be a boolean, not a string
+        .withConverter(
+          fromFirestore: Document.fromFirestore,
+          toFirestore: (Document doc, _) => doc.toFirestore(),
+        );
 
-        return docs;
-  
+
+    // Fetch the documents
+    await docRef.get().then((docSnap) {
+      
+      // Loop through each document snapshot and print its data
+      for (var snap in docSnap.docs) {
+        final docData = snap.data();
+        docs.add(docData);
+        
+      }
+    });
+  } catch (e) {
+    rethrow;
   }
+
+  return docs;
+}
 
 Future<Document> getADocumentByID(documentID) async
  {
