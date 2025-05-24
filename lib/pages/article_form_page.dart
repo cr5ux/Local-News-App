@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../constants/categories.dart';
+import '../dataAccess/model/document.dart'; // Import Document model
+import '../dataAccess/document_repo.dart'; // Import DocumentRepo
 
 class ArticleFormPage extends StatefulWidget {
   const ArticleFormPage({super.key});
@@ -16,6 +18,22 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
   final List<String> _availableTags = NewsCategories.allCategories;
   final List<String> _selectedTags = [];
 
+  final DocumentRepo _documentRepo = DocumentRepo(); // Instantiate DocumentRepo
+
+  // Language and Document Type state variables
+  final List<String> _languages = ['en', 'am'];
+  String? _selectedLanguage;
+
+  final List<String> _documentTypes = ['text', 'video'];
+  String? _selectedDocumentType;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedLanguage = _languages.first; // Set default language
+    _selectedDocumentType = _documentTypes.first; // Set default document type
+  }
+
   void _toggleTag(String tag) {
     setState(() {
       if (_selectedTags.contains(tag)) {
@@ -26,7 +44,8 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
     });
   }
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
+    // Made async to await addDocument
     if (_formKey.currentState!.validate()) {
       if (_linkController.text.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -42,11 +61,61 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
         return;
       }
 
+      if (_selectedLanguage == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please select a language')),
+        );
+        return;
+      }
+
+      if (_selectedDocumentType == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please select a document type')),
+        );
+        return;
+      }
+
       // Form is valid, process the submission
-      // You can add your submission logic here
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Form submitted successfully!')),
+      // Create a Document object from form data
+      final newDocument = Document(
+        documentID: null, // Firestore will generate this
+        documentName: _titleController.text, // Using title as document name
+        title: _titleController.text,
+        documentPath: [
+          _linkController.text
+        ], // Assuming link is the primary path
+        content: _articleController.text,
+        language: _selectedLanguage!, // Use selected language
+        indexTermsAM: [], // Placeholder
+        indexTermsEN: [], // Placeholder
+        registrationDate: DateTime.now().toIso8601String(), // Current date/time
+        isActive: true, // Default to active
+        authorID: 'placeholder', // Placeholder - replace with actual user ID
+        tags: _selectedTags,
+        documentType: _selectedDocumentType!, // Use selected document type
       );
+
+      try {
+        // Call addDocument to submit the article
+        await _documentRepo.addDocument(newDocument);
+
+        // Provide user feedback
+        
+
+        // Clear the form
+        _formKey.currentState!.reset();
+        _titleController.clear();
+        _articleController.clear();
+        _linkController.clear();
+        setState(() {
+          _selectedTags.clear();
+          _selectedLanguage = _languages.first; // Reset language
+          _selectedDocumentType = _documentTypes.first; // Reset document type
+        });
+      } catch (e) {
+        // Handle submission errors
+        // Log error
+      }
     }
   }
 
@@ -94,7 +163,7 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  
+
                   // Title Field
                   TextFormField(
                     controller: _titleController,
@@ -123,7 +192,93 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
                     },
                   ),
                   const SizedBox(height: 20),
-                  
+
+                  // Language and Document Type Dropdowns (Side by side)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: DropdownButtonFormField<String>(
+                          decoration: InputDecoration(
+                            labelText: 'Language',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(color: Colors.black),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(color: Colors.black),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(color: Colors.black),
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                          ),
+                          value: _selectedLanguage,
+                          items: _languages.map((String language) {
+                            return DropdownMenuItem<String>(
+                              value: language,
+                              child: Text(language),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              _selectedLanguage = newValue;
+                            });
+                          },
+                          validator: (value) {
+                            if (value == null) {
+                              return 'Please select a language';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 16), // Spacing between dropdowns
+                      Expanded(
+                        child: DropdownButtonFormField<String>(
+                          decoration: InputDecoration(
+                            labelText: 'Document Type',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(color: Colors.black),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(color: Colors.black),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(color: Colors.black),
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                          ),
+                          value: _selectedDocumentType,
+                          items: _documentTypes.map((String type) {
+                            return DropdownMenuItem<String>(
+                              value: type,
+                              child: Text(type),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              _selectedDocumentType = newValue;
+                            });
+                          },
+                          validator: (value) {
+                            if (value == null) {
+                              return 'Please select a document type';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+
                   // Article Content Field
                   TextFormField(
                     controller: _articleController,
@@ -135,7 +290,7 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color:  Colors.black),
+                        borderSide: const BorderSide(color: Colors.black),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -153,12 +308,12 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
                     },
                   ),
                   const SizedBox(height: 20),
-                  
+
                   // Link Input Section (replacing PDF upload)
                   Container(
                     padding: const EdgeInsets.all(15),
                     decoration: BoxDecoration(
-                      border: Border.all(color:  Colors.black),
+                      border: Border.all(color: Colors.black),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Column(
@@ -175,11 +330,11 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
                             hintText: 'Enter article URL',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide: const BorderSide(color:  Colors.black),
+                              borderSide: const BorderSide(color: Colors.black),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide: const BorderSide(color:  Colors.black),
+                              borderSide: const BorderSide(color: Colors.black),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -199,7 +354,7 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  
+
                   // Tags Selection
                   Container(
                     padding: const EdgeInsets.all(15),
@@ -230,9 +385,10 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                                 side: BorderSide(
-                                  color: isSelected 
-                                      ? Colors.black 
-                                      : const Color.fromARGB(255, 220, 220, 220),
+                                  color: isSelected
+                                      ? Colors.black
+                                      : const Color.fromARGB(
+                                          255, 220, 220, 220),
                                 ),
                               ),
                             );
@@ -242,20 +398,20 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
                     ),
                   ),
                   const SizedBox(height: 30),
-                  
+
                   // Submit Button
                   Container(
                     width: double.infinity,
                     height: 50,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
+                      boxShadow: const [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
+                          color: Colors.black,
                           spreadRadius: 1,
                           blurRadius: 3,
-                          offset: const Offset(0, 2),
-                        ),
+                          offset: Offset(0, 2),
+                        )
                       ],
                     ),
                     child: ElevatedButton(
@@ -266,11 +422,13 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        elevation: 0, // Remove default elevation as we're using custom shadow
+                        elevation:
+                            0, // Remove default elevation as we're using custom shadow
                       ),
                       child: const Text(
                         'Submit',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
