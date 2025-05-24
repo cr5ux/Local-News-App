@@ -1,6 +1,8 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:localnewsapp/business/identification.dart';
+import 'package:localnewsapp/dataAccess/users_repo.dart';
 
 class AuthenticationRepo{
 
@@ -77,32 +79,58 @@ Future<String?> adduser(email, password)async
 
 }
 
-Future<String?> loginwithEmailandPassword(email, password) async {
+Future<String> loginwithEmailandPassword(email, password) async {
 
+    final uR=UsersRepo();
+    
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      return 'Success';
-
+          email: email,
+          password: password,
+        ).then(
+            (data) async {
+              String id=await uR.getAUserByuniqueID(data.user!.uid);
+              Identification().userID=id;
+              return id;
+            }
+          );
+    
 
     } on FirebaseAuthException catch (e) {
 
-
-      if (e.code == 'user-not-found') {
-        return 'No user found for that email.';
-      } else if (e.code == 'wrong-password') {
-        return 'Wrong password provided for that user.';
-      } else {
-        return e.message;
-      }
+      return "Failure ${e.code}";
     } 
     
     catch (e) {
-      return e.toString();
+      return "Failure ${e.toString()}";
     }
+    return "";
+    
   }
+
+Future<String> resetPassword(email) async {
+
+    try {
+      
+      await FirebaseAuth.instance.sendPasswordResetEmail(
+          email: email
+        );
+
+        return "Password Reset Link sent";
+    
+
+    } on FirebaseAuthException catch (e) {
+
+      return "Failure ${e.code}";
+    } 
+    
+    catch (e) {
+      return "Failure ${e.toString()}";
+    }
+    
+  }
+
+
 
 
 

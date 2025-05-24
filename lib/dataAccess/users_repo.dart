@@ -132,6 +132,40 @@ Future<List<dynamic>> getUserForbiddenTags(userID) async
 
 } 
 
+Future<String> getAUserByuniqueID(uniqueID) async
+ {
+    
+    // ignore: prefer_typing_uninitialized_variables
+    var user;
+      try{
+          final userRef= db.collection("Users").where("uniqueID",isEqualTo: uniqueID).withConverter(fromFirestore: Users.fromFirestore, toFirestore: (Users user, _)=>user.toFirestore());
+      
+          await userRef.get().then(
+              (userSnap)
+              {
+                  for (var snap in userSnap.docs)
+                  {
+                    user=snap.data().userID;
+                    
+                  }
+                
+              }
+          
+            );
+
+          }
+      catch(e)
+      {
+          rethrow;   
+      }
+
+
+      return user;
+
+
+
+} 
+
 
 
 /*
@@ -389,6 +423,87 @@ Future<String> addForbiddenTags(userID,forbiddenTags) async
 
 
 //update
+
+
+Future<String> updateUserInfo(Users user) async
+ {
+  
+    
+      String message="";
+      try{
+
+
+          final userRef= db.collection("Users").doc(user.userID).withConverter(fromFirestore: Users.fromFirestore, toFirestore: (Users user, _)=>user.toFirestore());
+      
+          await userRef.update({"fullName": user.fullName});
+          
+          message= "registration sucessful";
+
+          return message;
+
+          }
+      catch(e)
+      {
+          
+          rethrow; 
+        
+      }
+
+}
+
+Future<String> updatePreferenceTags(userID,preferenceTags) async
+ {
+      
+      
+      String message="";
+      try{
+
+
+          final userRef= db.collection("Users").doc(userID).withConverter(fromFirestore: Users.fromFirestore, toFirestore: (Users user, _)=>user.toFirestore());
+      
+          await userRef.update({"preferenceTags":preferenceTags});
+          
+          message= "update sucessfull";
+
+          return message;
+
+          }
+      catch(e)
+      {
+          
+          rethrow; 
+        
+      }
+
+} 
+
+Future<String> updateForbiddenTags(userID,forbiddenTags) async
+ {
+  
+     
+    
+      String message="";
+      try{
+
+
+          final userRef= db.collection("Users").doc(userID).withConverter(fromFirestore: Users.fromFirestore, toFirestore: (Users user, _)=>user.toFirestore());
+      
+          await userRef.update({"forbiddenTags": forbiddenTags});
+          
+          message= "udate sucessful";
+
+          return message;
+
+          }
+      catch(e)
+      {
+          
+          rethrow; 
+        
+      }
+
+} 
+
 
 
 }

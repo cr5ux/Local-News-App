@@ -47,7 +47,7 @@ class  SignupState extends State <Signup> {
 
   String? validateFullName(String value)
   {
-    return value.isEmpty?"Item is required":"";
+    return value.isEmpty?"Item is required":null;
   }
   String? validatePassword(String value)
   {
@@ -110,10 +110,7 @@ class  SignupState extends State <Signup> {
             return "password must contain lowercase letter";
           }
       }
-      if(confirmPassword!=logdto.password)
-      {
-        return "password and confirm password must be the same";
-      }
+      
       return null;
       
   }
@@ -124,28 +121,35 @@ class  SignupState extends State <Signup> {
     {
       _formStateKey.currentState!.save();
 
-       String? value = await auth.adduser(logdto.email, logdto.password);
-        if (value != null && value.startsWith("failure"))
-        {
-              // ignore: use_build_context_synchronously
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(value)));
+      if(confirmPassword!=logdto.password)
+      {
+           ScaffoldMessenger.of(context).showSnackBar( const SnackBar(content: Text("Password and confirm password must be the same")));
+      }
+      else
+      {
+        String? value = await auth.adduser(logdto.email, logdto.password);
+          if (value != null && value.startsWith("failure"))
+          {
+                // ignore: use_build_context_synchronously
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(value)));
+          }
+          else if (value != null)
+          {
+              user.uniqueID = value;
+              user.isAdmin=false;
+              String result=await ur.addUser(user);
+              if (result.startsWith("failure"))
+              { 
+                // ignore: use_build_context_synchronously
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result)));
+              }
+              else
+              {
+                // ignore: use_build_context_synchronously
+                Navigator.push(context, MaterialPageRoute(fullscreenDialog: fullscreenDialog,builder: (context)=>const Login())); 
+              }
         }
-        else if (value != null)
-        {
-            user.uniqueID = value;
-            user.isAdmin=false;
-            String result=await ur.addUser(user);
-            if (result.startsWith("failure"))
-            { 
-               // ignore: use_build_context_synchronously
-               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result)));
-            }
-            else
-            {
-              // ignore: use_build_context_synchronously
-              Navigator.push(context, MaterialPageRoute(fullscreenDialog: fullscreenDialog,builder: (context)=>const Login())); 
-            }
-        }
+      }
     }
   }
 

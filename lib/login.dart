@@ -1,7 +1,10 @@
+
 import 'package:localnewsapp/dataAccess/authentication_repo.dart';
 import 'package:localnewsapp/homecontainer.dart';
 import 'package:flutter/material.dart';
+import 'package:localnewsapp/reset_password.dart';
 import 'package:localnewsapp/signup.dart';
+
 
 
 class Login extends StatefulWidget {
@@ -41,17 +44,16 @@ class _LoginState extends State<Login> {
       if(isEmail[0])
       {
           result= await access.loginwithEmailandPassword( _logindata.address,  _logindata.password);
-
           
-          if(result =='Success')
+          if(!result.contains("Failure"))
           {
                 // ignore: use_build_context_synchronously
-                Navigator.push(context, MaterialPageRoute(fullscreenDialog: fullscreenDialog,builder: (context)=>const HomeContainer(title:'Zena')));
+            Navigator.push(context, MaterialPageRoute(fullscreenDialog: fullscreenDialog,builder: (context)=>const HomeContainer(title:'Zena')));
           }
           else
           {
              // ignore: use_build_context_synchronously
-             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$result')));
+             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result)));
           }
           
       }
@@ -105,33 +107,12 @@ class _LoginState extends State<Login> {
                                         
                                         const Padding(padding: EdgeInsets.all(20.0)),
 
-                                        // ToggleButtons(
-                                        //     direction: Axis.horizontal,
-                                        //     onPressed: (int index) {
-                                        //       setState(() {
-                                        //         for (int i = 0; i < isEmail.length; i++) {
-                                        //           isEmail[i] = i == index;
-                                        //         }
-                                        //       });
-                                        //     },
-                                            
-                                        //     selectedColor: Colors.white,
-                                        //     fillColor: Colors.black,
-                                        //     color: Colors.black,
-                                        //     constraints: const BoxConstraints(minHeight: 40.0, minWidth: 100.0),
-                                        //     isSelected: isEmail,
-                                        //     children:const [
-                                        //           Text("Email"),
-                                        //           Text("Phone Number")
-                                        //     ],
-                                        // ),
-                                        // const Padding(padding: EdgeInsets.all(20.0)),
 
                                         TextFormField(
                                             decoration: const InputDecoration(
                                                       hintText: "Email Address or Phonenumber",
                                                       label: Text("Address"),
-                                                      icon: Icon(Icons.person),
+                                                      icon: Icon(Icons.email),
                                                       constraints: BoxConstraints(maxHeight: 80, maxWidth: 500)
                                               
                                             ),
@@ -159,9 +140,24 @@ class _LoginState extends State<Login> {
                                         const Padding(padding: EdgeInsets.all(10.0)),
 
 
-                                        const Text(
-                                          "Forget password?",
-                              
+                                         ElevatedButton(
+                                          style:const ButtonStyle(
+
+                                              backgroundColor: WidgetStatePropertyAll<Color>(Colors.white),
+                                              shadowColor: WidgetStatePropertyAll<Color>(Colors.transparent),
+                                              overlayColor: WidgetStatePropertyAll<Color>(Colors.transparent),
+
+                                            ),
+                                          onPressed: ()
+                                          {
+                                                Navigator.push(context, MaterialPageRoute(builder: (context)=>ResetPassword())); 
+
+                                          }, 
+                                          child:  const Text(
+                                                  "Forget password?", 
+                                                  style: TextStyle(color: Colors.black),
+                                        
+                                                  ),
                                         ),
                                         
                                         const Padding(padding: EdgeInsets.all(10.0)),
@@ -230,3 +226,4 @@ class LoginData
   LoginData({this.address, this.password});
   
 }
+
