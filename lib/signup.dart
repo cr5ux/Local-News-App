@@ -229,7 +229,7 @@ class  SignupState extends State <Signup> {
                                               decoration: const InputDecoration(
                                                 hintText: "Password",
                                                 label: Text("Password"),
-                                                icon: Icon(Icons.numbers),
+                                                icon: Icon(Icons.password),
                                                 constraints: BoxConstraints(maxHeight: 80, maxWidth: 500) 
                                               ),
 

@@ -4,6 +4,7 @@ import 'package:localnewsapp/homecontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:localnewsapp/reset_password.dart';
 import 'package:localnewsapp/signup.dart';
+import 'package:string_validator/string_validator.dart';
 
 
 
@@ -21,16 +22,30 @@ class _LoginState extends State<Login> {
   final LoginData _logindata = LoginData();
 
   List<bool> isEmail=[true,false];
-  
+
+    bool passwordvisible=true;
 
 
 
   final  access= AuthenticationRepo();
 
   // ignore: non_constant_identifier_names
-  String? _validate_item_required(String value){
+  String? validateitemrequired(String value){
     
     return  value.isEmpty?'Item is Required':null;
+  }
+  String? validateEmail(String value){
+    
+    if(value.isEmpty)
+    {
+      return 'Item is Required';
+    }
+    else if(!value.isEmail)
+    {
+      return "Input needs to be email address";
+    }
+    return null;
+   
   }
  
   void _submitOrder({required BuildContext context, bool fullscreenDialog = false}) async
@@ -116,25 +131,42 @@ class _LoginState extends State<Login> {
                                                       constraints: BoxConstraints(maxHeight: 80, maxWidth: 500)
                                               
                                             ),
-                                            validator:(value)=> _validate_item_required(value!),
+                                            validator:(value)=> validateEmail(value!),
                                             keyboardType: TextInputType.emailAddress,
                                             onSaved:(value)=>_logindata.address=value
                                         ),
 
                                         const Padding(padding: EdgeInsets.all(20.0)),
 
-                                        TextFormField(
-                                           decoration:  const InputDecoration(
-                                                    hintText: "Password",
-                                                    label: Text("Password"),
-                                                    icon: Icon(Icons.lock),
-                                                    constraints: BoxConstraints(maxHeight: 80, maxWidth: 500),
+                                        Stack(
+                                            alignment: AlignmentDirectional.topEnd,
+                                              children: [
+                                                  TextFormField(
+                                                      decoration: const InputDecoration(
+                                                        hintText: "Password",
+                                                        label: Text("Password"),
+                                                        icon: Icon(Icons.password),
+                                                        constraints: BoxConstraints(maxHeight: 80, maxWidth: 500) 
+                                                      ),
 
-                                            ),
-                                            validator:(value)=>_validate_item_required(value!),
-                                            obscureText: true,
-                                            onSaved:(value)=> _logindata.password=value
-                                             
+                                                      validator: (value) => validateitemrequired(value!),
+                                                      keyboardType: TextInputType.text,
+                                                      onSaved: (value) => _logindata.password=value!,
+                                                      obscureText: passwordvisible,
+                                                ),
+
+                                                const Padding(padding: EdgeInsets.all(20.0)),
+                                                
+                                                IconButton(
+                                                  onPressed: ()
+                                                  {
+                                                    setState(() {
+                                                      passwordvisible?passwordvisible=false:passwordvisible=true;
+                                                    });
+                                                  }, 
+                                                  icon: passwordvisible?const Icon(Icons.visibility):const Icon(Icons.visibility_off)
+                                              )
+                                            ],
                                         ),
 
                                         const Padding(padding: EdgeInsets.all(10.0)),
