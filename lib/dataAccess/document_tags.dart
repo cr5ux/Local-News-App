@@ -1,7 +1,7 @@
 class DocumentTags {
   static const List<String> types = [
     'Politics',
-    'Sport',
+    'Sports',
     'Entertainment',
     'Technology',
     'Health',

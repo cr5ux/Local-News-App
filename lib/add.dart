@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localnewsapp/pages/article_form_page.dart';
 
 
 class Add extends StatelessWidget{
@@ -10,8 +11,6 @@ class Add extends StatelessWidget{
    @override
   Widget build (BuildContext context)
   {
-   return const  Center(
-      child: Text("Post", style:  TextStyle(fontSize: 24)),
-    );
+   return const ArticleFormPage();
   }
 }
