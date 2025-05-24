@@ -1,8 +1,6 @@
 
-import 'package:localnewsapp/add.dart';
 import 'package:localnewsapp/login.dart';
 import 'package:localnewsapp/profile.dart';
-import 'package:localnewsapp/settings.dart';
 import 'package:flutter/material.dart';
 
 
@@ -26,8 +24,6 @@ class PopupMenuWidget extends StatelessWidget implements PreferredSizeWidget
   
   final List<Todo> menuList =[
     Todo(title: 'Profile'  , icon:const Icon(Icons.fastfood), path:const Profile()),
-    Todo(title: 'Contacts'  , icon:const Icon(Icons.add_alarm ), path:const Add()),
-    Todo(title: 'Settings'  , icon:const Icon(Icons.flight), path:const Settings()),
     Todo(title: 'Sign out'  , icon:const Icon(Icons.exit_to_app ), path:const Login())
 
   ];
@@ -35,7 +31,8 @@ class PopupMenuWidget extends StatelessWidget implements PreferredSizeWidget
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
+      color: Colors.black ,
       height:preferredSize.height,
       width: double.infinity,
       child: Center(

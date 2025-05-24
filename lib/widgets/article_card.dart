@@ -93,6 +93,7 @@ class ArticleCard extends StatelessWidget {
 
         // Navigate to article detail page
         Navigator.push(
+          // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(
             builder: (context) => ArticleDetailPage(document: document),

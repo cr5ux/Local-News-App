@@ -132,7 +132,7 @@ Future<List<dynamic>> getUserForbiddenTags(userID) async
 
 } 
 
-Future<String> getAUserByuniqueID(uniqueID) async
+Future<Users> getAUserByuniqueID(uniqueID) async
  {
     
     // ignore: prefer_typing_uninitialized_variables
@@ -145,7 +145,7 @@ Future<String> getAUserByuniqueID(uniqueID) async
               {
                   for (var snap in userSnap.docs)
                   {
-                    user=snap.data().userID;
+                    user=snap.data();
                     
                   }
                 

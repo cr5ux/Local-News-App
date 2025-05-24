@@ -2,6 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:localnewsapp/business/identification.dart';
+import 'package:localnewsapp/dataAccess/model/users.dart';
 import 'package:localnewsapp/dataAccess/users_repo.dart';
 
 class AuthenticationRepo{
@@ -89,9 +90,10 @@ Future<String> loginwithEmailandPassword(email, password) async {
           password: password,
         ).then(
             (data) async {
-              String id=await uR.getAUserByuniqueID(data.user!.uid);
-              Identification().userID=id;
-              return id;
+              Users user= await uR.getAUserByuniqueID(data.user!.uid);
+              Identification().userID=user.userID!;
+              Identification().isAdmin=user.isAdmin;
+              return user;
             }
           );
     
