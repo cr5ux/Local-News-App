@@ -50,9 +50,8 @@ class ArticleCard extends StatelessWidget {
     final UsersRepo usersRepo = UsersRepo();
     try {
       final Users user = await usersRepo.getAUserByID(authorId);
-      return user.fullName ?? 'Unknown Author'; // Use fullName field
+      return user.fullName; // Use fullName field
     } catch (e) {
-      print('Error fetching author name for ${authorId}: $e');
       return 'Unknown Author'; // Return a default name in case of error
     }
   }
@@ -148,8 +147,6 @@ class ArticleCard extends StatelessWidget {
                             fit: BoxFit.cover,
                           );
                         } else if (snapshot.hasError) {
-                          print(
-                              'Error generating video thumbnail: ${snapshot.error}');
                           return Container(
                             height: 200,
                             color: Colors.grey[200],
@@ -201,7 +198,7 @@ class ArticleCard extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.6),
+                        color: Colors.black,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
@@ -220,8 +217,8 @@ class ArticleCard extends StatelessWidget {
                       child: Center(
                         child: Container(
                           padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.3),
+                          decoration: const BoxDecoration(
+                            color: Colors.black,
                             shape: BoxShape.circle,
                           ),
                           child: const Icon(
@@ -282,10 +279,10 @@ class ArticleCard extends StatelessWidget {
                   Row(
                     children: [
                       // Source/Author (using authorID as placeholder for now)
-                      if (document.authorID != null)
+                      if (document.authorID == "")
                         FutureBuilder<String>(
                           future: _getAuthorName(
-                              document.authorID!), // Call async method
+                              document.authorID), // Call async method
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
