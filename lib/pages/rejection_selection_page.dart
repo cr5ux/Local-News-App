@@ -4,6 +4,7 @@ import 'package:localnewsapp/dataAccess/users_repo.dart';
 import '../constants/categories.dart';
 import 'package:localnewsapp/login.dart';
 
+// ignore: must_be_immutable
 class RejectionSelectionPage extends StatefulWidget {
 
   List<dynamic> rejection;

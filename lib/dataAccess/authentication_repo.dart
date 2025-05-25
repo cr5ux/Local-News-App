@@ -123,11 +123,11 @@ Future<String?> adduser(email, password)async
       } 
       on FirebaseAuthException catch (e) 
       {
-        print(e.code);
+       
           return "failure ${e.code}";
       } 
       catch (e) {
-          print("to string ${e.toString()}");
+          
           return "failure ${e.toString()}";
      }
 

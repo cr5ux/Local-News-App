@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:localnewsapp/business/identification.dart';
 import 'package:localnewsapp/dataAccess/users_repo.dart';
-import 'package:localnewsapp/pages/rejection_selection_page.dart';
-import '../constants/categories.dart';
 import 'package:localnewsapp/login.dart';
+
+import '../constants/categories.dart';
+
 
 class InterestsSelectionPage extends StatefulWidget {
   const InterestsSelectionPage({super.key});
@@ -57,7 +58,7 @@ class _InterestsSelectionPageState extends State<InterestsSelectionPage> {
     {
       // ignore: use_build_context_synchronously
        Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => const Login()),///RejectionSelectionPage(rejection:NewsCategories.getUnselectedCategories())),
+                        MaterialPageRoute(builder: (context) => const Login())///RejectionSelectionPage(rejection:NewsCategories.getUnselectedCategories())),
                       );
 
     }
