@@ -445,4 +445,24 @@ class DocumentRepo {
       rethrow;
     }
   }
+
+  // Check if a specific user has liked a document
+  Future<bool> hasUserLikedDocument(String documentID, String userID) async {
+    try {
+      final docLikeRef = db
+          .collection("Document")
+          .doc(documentID)
+          .collection("Like")
+          .where("userID", isEqualTo: userID)
+          .withConverter(
+              fromFirestore: LS.fromFirestore,
+              toFirestore: (LS ls, _) => ls.toFirestore());
+
+      final snapshot = await docLikeRef.get();
+      return snapshot
+          .docs.isNotEmpty; // If any document exists, the user has liked it
+    } catch (e) {
+      return false; // Assume not liked in case of error
+    }
+  }
 }
