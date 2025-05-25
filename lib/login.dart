@@ -125,7 +125,7 @@ class _LoginState extends State<Login> {
 
                                         TextFormField(
                                             decoration: const InputDecoration(
-                                                      hintText: "Email Address or Phonenumber",
+                                                      hintText: "Email Address",
                                                       label: Text("Address"),
                                                       icon: Icon(Icons.email),
                                                       constraints: BoxConstraints(maxHeight: 80, maxWidth: 500)
