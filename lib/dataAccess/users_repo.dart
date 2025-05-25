@@ -69,7 +69,7 @@ Future<Users> getAUserByID(userID) async
 } 
 
 
-Future<List<dynamic>> getUserPreferenceTags(userID) async
+Future<List<dynamic>?> getUserPreferenceTags(userID) async
  {
 
     // ignore: prefer_typing_uninitialized_variables
@@ -102,7 +102,7 @@ Future<List<dynamic>> getUserPreferenceTags(userID) async
 
 } 
 
-Future<List<dynamic>> getUserForbiddenTags(userID) async
+Future<List<dynamic>?> getUserForbiddenTags(userID) async
  {
 
     // ignore: prefer_typing_uninitialized_variables
@@ -347,24 +347,12 @@ Future<String> addUser(user) async
 
 Future<String> addPreferenceTags(userID,preferenceTags) async
  {
-      List<dynamic> preference= await getUserPreferenceTags(userID);
-      
       String message="";
       try{
-          for (var i in preferenceTags)
-          {
-            if(preference.contains(i))
-            {
-              preferenceTags.remove(i);
-            }
-
-          }
-
-
 
           final userRef= db.collection("Users").doc(userID).withConverter(fromFirestore: Users.fromFirestore, toFirestore: (Users user, _)=>user.toFirestore());
       
-          await userRef.update({"preferenceTags":FieldValue.arrayUnion(preferenceTags)});
+          await userRef.update({"preferenceTags":preferenceTags});
           
           message= "registration sucessfull";
 
@@ -383,24 +371,13 @@ Future<String> addPreferenceTags(userID,preferenceTags) async
 Future<String> addForbiddenTags(userID,forbiddenTags) async
  {
   
-      List<dynamic> forbidden= await getUserForbiddenTags(userID);
     
       String message="";
       try{
 
-
-          for (var i in forbiddenTags)
-          {
-            if(forbidden.contains(i))
-            {
-              forbiddenTags.remove(i);
-            }
-
-          }
-
           final userRef= db.collection("Users").doc(userID).withConverter(fromFirestore: Users.fromFirestore, toFirestore: (Users user, _)=>user.toFirestore());
       
-          await userRef.update({"forbiddenTags": FieldValue.arrayUnion(forbiddenTags)});
+          await userRef.update({"forbiddenTags":forbiddenTags});
           
           message= "registration sucessful";
 

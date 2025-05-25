@@ -67,7 +67,7 @@ class _CommentActivityDetailState extends State<CommentActivityDetail> {
                  
                 },
            ), 
-      );  
+      ); 
    
   }
 }

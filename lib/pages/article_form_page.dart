@@ -131,12 +131,7 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(
-          child: Image(
-            image: AssetImage('r1.png'),
-            height: 40,
-          ),
-        ),
+        
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         elevation: 3, // Increased drop shadow
         shape: const RoundedRectangleBorder(

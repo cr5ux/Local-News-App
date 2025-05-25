@@ -2,11 +2,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:localnewsapp/business/identification.dart';
 import 'package:localnewsapp/dataAccess/authentication_repo.dart';
 import 'package:localnewsapp/dataAccess/dto/login_dto.dart';
 import 'package:localnewsapp/dataAccess/model/users.dart';
 import 'package:localnewsapp/dataAccess/users_repo.dart';
 import 'package:localnewsapp/login.dart';
+import 'package:localnewsapp/splash_screen.dart';
 import 'package:string_validator/string_validator.dart';
 
 class Signup extends StatefulWidget {
@@ -29,6 +31,9 @@ class  SignupState extends State <Signup> {
   bool passwordvisible=true;
   bool confirmvisible = true;
   String confirmPassword="";
+
+  bool isEnable=true;
+
 
 
   String? validateEmail(String value){
@@ -117,12 +122,19 @@ class  SignupState extends State <Signup> {
 
   void _onSubmit({required BuildContext context, bool fullscreenDialog = false}) async
   {
+        setState(() {
+            isEnable=false;
+          });
+
     if(_formStateKey.currentState!.validate())
     {
       _formStateKey.currentState!.save();
 
       if(confirmPassword!=logdto.password)
       {
+          setState(() {
+            isEnable=true;
+          });
            ScaffoldMessenger.of(context).showSnackBar( const SnackBar(content: Text("Password and confirm password must be the same")));
       }
       else
@@ -130,23 +142,45 @@ class  SignupState extends State <Signup> {
         String? value = await auth.adduser(logdto.email, logdto.password);
           if (value != null && value.startsWith("failure"))
           {
+           
+              setState(() {
+                isEnable=true;
+              });
                 // ignore: use_build_context_synchronously
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(value)));
+              
+              auth.deleteUser();
           }
           else if (value != null)
           {
               user.uniqueID = value;
               user.isAdmin=false;
+
               String result=await ur.addUser(user);
+
+             
+
               if (result.startsWith("failure"))
               { 
+                setState(() {
+                  isEnable=true;
+                });
+                 
                 // ignore: use_build_context_synchronously
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result)));
+
+                auth.deleteUser();
               }
               else
               {
+                user= await ur.getAUserByuniqueID(user.uniqueID);
+             
+                  Identification().userID=user.userID!;
+                  
+                  Identification().isAdmin=user.isAdmin;
+                  
                 // ignore: use_build_context_synchronously
-                Navigator.push(context, MaterialPageRoute(fullscreenDialog: fullscreenDialog,builder: (context)=>const Login())); 
+                Navigator.push(context, MaterialPageRoute(fullscreenDialog: fullscreenDialog,builder: (context)=>const SplashScreen())); 
               }
         }
       }
@@ -298,16 +332,16 @@ class  SignupState extends State <Signup> {
                                         width: 250.0,
                                         
                                         child:ElevatedButton(
-                                                  onPressed: ()=>_onSubmit(
+                                                  onPressed: isEnable?()=>_onSubmit(
                                                     context: context,
                                                     fullscreenDialog: false,
-                                                  ), 
+                                                  ):null, 
                                                   style:const ButtonStyle(
                                                     backgroundColor:WidgetStatePropertyAll<Color>(Colors.black),
                                                     foregroundColor:WidgetStatePropertyAll<Color>(Colors.white),
                                             
                                                   ),
-                                                  child:const Text("Register",style:TextStyle(fontSize: 16.0),)
+                                                  child:isEnable?const Text("Register",style:TextStyle(fontSize: 16.0),): const Center(child: CircularProgressIndicator())
                                                 ),
                                     ),
                                     const Padding(padding: EdgeInsets.all(10.0)),

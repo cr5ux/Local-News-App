@@ -58,72 +58,83 @@ class Activity extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-     return FutureBuilder<List<dynamic>>(
-      future: Future.wait([getView(),getComment(),getLikes(),getShares()]),
-      initialData:const [ "Loading ....."], 
-      builder: (context, AsyncSnapshot<List<dynamic>> snapshot)
-            {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
+     return Scaffold(
+      appBar: AppBar(
+              backgroundColor: Colors.black,
+              elevation: 0,
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () => Navigator.pop(context),
+              ),
+          ),
+      body:FutureBuilder<List<dynamic>>(
+          future: Future.wait([getView(),getComment(),getLikes(),getShares()]),
+          initialData:const [ "Loading ....."], 
+          builder: (context, AsyncSnapshot<List<dynamic>> snapshot)
+                {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-              if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              }
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
 
-              if (!snapshot.hasData ) {
-                return const Center(child: Text('No articles available'));
-              }
+                  if (!snapshot.hasData ) {
+                    return const Center(child: Text('No articles available'));
+                  }
 
-              return ListView (
-                        children: [
-                            ListTile(
-                              leading:const Icon(Icons.view_array_outlined),
-                              title: const Text("Views"),
-                              subtitle: Text("${snapshot.data![0].length}"),
-                              trailing: const Icon(Icons.arrow_forward_ios_outlined),
-                              
-                              onTap: (){
+                  return ListView (
+                            children: [
+                                ListTile(
+                                  leading:const Icon(Icons.view_array_outlined),
+                                  title: const Text("Views"),
+                                  subtitle: Text("${snapshot.data![0].length}"),
+                                  trailing: const Icon(Icons.arrow_forward_ios_outlined),
                                   
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>DocumentActivitiyDetail(documentsnapshot: snapshot.data![0],)));
-                              },
-                            ),
-                            ListTile(
-                              leading:const Icon(Icons.comment),
-                              title: const Text("Comments"),
-                              subtitle: Text("${snapshot.data![1].length}"),
-                              trailing: const Icon(Icons.arrow_forward_ios_outlined),
-                              onTap: (){
-                                 
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>CommentActivityDetail(commentsnapshot: snapshot.data![1])));
-                              },
-                            ),
-                            ListTile(
-                              leading:const Icon(Icons.heart_broken),
-                              trailing: const Icon(Icons.arrow_forward_ios_outlined),
-                              subtitle: Text("${snapshot.data![2].length}"),
-                              title: const Text("Likes"),
-                              onTap: (){
-                                 
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>DocumentActivitiyDetail(documentsnapshot: snapshot.data![2],)));
-                              },
-                            ),
-                            ListTile(
-                              leading:const Icon(Icons.share),
-                              title: const Text("Shares"),
-                              subtitle: Text("${snapshot.data![3].length}"),
-                              trailing: const Icon(Icons.arrow_forward_ios_outlined),
-                              onTap: (){
-                                 
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>DocumentActivitiyDetail(documentsnapshot: snapshot.data![3],)));
-                              },
-                            )
-                          ],
-                        
-                   );
-            }
-      
-      );
+                                  onTap: (){
+                                      
+                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>DocumentActivitiyDetail(documentsnapshot: snapshot.data![0],)));
+                                  },
+                                ),
+                                ListTile(
+                                  leading:const Icon(Icons.comment),
+                                  title: const Text("Comments"),
+                                  subtitle: Text("${snapshot.data![1].length}"),
+                                  trailing: const Icon(Icons.arrow_forward_ios_outlined),
+                                  onTap: (){
+                                    
+                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>CommentActivityDetail(commentsnapshot: snapshot.data![1])));
+                                  },
+                                ),
+                                ListTile(
+                                  leading:const Icon(Icons.heart_broken),
+                                  trailing: const Icon(Icons.arrow_forward_ios_outlined),
+                                  subtitle: Text("${snapshot.data![2].length}"),
+                                  title: const Text("Likes"),
+                                  onTap: (){
+                                    
+                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>DocumentActivitiyDetail(documentsnapshot: snapshot.data![2],)));
+                                  },
+                                ),
+                                ListTile(
+                                  leading:const Icon(Icons.share),
+                                  title: const Text("Shares"),
+                                  subtitle: Text("${snapshot.data![3].length}"),
+                                  trailing: const Icon(Icons.arrow_forward_ios_outlined),
+                                  onTap: (){
+                                    
+                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>DocumentActivitiyDetail(documentsnapshot: snapshot.data![3],)));
+                                  },
+                                )
+                              ],
+                            
+                      );
+                }
+          
+       ),
+    );
+     
 
 }
 }   

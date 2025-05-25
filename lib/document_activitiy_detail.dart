@@ -52,8 +52,8 @@ class _DocumentActivitiyDetailState extends State<DocumentActivitiyDetail> {
                             
                           );
                     },
-                  ) 
-     );     
+                  ),
+     );
    
   }
 }

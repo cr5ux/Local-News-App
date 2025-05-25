@@ -9,8 +9,7 @@ class ResetPassword extends StatelessWidget {
     final GlobalKey<FormState>  _formStateKey = GlobalKey<FormState>();
   String email="", message="";
 
- ResetPassword({super.key});
-
+  ResetPassword({super.key});
 
 
  String? validateEmail(String value){
@@ -115,7 +114,7 @@ class ResetPassword extends StatelessWidget {
                                           width: 250.0,
                                           
                                           child:ElevatedButton(
-                                                    onPressed:()=> sendLink(context),
+                                                    onPressed:()=>sendLink(context),
                                                 
                                                     style:const ButtonStyle(
                                                        backgroundColor:WidgetStatePropertyAll<Color>(Colors.black),
@@ -123,7 +122,7 @@ class ResetPassword extends StatelessWidget {
                                              
                                                     ),
                                                   
-                                                child:  const Text(
+                                                child:const Text(
                                                   "Send Link", 
                                                 
                                                   )

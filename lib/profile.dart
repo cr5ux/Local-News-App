@@ -1,6 +1,12 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:localnewsapp/activity.dart';
+import 'package:localnewsapp/dataAccess/model/users.dart';
+
+import 'package:localnewsapp/dataAccess/users_repo.dart';
 import 'package:localnewsapp/settings.dart';
 
 class Profile extends StatefulWidget {
@@ -12,53 +18,52 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   final user = FirebaseAuth.instance.currentUser;
-  final _firestore = FirebaseFirestore.instance;
+  // final _firestore = FirebaseFirestore.instance;
+  Users userInfo= Users(uniqueID: "", isAdmin:false , fullName: "");
 
-  int reputation = 0;
-  int followings = 0;
-  int followers = 0;
+  // int reputation = 0;
+  // int followings = 0;
+  // int followers = 0;
 
   @override
   void initState() {
     super.initState();
     _loadUserData();
+   
   }
+
 
   Future<void> _loadUserData() async {
-    if (user != null) {
-      final userData = await _firestore.collection('users').doc(user!.uid).get();
-      if (userData.exists) {
-        setState(() {
-          reputation = userData.data()?['reputation'] ?? 0;
-          followings = userData.data()?['followings'] ?? 0;
-          followers = userData.data()?['followers'] ?? 0;
-        });
-      }
-    }
+
+    final uR=UsersRepo();
+
+    userInfo= await uR.getAUserByuniqueID(user!.uid);
+    
+    
   }
 
-  Widget _buildStatColumn(String label, String value) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.grey[600],
-            fontSize: 14,
-          ),
-        ),
-      ],
-    );
-  }
+  // Widget _buildStatColumn(String label, String value) {
+  //   return Column(
+  //     mainAxisSize: MainAxisSize.min,
+  //     children: [
+  //       Text(
+  //         value,
+  //         style: const TextStyle(
+  //           fontSize: 20,
+  //           fontWeight: FontWeight.bold,
+  //         ),
+  //       ),
+  //       const SizedBox(height: 4),
+  //       Text(
+  //         label,
+  //         style: TextStyle(
+  //           color: Colors.grey[600],
+  //           fontSize: 14,
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget _buildMenuItem(IconData icon, String title, {
     String? subtitle,
@@ -135,7 +140,7 @@ class _ProfileState extends State<Profile> {
                             border: Border.all(color: Colors.grey.shade300),
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: const Text('My profile'),
+                          child:Text('${user!.email}'),
                         ),
                         const SizedBox(width: 8),
                         IconButton(
@@ -162,31 +167,34 @@ class _ProfileState extends State<Profile> {
                             : null,
                         ),
                         const SizedBox(width: 12),
-                        Text(
-                          user?.displayName ?? 'User',
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        FutureBuilder(
+                        future: _loadUserData(), 
+                        builder: (context, snapshot)
+                            {
+                              return  Text(
+                                      userInfo.fullName,
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                );
+                          }
+                        )
+                        
                       ],
                     ),
-                    const SizedBox(height: 24),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        _buildStatColumn('Reputation', reputation.toString()),
-                        _buildStatColumn('Followings', followings.toString()),
-                        _buildStatColumn('Followers', followers.toString()),
-                      ],
-                    ),
+                    const SizedBox(height: 24),                    
                   ],
                 ),
               ),
               const Divider(height: 1),
               
               // Menu items
-              _buildMenuItem(Icons.inbox, 'Inbox', onTap: () {}),
+              _buildMenuItem(Icons.local_activity, 'Activities', onTap: () { 
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => Activity()),
+                            );}),
               _buildMenuItem(Icons.star_border, 'Favorites', onTap: () {}),
               _buildMenuItem(
                 Icons.offline_pin_outlined, 

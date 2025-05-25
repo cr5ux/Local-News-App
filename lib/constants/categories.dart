@@ -30,6 +30,11 @@ class NewsCategories {
     return allCategories.where((category) => 
       userPreferences[category] == true).toList();
   }
+  static List<String> getUnselectedCategories() {
+    return allCategories.where((category) => 
+      userPreferences[category] == false).toList();
+  }
+  
   
   // Toggle user preference for a category
   static void togglePreference(String category) {

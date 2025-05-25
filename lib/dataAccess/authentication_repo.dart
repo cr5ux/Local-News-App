@@ -1,4 +1,6 @@
 
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:localnewsapp/business/identification.dart';
@@ -52,33 +54,86 @@ Future<void> addlogout(authenticationID,logOutTime) async
 }
 */
 
+Future<String?> deleteUser() async{
+
+  try{
+    await FirebaseAuth.instance.currentUser!.delete();
+
+  } on FirebaseAuthException catch (e) 
+  {
+      return "failure ${e.code}";
+  } catch(e)
+  {
+      return "failure ${e.toString()}";
+  }
+  return null;
+
+
+}
+
+
+
 //
 Future<String?> adduser(email, password)async
 {
 
       String value="";
       try {
-           await FirebaseAuth.instance.createUserWithEmailAndPassword(
+
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
               email:email,
               password: password
             ).then(
-              (data){
-                value=data.user!.uid;
-              }
-            );
+            (data) async
+            {
 
-            return value;
+                value=data.user!.uid;
+
+            });
+                
+            
+
+          //  await user.user!.sendEmailVerification().then(
+          //   (data)
+          //   {
+          //       if(!user.user!.emailVerified)
+          //       {
+          //         user.user!.delete().then(
+          //         (data)
+          //         {
+          //           value= "failure account not created email not verified";
+          //         }
+          //       );
+
+          //       }   
+          //   }
+          //   ).catchError(
+          //   (data)
+          //   {
+          //       user.user!.delete().then(
+          //         (data)
+          //         {
+          //           value= "failure account not created email not verified";
+          //         }
+          //       );
+          //   });
+            
+
+          return value;
       } 
       on FirebaseAuthException catch (e) 
       {
+        print(e.code);
           return "failure ${e.code}";
       } 
       catch (e) {
+          print("to string ${e.toString()}");
           return "failure ${e.toString()}";
      }
 
 
 }
+
 
 Future<String> loginwithEmailandPassword(email, password) async {
 
@@ -113,7 +168,7 @@ Future<String> loginwithEmailandPassword(email, password) async {
 Future<String> resetPassword(email) async {
 
     try {
-      
+     
       await FirebaseAuth.instance.sendPasswordResetEmail(
           email: email
         );

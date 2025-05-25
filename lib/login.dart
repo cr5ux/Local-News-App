@@ -23,8 +23,9 @@ class _LoginState extends State<Login> {
 
   List<bool> isEmail=[true,false];
 
-    bool passwordvisible=true;
-
+  bool passwordvisible=true;
+  bool isEnable=true;
+ 
 
 
   final  access= AuthenticationRepo();
@@ -51,6 +52,12 @@ class _LoginState extends State<Login> {
   void _submitOrder({required BuildContext context, bool fullscreenDialog = false}) async
   {
     String? result ="";
+    setState(() {
+          isEnable=false;
+    });
+
+
+
     if(_formStateKey.currentState!.validate())
     {
       _formStateKey.currentState!.save();
@@ -67,6 +74,10 @@ class _LoginState extends State<Login> {
           }
           else
           {
+            
+            setState(() {
+                isEnable=true;
+            });
              // ignore: use_build_context_synchronously
              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result)));
           }
@@ -199,14 +210,17 @@ class _LoginState extends State<Login> {
                                           width: 250.0,
                                           
                                           child:ElevatedButton(
-                                                    onPressed:()=> _submitOrder(context: context,
-                                                                fullscreenDialog: false), 
+
+                                                    onPressed:()=>isEnable? _submitOrder(context: context,
+                                                                fullscreenDialog: false):null, 
+
                                                     style:const ButtonStyle(
+
                                                       backgroundColor:WidgetStatePropertyAll<Color>(Colors.black),
                                                       foregroundColor:WidgetStatePropertyAll<Color>(Colors.white),
                                              
                                                     ),
-                                                    child:const Text("Log in",style:TextStyle(fontSize: 16.0),)
+                                                    child:isEnable?const Text("Log in",style:TextStyle(fontSize: 16.0),):const Center(child: CircularProgressIndicator())
                                                   ),
                                         ),
 

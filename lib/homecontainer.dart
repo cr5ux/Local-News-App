@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:localnewsapp/business/identification.dart';
 
 import 'package:localnewsapp/explore.dart';
@@ -106,6 +107,7 @@ class HomeContainer extends StatelessWidget {
                   const Explore(),
                   const Add(),
                   const Profile(),
+                
                 ]:
                 [
                   Home(),

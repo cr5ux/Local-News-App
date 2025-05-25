@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:localnewsapp/business/identification.dart';
 import 'package:localnewsapp/dataAccess/users_repo.dart';
-import 'package:localnewsapp/pages/rejection_selection_page.dart';
 import '../constants/categories.dart';
 import 'package:localnewsapp/login.dart';
 
-class InterestsSelectionPage extends StatefulWidget {
-  const InterestsSelectionPage({super.key});
+class RejectionSelectionPage extends StatefulWidget {
+
+  List<dynamic> rejection;
+
+  RejectionSelectionPage ({super.key,required this.rejection});
 
   @override
-  State<InterestsSelectionPage> createState() => _InterestsSelectionPageState();
+  State<RejectionSelectionPage > createState() => _RejectionSelectionPageState();
 }
 
-class _InterestsSelectionPageState extends State<InterestsSelectionPage> {
+class _RejectionSelectionPageState extends State<RejectionSelectionPage> {
 
   
   @override
@@ -25,28 +27,27 @@ class _InterestsSelectionPageState extends State<InterestsSelectionPage> {
   }
 
   void _toggleInterest(String category) {
+
     setState(() {
       NewsCategories.togglePreference(category);
     });
   }
   List _getInterest()
   {
-    List<dynamic> interests ;
+    List<dynamic> rejection;
     
-    interests=NewsCategories.getInterestedCategories();
+      rejection=NewsCategories.getInterestedCategories();
    
-
-    return interests;
+  
+    return rejection;
   }
 
   void updateTags() async
   {
     final uR=UsersRepo();
+    var rejection=_getInterest();
 
-    var interest=_getInterest();
-
-    String result= await uR.addPreferenceTags(Identification().userID,interest);
-
+    String result= await uR.addForbiddenTags(Identification().userID,rejection );
     if (result.startsWith("failure"))
     {
       // ignore: use_build_context_synchronously
@@ -57,7 +58,7 @@ class _InterestsSelectionPageState extends State<InterestsSelectionPage> {
     {
       // ignore: use_build_context_synchronously
        Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => const Login()),///RejectionSelectionPage(rejection:NewsCategories.getUnselectedCategories())),
+                        MaterialPageRoute(builder: (context) => const Login()),
                       );
 
     }
@@ -91,6 +92,7 @@ class _InterestsSelectionPageState extends State<InterestsSelectionPage> {
               ),
             ),
             Expanded(
+              
               child: GridView.builder(
                 padding: const EdgeInsets.all(8.0),  // Reduced padding
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -101,6 +103,7 @@ class _InterestsSelectionPageState extends State<InterestsSelectionPage> {
                 ),
                 itemCount: NewsCategories.allCategories.length,
                 itemBuilder: (context, index) {
+
                   final category = NewsCategories.allCategories[index];
                   final isSelected = NewsCategories.userPreferences[category] ?? true;
                   
