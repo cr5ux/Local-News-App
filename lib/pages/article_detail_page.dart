@@ -1,10 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:localnewsapp/dataAccess/model/document.dart';
+import 'package:video_player/video_player.dart';
 
-class ArticleDetailPage extends StatelessWidget {
+class ArticleDetailPage extends StatefulWidget {
   final Document document;
 
   const ArticleDetailPage({super.key, required this.document});
+
+  @override
+  State<ArticleDetailPage> createState() => _ArticleDetailPageState();
+}
+
+class _ArticleDetailPageState extends State<ArticleDetailPage> {
+  late VideoPlayerController _controller;
+  bool _isVideo = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _isVideo = widget.document.documentType.toLowerCase() == 'video';
+    if (_isVideo && widget.document.documentPath.isNotEmpty) {
+      _controller = VideoPlayerController.networkUrl(
+        Uri.parse(widget.document.documentPath[0]),
+      )..initialize().then((_) {
+          // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+          setState(() {});
+        });
+    }
+  }
+
+  @override
+  void dispose() {
+    if (_isVideo) {
+      _controller.dispose();
+    }
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +52,38 @@ class ArticleDetailPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (document.documentPath.isNotEmpty)
+            if (_isVideo && widget.document.documentPath.isNotEmpty)
+              // Video Player
+              _controller.value.isInitialized
+                  ? AspectRatio(
+                      aspectRatio: _controller.value.aspectRatio,
+                      child: VideoPlayer(_controller),
+                    )
+                  : Container(
+                      // Placeholder while video is loading/initializing
+                      height: 250,
+                      color: Colors.grey[200],
+                      child: const Center(child: CircularProgressIndicator()),
+                    )
+            else if (!_isVideo && widget.document.documentPath.isNotEmpty)
+              // Image from documentPath
               Image.network(
-                document.documentPath[0],
+                'https://source.unsplash.com/random/800x400',
+                height: 250,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    height: 250,
+                    color: Colors.grey[200],
+                    child: const Center(child: Text('Image not available')),
+                  );
+                },
+              )
+            else if (!_isVideo && widget.document.documentPath.isEmpty)
+              // Placeholder image from Unsplash if no documentPath for non-video
+              Image.network(
+                'https://source.unsplash.com/random/800x400', // Placeholder Unsplash image
                 height: 250,
                 width: double.infinity,
                 fit: BoxFit.cover,
@@ -48,14 +108,14 @@ class ArticleDetailPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(
-                      document.documentType,
+                      widget.document.documentType,
                       style:
                           const TextStyle(fontSize: 12, color: Colors.black54),
                     ),
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    document.title,
+                    widget.document.title,
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -64,13 +124,13 @@ class ArticleDetailPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    document.registrationDate,
+                    widget.document.registrationDate,
                     style: const TextStyle(fontSize: 14, color: Colors.black54),
                   ),
                   const SizedBox(height: 24),
-                  if (document.content != null)
+                  if (widget.document.content != null)
                     Text(
-                      document.content!,
+                      widget.document.content!,
                       style: const TextStyle(
                         fontSize: 16,
                         height: 1.6,
@@ -80,7 +140,7 @@ class ArticleDetailPage extends StatelessWidget {
                   const SizedBox(height: 16),
                   Wrap(
                     spacing: 8,
-                    children: document.tags
+                    children: widget.document.tags
                         .map((tag) => Chip(
                               label: Text(tag),
                               backgroundColor: Colors.grey[200],
@@ -95,6 +155,20 @@ class ArticleDetailPage extends StatelessWidget {
           ],
         ),
       ),
+      floatingActionButton: _isVideo && _controller.value.isInitialized
+          ? FloatingActionButton(
+              onPressed: () {
+                setState(() {
+                  _controller.value.isPlaying
+                      ? _controller.pause()
+                      : _controller.play();
+                });
+              },
+              child: Icon(
+                _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+              ),
+            )
+          : null,
     );
   }
 }

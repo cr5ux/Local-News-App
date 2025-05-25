@@ -3,6 +3,10 @@ import 'package:localnewsapp/dataAccess/model/document.dart';
 import 'package:localnewsapp/pages/article_detail_page.dart';
 import 'package:localnewsapp/dataAccess/document_repo.dart'; // Import DocumentRepo
 import 'package:localnewsapp/dataAccess/model/ls.dart'; // Import LS model
+import 'package:localnewsapp/dataAccess/users_repo.dart'; // Import UsersRepo
+import 'package:localnewsapp/dataAccess/model/users.dart'; // Import Users model
+import 'package:video_thumbnail/video_thumbnail.dart'; // Import video_thumbnail
+import 'dart:typed_data'; // Import Uint8List
 
 class ArticleCard extends StatelessWidget {
   final Document document;
@@ -41,6 +45,18 @@ class ArticleCard extends StatelessWidget {
     }
   }
 
+  // Logic to get author name from UsersRepo
+  Future<String> _getAuthorName(String authorId) async {
+    final UsersRepo usersRepo = UsersRepo();
+    try {
+      final Users user = await usersRepo.getAUserByID(authorId);
+      return user.fullName ?? 'Unknown Author'; // Use fullName field
+    } catch (e) {
+      print('Error fetching author name for ${authorId}: $e');
+      return 'Unknown Author'; // Return a default name in case of error
+    }
+  }
+
   // Placeholder for time ago (using registrationDate for now)
   String _getTimeAgo() {
     try {
@@ -75,7 +91,6 @@ class ArticleCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: () async {
-        // Made onTap async
         // Add view before navigating
         if (document.documentID != null) {
           try {
@@ -93,6 +108,7 @@ class ArticleCard extends StatelessWidget {
 
         // Navigate to article detail page
         Navigator.push(
+          // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(
             builder: (context) => ArticleDetailPage(document: document),
@@ -109,25 +125,75 @@ class ArticleCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image Section with Category Overlay
+            // Image/Video Preview Section with Category Overlay
             if (document.documentPath.isNotEmpty)
               Stack(
                 children: [
-                  Image.network(
-                    document.documentPath[0],
-                    height: 200,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        height: 200,
-                        color: Colors.grey[200], // Placeholder background
-                        child: const Center(
-                            child: Text('Image not available',
-                                style: TextStyle(color: Colors.black54))),
-                      );
-                    },
-                  ),
+                  if (document.documentType.toLowerCase() == 'video')
+                    // Video thumbnail preview
+                    FutureBuilder<Uint8List?>(
+                      // Use FutureBuilder for async thumbnail generation
+                      future: VideoThumbnail.thumbnailData(
+                        video: document.documentPath[0], // Video URL
+                        imageFormat: ImageFormat.JPEG,
+                        quality: 50, // Adjust quality as needed
+                      ),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done &&
+                            snapshot.hasData) {
+                          return Image.memory(
+                            snapshot.data!,
+                            height: 200,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          );
+                        } else if (snapshot.hasError) {
+                          print(
+                              'Error generating video thumbnail: ${snapshot.error}');
+                          return Container(
+                            height: 200,
+                            color: Colors.grey[200],
+                            child: const Center(
+                              child: Icon(
+                                Icons.videocam_off,
+                                size: 48,
+                                color: Colors.black54,
+                              ),
+                            ),
+                          ); // Show error icon
+                        } else {
+                          return Container(
+                            height: 200,
+                            color: Colors.grey[200],
+                            child: const Center(
+                              child:
+                                  CircularProgressIndicator(), // Show loading indicator
+                            ),
+                          );
+                        }
+                      },
+                    )
+                  else
+                    // Document or other type image
+                    Image.network(
+                      document.documentPath[0],
+                      height: 200,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          height: 200,
+                          color: Colors.grey[200],
+                          child: const Center(
+                            child: Icon(
+                              Icons.article_outlined,
+                              size: 48,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   Positioned(
                     top: 12,
                     right: 12,
@@ -135,12 +201,11 @@ class ArticleCard extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(
-                            8), // Rounded corners for badge
+                        color: Colors.black.withOpacity(0.6),
+                        borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        document.documentType, // Use document type
+                        document.documentType,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 12,
@@ -149,6 +214,24 @@ class ArticleCard extends StatelessWidget {
                       ),
                     ),
                   ),
+                  // Add play button overlay for video type
+                  if (document.documentType.toLowerCase() == 'video')
+                    Positioned.fill(
+                      child: Center(
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.3),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.play_arrow,
+                            color: Colors.white,
+                            size: 32,
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               ),
 
@@ -199,13 +282,46 @@ class ArticleCard extends StatelessWidget {
                   Row(
                     children: [
                       // Source/Author (using authorID as placeholder for now)
-                      Text(
-                        document.authorID, // Use authorID as source
-                        style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.black54,
-                            fontWeight: FontWeight.w500),
-                      ),
+                      if (document.authorID != null)
+                        FutureBuilder<String>(
+                          future: _getAuthorName(
+                              document.authorID!), // Call async method
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                      strokeWidth:
+                                          2)); // Show loading indicator
+                            }
+                            if (snapshot.hasError) {
+                              return const Text('Error',
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.red)); // Show error
+                            }
+                            // Display author name when available
+                            return Text(
+                              snapshot.data ??
+                                  'Unknown Author', // Display name or default
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.black54,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            );
+                          },
+                        )
+                      else
+                        const Text('Unknown Author',
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.black54,
+                                fontWeight: FontWeight
+                                    .w500)), // Show default if authorID is null
+
                       const SizedBox(width: 12), // Spacing
 
                       // Read Time
