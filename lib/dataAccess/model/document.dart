@@ -84,6 +84,7 @@ class Document {
       "documentName": documentName,
       "title": title,
       "documentPath": documentPath,
+      "content": content,
       "language": language,
       "indexTermsAM": indexTermsAM,
       "indexTermsEN": indexTermsEN,

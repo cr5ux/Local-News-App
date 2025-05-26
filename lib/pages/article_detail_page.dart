@@ -6,6 +6,9 @@ import 'package:localnewsapp/dataAccess/comment_repo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:localnewsapp/dataAccess/document_repo.dart';
 import 'package:localnewsapp/dataAccess/model/ls.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:localnewsapp/constants/categories.dart'; // Import NewsCategories for categoryImages
+import 'package:intl/intl.dart'; // Import DateFormat
 
 class ArticleDetailPage extends StatefulWidget {
   final Document document;
@@ -95,6 +98,19 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
     }
   }
 
+  // Helper to get the category image URL based on the first tag
+  String? _getCategoryImageUrl() {
+    if (widget.document.tags.isNotEmpty) {
+      final firstTag = widget.document.tags[0];
+      return NewsCategories.categoryImages[firstTag];
+    }
+    return null; // Return null if no tags or tag not found in map
+  }
+
+  // Helper to format time ago (reused from ArticleCard)
+  // Keeping this method for now, but the display will use DateFormat
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,6 +142,7 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Media Display Section (Video Player or Image)
             if (_isVideo && widget.document.documentPath.isNotEmpty)
               // Video Player
               _controller.value.isInitialized
@@ -139,10 +156,51 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
                       color: Colors.grey[200],
                       child: const Center(child: CircularProgressIndicator()),
                     )
-            else
-              // Placeholder image from Unsplash if no documentPath for non-video
+            else if (widget.document.documentType.toLowerCase() == 'text' &&
+                widget.document.tags
+                    .isNotEmpty) // Handle text type with category image
+              Builder(
+                builder: (context) {
+                  final imageUrl = _getCategoryImageUrl();
+                  if (imageUrl != null) {
+                    return Image.network(
+                      imageUrl,
+                      height: 250,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          height: 250,
+                          color: Colors.grey[200],
+                          child: const Center(
+                            child: Icon(
+                              Icons.article_outlined,
+                              size: 48,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  }
+                  // Fallback if image URL is null (tag not found in map)
+                  return Container(
+                    height: 250,
+                    color: Colors.grey[200],
+                    child: const Center(
+                      child: Icon(
+                        Icons.article_outlined,
+                        size: 48,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  );
+                },
+              )
+            else if (widget.document.documentPath
+                .isNotEmpty) // Handle cases with documentPath but not video
               Image.network(
-                'https://source.unsplash.com/random/800x400', // Placeholder Unsplash image
+                widget.document.documentPath[0],
                 height: 250,
                 width: double.infinity,
                 fit: BoxFit.cover,
@@ -153,6 +211,19 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
                     child: const Center(child: Text('Image not available')),
                   );
                 },
+              )
+            else
+              // Default fallback if no video, no text with category image, and no documentPath
+              Container(
+                height: 250,
+                color: Colors.grey[200],
+                child: const Center(
+                  child: Icon(
+                    Icons.article_outlined,
+                    size: 48,
+                    color: Colors.black54,
+                  ),
+                ),
               ),
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -182,8 +253,10 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
                     ),
                   ),
                   const SizedBox(height: 8),
+                  // Display formatted date
                   Text(
-                    widget.document.registrationDate,
+                    DateFormat('EEE, MMM d, yyyy').format(
+                        DateTime.parse(widget.document.registrationDate)),
                     style: const TextStyle(fontSize: 14, color: Colors.black54),
                   ),
                   const SizedBox(height: 24),
@@ -298,6 +371,52 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
                 ],
               ),
             ),
+            // Divider after like and comment section
+            const Divider(height: 1),
+            // Read More Section
+            if (widget.document.documentPath.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Read More:',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    // Iterate through document paths and create links
+                    for (var path in widget.document.documentPath)
+                      GestureDetector(
+                        onTap: () async {
+                          final Uri url = Uri.parse(path.toString());
+                          if (!await launchUrl(url)) {
+                            // Handle error, perhaps show a snackbar
+                            // ignore: use_build_context_synchronously
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Could not launch $url')),
+                            );
+                          }
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4.0),
+                          child: Text(
+                            path.toString(), // Display the path as text
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.blue, // Link color
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
           ],
         ),
       ),

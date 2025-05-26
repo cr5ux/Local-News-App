@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../constants/categories.dart';
 import '../dataAccess/model/document.dart'; // Import Document model
 import '../dataAccess/document_repo.dart'; // Import DocumentRepo
+import 'package:firebase_auth/firebase_auth.dart'; // Add FirebaseAuth import
 
 class ArticleFormPage extends StatefulWidget {
   const ArticleFormPage({super.key});
@@ -45,7 +46,6 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
   }
 
   Future<void> _submitForm() async {
-    // Made async to await addDocument
     if (_formKey.currentState!.validate()) {
       if (_linkController.text.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -75,6 +75,16 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
         return;
       }
 
+      // Get current user ID
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('You must be logged in to submit an article')),
+        );
+        return;
+      }
+
       // Form is valid, process the submission
       // Create a Document object from form data
       final newDocument = Document(
@@ -90,7 +100,7 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
         indexTermsEN: [], // Placeholder
         registrationDate: DateTime.now().toIso8601String(), // Current date/time
         isActive: true, // Default to active
-        authorID: 'placeholder', // Placeholder - replace with actual user ID
+        authorID: currentUser.uid, // Use current user's ID
         tags: _selectedTags,
         documentType: _selectedDocumentType!, // Use selected document type
       );
@@ -100,7 +110,9 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
         await _documentRepo.addDocument(newDocument);
 
         // Provide user feedback
-        
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Article submitted successfully')),
+        );
 
         // Clear the form
         _formKey.currentState!.reset();
@@ -114,7 +126,9 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
         });
       } catch (e) {
         // Handle submission errors
-        // Log error
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error submitting article: $e')),
+        );
       }
     }
   }
@@ -130,16 +144,6 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-        elevation: 3, // Increased drop shadow
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(10),
-          ),
-        ),
-      ),
       body: Container(
         color: Colors.white,
         child: Center(
