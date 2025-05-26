@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:localnewsapp/widgets/category_card.dart';
-import 'package:localnewsapp/dataAccess/document_tags.dart';
+import 'package:localnewsapp/constants/categories.dart'; // Import NewsCategories
 import 'package:localnewsapp/pages/category_article_page.dart';
 
 class Explore extends StatelessWidget {
@@ -63,7 +63,8 @@ class Explore extends StatelessWidget {
                     // Calculate category counts
                     Map<String, int> categoryCounts = {};
                     // Initialize counts for all categories to 0
-                    for (var category in DocumentTags.types) {
+                    for (var category in NewsCategories.allCategories) {
+                      // Use NewsCategories
                       categoryCounts[category] = 0;
                     }
 
@@ -74,7 +75,8 @@ class Explore extends StatelessWidget {
                           data['tags'] ?? []; // Use 'tags' field
 
                       for (var tag in tags) {
-                        if (DocumentTags.types.contains(tag)) {
+                        if (NewsCategories.allCategories.contains(tag)) {
+                          // Use NewsCategories
                           categoryCounts[tag] = (categoryCounts[tag] ?? 0) + 1;
                         }
                       }
@@ -87,10 +89,12 @@ class Explore extends StatelessWidget {
                       mainAxisSpacing: 16,
                       crossAxisSpacing: 16,
                       childAspectRatio: 1.5,
-                      children: DocumentTags.types.map((category) {
+                      children: NewsCategories.allCategories.map((category) {
                         return CategoryCard(
                           categoryName: category,
                           articleCount: categoryCounts[category] ?? 0,
+                          backgroundImage:
+                              NewsCategories.categoryImages[category],
                           onTap: () {
                             Navigator.push(
                               context,

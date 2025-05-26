@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:localnewsapp/dataAccess/model/document.dart';
 import 'package:localnewsapp/widgets/article_card.dart';
 import 'package:localnewsapp/dataAccess/document_repo.dart';

@@ -48,7 +48,6 @@ class ArticleCard extends StatelessWidget {
   // Logic to get author name from UsersRepo
   Future<String> _getAuthorName(String authorId) async {
     final UsersRepo usersRepo = UsersRepo();
-    print(authorId);
     try {
       final Users user = await usersRepo.getAUserByID(authorId);
       return user.fullName; // Use fullName field
@@ -110,7 +109,6 @@ class ArticleCard extends StatelessWidget {
             documentRepo.addAView(document.documentID!, view);
             // Optional: Log success within the async operation if needed
           } catch (e) {
-            print('Error adding view asynchronously: $e');
             // Handle error appropriately, but don't block navigation
           }
         }
