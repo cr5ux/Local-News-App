@@ -4,12 +4,14 @@ class CategoryCard extends StatelessWidget {
   final String categoryName;
   final int articleCount;
   final VoidCallback onTap;
+  final String? backgroundImage;
 
   const CategoryCard({
     super.key,
     required this.categoryName,
     required this.articleCount,
     required this.onTap,
+    this.backgroundImage,
   });
 
   @override
@@ -20,6 +22,16 @@ class CategoryCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.black87,
           borderRadius: BorderRadius.circular(12),
+          image: backgroundImage != null
+              ? DecorationImage(
+                  image: NetworkImage(backgroundImage!),
+                  fit: BoxFit.cover,
+                  colorFilter: ColorFilter.mode(
+                    Colors.black.withAlpha(100),
+                    BlendMode.darken,
+                  ),
+                )
+              : null,
         ),
         child: Padding(
           padding: const EdgeInsets.all(16.0),

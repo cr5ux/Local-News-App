@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:localnewsapp/dataAccess/model/document.dart';
 import 'package:localnewsapp/widgets/article_card.dart';
+import 'package:localnewsapp/dataAccess/document_repo.dart';
 
 class CategoryArticlePage extends StatelessWidget {
   final String categoryName;
@@ -17,32 +17,27 @@ class CategoryArticlePage extends StatelessWidget {
         foregroundColor: Colors.black,
         elevation: 1,
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('Document')
-            .where('documentType', isEqualTo: categoryName)
-            .where('isActive', isEqualTo: true)
-            .snapshots(),
+      body: FutureBuilder<List<Document>>(
+        future: DocumentRepo().getDocumentByTags([categoryName]),
         builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
           if (snapshot.hasError) {
             return Center(
                 child: Text('Error loading articles: ${snapshot.error}'));
           }
 
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return Center(child: Text('No articles found for $categoryName'));
           }
 
+          final articles = snapshot.data!;
           return ListView.builder(
-            itemCount: snapshot.data!.docs.length,
+            itemCount: articles.length,
             itemBuilder: (context, index) {
-              final doc = snapshot.data!.docs[index];
-              final document =
-                  Document.fromMap(doc.data() as Map<String, dynamic>);
+              final document = articles[index];
               return ArticleCard(document: document);
             },
           );

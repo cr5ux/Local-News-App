@@ -7,6 +7,8 @@ import 'package:localnewsapp/dataAccess/users_repo.dart'; // Import UsersRepo
 import 'package:localnewsapp/dataAccess/model/users.dart'; // Import Users model
 import 'package:video_thumbnail/video_thumbnail.dart'; // Import video_thumbnail
 import 'dart:typed_data'; // Import Uint8List
+import 'package:firebase_auth/firebase_auth.dart'; // Import FirebaseAuth
+import 'package:localnewsapp/constants/categories.dart'; // Import NewsCategories for categoryImages
 
 class ArticleCard extends StatelessWidget {
   final Document document;
@@ -25,6 +27,7 @@ class ArticleCard extends StatelessWidget {
 
   // Placeholder for estimating read time (e.g., 200 words per minute)
   String _estimateReadTime() {
+    // print(document.content); // Keep this for debugging content
     if (document.content == null || document.content!.isEmpty) {
       return '';
     }
@@ -47,10 +50,19 @@ class ArticleCard extends StatelessWidget {
 
   // Logic to get author name from UsersRepo
   Future<String> _getAuthorName(String authorId) async {
+    if (authorId.isEmpty) {
+      return 'Unknown Author';
+    }
     final UsersRepo usersRepo = UsersRepo();
     try {
-      final Users user = await usersRepo.getAUserByID(authorId);
-      return user.fullName; // Use fullName field
+      // Use getAUserByuniqueID instead of getAUserByID
+      final Users? user = await usersRepo.getAUserByuniqueID(authorId);
+
+      if (user != null && user.fullName.isNotEmpty) {
+        return user.fullName;
+      } else {
+        return 'Unknown Author'; // Return a default name if user not found or fullName is empty
+      }
     } catch (e) {
       return 'Unknown Author'; // Return a default name in case of error
     }
@@ -83,6 +95,15 @@ class ArticleCard extends StatelessWidget {
     }
   }
 
+  // Helper to get the category image URL based on the first tag
+  String? _getCategoryImageUrl() {
+    if (document.tags.isNotEmpty) {
+      final firstTag = document.tags[0];
+      return NewsCategories.categoryImages[firstTag];
+    }
+    return null; // Return null if no tags or tag not found in map
+  }
+
   @override
   Widget build(BuildContext context) {
     final DocumentRepo documentRepo =
@@ -90,21 +111,6 @@ class ArticleCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: () async {
-        // Add view before navigating
-        if (document.documentID != null) {
-          try {
-            // Placeholder user ID - replace with actual user ID
-            // You would typically get the authenticated user's ID here
-            const String currentUserId = 'placeholder_user_id';
-            final LS view = LS(
-                userID: currentUserId, date: DateTime.now().toIso8601String());
-            await documentRepo.addAView(document.documentID!, view);
-            // Optional: Log success
-          } catch (e) {
-            // Optionally show a snackbar or other feedback for the user
-          }
-        }
-
         // Navigate to article detail page
         Navigator.push(
           // ignore: use_build_context_synchronously
@@ -113,6 +119,29 @@ class ArticleCard extends StatelessWidget {
             builder: (context) => ArticleDetailPage(document: document),
           ),
         );
+        // Add view after navigating (fire and forget)
+        if (document.documentID != null) {
+          try {
+            // Get current user ID
+            final currentUser = FirebaseAuth.instance.currentUser;
+            if (currentUser != null) {
+              final String currentUserId = currentUser.uid;
+              final LS view = LS(
+                  userID: currentUserId,
+                  date: DateTime.now().toIso8601String());
+              // No await here, so it doesn't block navigation
+              documentRepo.addAView(document.documentID!, view);
+              // Optional: Log success within the async operation if needed
+            } else {
+              // User is not logged in, perhaps show a message or just don't record the view
+              // ScaffoldMessenger.of(context).showSnackBar(
+              //   const SnackBar(content: Text('Log in to record your view')),
+              // );
+            }
+          } catch (e) {
+            // Handle error appropriately, but don't block navigation// Log the error
+          }
+        }
       },
       child: Card(
         elevation: 4,
@@ -125,7 +154,11 @@ class ArticleCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Image/Video Preview Section with Category Overlay
-            if (document.documentPath.isNotEmpty)
+            if (document.documentPath.isNotEmpty ||
+                (document.documentType.toLowerCase() == 'text' &&
+                    document.tags.isNotEmpty &&
+                    _getCategoryImageUrl() !=
+                        null)) // Check for text type with category image
               Stack(
                 children: [
                   if (document.documentType.toLowerCase() == 'video')
@@ -170,10 +203,53 @@ class ArticleCard extends StatelessWidget {
                         }
                       },
                     )
+                  else if (document.documentType.toLowerCase() == 'text' &&
+                      document.tags
+                          .isNotEmpty) // Handle text type with category image
+                    Builder(
+                      builder: (context) {
+                        final imageUrl = _getCategoryImageUrl();
+                        if (imageUrl != null) {
+                          return Image.network(
+                            imageUrl,
+                            height: 200,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                height: 200,
+                                color: Colors.grey[200],
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.article_outlined,
+                                    size: 48,
+                                    color: Colors.black54,
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        }
+                        // Fallback if image URL is null (tag not found in map)
+                        return Container(
+                          height: 200,
+                          color: Colors.grey[200],
+                          child: const Center(
+                            child: Icon(
+                              Icons.article_outlined,
+                              size: 48,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        );
+                      },
+                    )
                   else
-                    // Document or other type image
+                    // Document or other type image fallback
                     Image.network(
-                      document.documentPath[0],
+                      document.documentPath.isNotEmpty
+                          ? document.documentPath[0]
+                          : 'https://source.unsplash.com/random/800x400', // Use documentPath if available, otherwise fallback
                       height: 200,
                       width: double.infinity,
                       fit: BoxFit.cover,
@@ -202,7 +278,9 @@ class ArticleCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        document.documentType,
+                        document.tags.isNotEmpty
+                            ? document.tags[0]
+                            : document.documentType,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 12,
@@ -279,7 +357,8 @@ class ArticleCard extends StatelessWidget {
                   Row(
                     children: [
                       // Source/Author (using authorID as placeholder for now)
-                      if (document.authorID == "")
+                      if (document.authorID != null &&
+                          document.authorID.isNotEmpty)
                         FutureBuilder<String>(
                           future: _getAuthorName(
                               document.authorID), // Call async method
@@ -380,8 +459,11 @@ class ArticleCard extends StatelessWidget {
                       const SizedBox(width: 12), // Spacing
 
                       // Date
-                      const Icon(Icons.calendar_today,
-                          size: 14, color: Colors.black54), // Calendar icon
+                      const Icon(
+                        Icons.calendar_today,
+                        size: 14,
+                        color: Colors.black54,
+                      ), // Calendar icon
                       const SizedBox(width: 4), // Spacing
                       Expanded(
                         child: Text(
@@ -390,7 +472,7 @@ class ArticleCard extends StatelessWidget {
                             fontSize: 12,
                             color: Colors.black54,
                           ),
-                          textAlign: TextAlign.end,
+                          // Removed textAlign: TextAlign.end,
                         ),
                       ),
                     ],
