@@ -135,7 +135,7 @@ class  SignupState extends State <Signup> {
           setState(() {
             isEnable=true;
           });
-           ScaffoldMessenger.of(context).showSnackBar( const SnackBar(content: Text("Password and confirm password must be the same")));
+           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Password and confirm password must be the same")));
       }
       else
       {
