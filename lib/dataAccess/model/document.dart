@@ -67,6 +67,7 @@ class Document {
         documentName: data?['documentName'],
         title: data?['title'],
         documentPath: data?['documentPath'],
+        content: data?['content'],
         language: data?['language'],
         indexTermsAM: data?['indexTermsAM'],
         indexTermsEN: data?['indexTermsEN'],

@@ -4,169 +4,110 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:localnewsapp/dataAccess/model/users.dart';
 // import 'package:localnewsapp/dataAccess/dto/login_dto.dart';
 
-class UsersRepo
-{
+class UsersRepo {
   final db = FirebaseFirestore.instance;
 
-
 //Read
-Future<List<Users>> getAllUsers() async
-  {
-        List<Users> users=[];
-        try{
-            final userRef= db.collection("Users").withConverter(fromFirestore: Users.fromFirestore, toFirestore: (Users user, _)=>user.toFirestore());  
-            
-            await userRef.get().then(
-                (userSnap)
-                {
-                  
-            
-                  for (var snap in userSnap.docs)
-                  {
-                    users.add(snap.data());
-                  }
-                }
-            
-              );
-            }
-        catch(e)
-        {
-            rethrow;
+  Future<List<Users>> getAllUsers() async {
+    List<Users> users = [];
+    try {
+      final userRef = db.collection("Users").withConverter(
+          fromFirestore: Users.fromFirestore,
+          toFirestore: (Users user, _) => user.toFirestore());
+
+      await userRef.get().then((userSnap) {
+        for (var snap in userSnap.docs) {
+          users.add(snap.data());
         }
+      });
+    } catch (e) {
+      rethrow;
+    }
 
-        return users;
-  
+    return users;
   }
- 
-Future<Users> getAUserByID(userID) async
- {
-    
+
+  Future<Users> getAUserByID(userID) async {
     // ignore: prefer_typing_uninitialized_variables
     var user;
-      try{
-          final userRef= db.collection("Users").doc(userID).withConverter(fromFirestore: Users.fromFirestore, toFirestore: (Users user, _)=>user.toFirestore());
-      
-          await userRef.get().then(
-              (userSnap)
-              {
-                
-                user=userSnap.data();
-              }
-          
-            );
+    try {
+      final userRef = db.collection("Users").doc(userID).withConverter(
+          fromFirestore: Users.fromFirestore,
+          toFirestore: (Users user, _) => user.toFirestore());
 
-          }
-      catch(e)
-      {
-          rethrow;   
-      }
+      await userRef.get().then((userSnap) {
+        user = userSnap.data();
+      });
+    } catch (e) {
+      rethrow;
+    }
 
+    return user;
+  }
 
-      return user;
-
-
-
-} 
-
-
-Future<List<dynamic>?> getUserPreferenceTags(userID) async
- {
-
+  Future<List<dynamic>?> getUserPreferenceTags(userID) async {
     // ignore: prefer_typing_uninitialized_variables
     var user;
-   
-      try{
-          final userRef= db.collection("Users").where(userID).withConverter(fromFirestore: Users.fromFirestore, toFirestore: (Users user, _)=>user.toFirestore());
-      
-          await userRef.get().then(
-              (userSnap)
-              {
-                for (var snap in userSnap.docs)
-                {
-                  user=snap.data();
-                 
-                  
-                }
-              }
-          
-            );
 
-          }
-      catch(e)
-      {
-          rethrow;   
-      }
-      return user.preferenceTags;
+    try {
+      final userRef = db.collection("Users").where(userID).withConverter(
+          fromFirestore: Users.fromFirestore,
+          toFirestore: (Users user, _) => user.toFirestore());
 
+      await userRef.get().then((userSnap) {
+        for (var snap in userSnap.docs) {
+          user = snap.data();
+        }
+      });
+    } catch (e) {
+      rethrow;
+    }
+    return user.preferenceTags;
+  }
 
-
-} 
-
-Future<List<dynamic>?> getUserForbiddenTags(userID) async
- {
-
+  Future<List<dynamic>?> getUserForbiddenTags(userID) async {
     // ignore: prefer_typing_uninitialized_variables
     var user;
-   
-      try{
-          final userRef= db.collection("Users").where(userID).withConverter(fromFirestore: Users.fromFirestore, toFirestore: (Users user, _)=>user.toFirestore());
-      
-          await userRef.get().then(
-              (userSnap)
-              {
-                for (var snap in userSnap.docs)
-                {
-                  user=snap.data();
-                }
-              }
-          
-            );
 
-          }
-      catch(e)
-      {
-          rethrow;   
-      }
+    try {
+      final userRef = db.collection("Users").where(userID).withConverter(
+          fromFirestore: Users.fromFirestore,
+          toFirestore: (Users user, _) => user.toFirestore());
 
-      return user.forbiddenTags;
+      await userRef.get().then((userSnap) {
+        for (var snap in userSnap.docs) {
+          user = snap.data();
+        }
+      });
+    } catch (e) {
+      rethrow;
+    }
 
-} 
+    return user.forbiddenTags;
+  }
 
-Future<Users> getAUserByuniqueID(uniqueID) async
- {
-    
+  Future<Users> getAUserByuniqueID(uniqueID) async {
     // ignore: prefer_typing_uninitialized_variables
     var user;
-      try{
-          final userRef= db.collection("Users").where("uniqueID",isEqualTo: uniqueID).withConverter(fromFirestore: Users.fromFirestore, toFirestore: (Users user, _)=>user.toFirestore());
-      
-          await userRef.get().then(
-              (userSnap)
-              {
-                  for (var snap in userSnap.docs)
-                  {
-                    user=snap.data();
-                    
-                  }
-                
-              }
-          
-            );
+    try {
+      final userRef = db
+          .collection("Users")
+          .where("uniqueID", isEqualTo: uniqueID)
+          .withConverter(
+              fromFirestore: Users.fromFirestore,
+              toFirestore: (Users user, _) => user.toFirestore());
 
-          }
-      catch(e)
-      {
-          rethrow;   
-      }
+      await userRef.get().then((userSnap) {
+        for (var snap in userSnap.docs) {
+          user = snap.data();
+        }
+      });
+    } catch (e) {
+      rethrow;
+    }
 
-
-      return user;
-
-
-
-} 
-
-
+    return user;
+  }
 
 /*
 Future<Users> getAUserByEmail(email) async
@@ -319,168 +260,109 @@ Future<LoginDTO> getAUserLoginByPhonenumber(phonenumber) async
 
 */
 
-
 //Add
 
-Future<String> addUser(user) async
- {
-    
-      String message="";
-      try{
-          final userRef= db.collection("Users").withConverter(fromFirestore: Users.fromFirestore, toFirestore: (Users user, _)=>user.toFirestore());
-      
-          var m=await userRef.add(user);
-          
-          message= "$m registration sucessfull";
+  Future<String> addUser(user) async {
+    String message = "";
+    try {
+      final userRef = db.collection("Users").withConverter(
+          fromFirestore: Users.fromFirestore,
+          toFirestore: (Users user, _) => user.toFirestore());
 
-          return message;
+      var m = await userRef.add(user);
 
-          }
-      catch(e)
-      {
-          
-          return "failure $e.toString()";
-        
-      }
+      message = "$m registration sucessfull";
 
-} 
+      return message;
+    } catch (e) {
+      return "failure $e.toString()";
+    }
+  }
 
-Future<String> addPreferenceTags(userID,preferenceTags) async
- {
-      String message="";
-      try{
+  Future<String> addPreferenceTags(userID, preferenceTags) async {
+    String message = "";
+    try {
+      final userRef = db.collection("Users").doc(userID).withConverter(
+          fromFirestore: Users.fromFirestore,
+          toFirestore: (Users user, _) => user.toFirestore());
 
-          final userRef= db.collection("Users").doc(userID).withConverter(fromFirestore: Users.fromFirestore, toFirestore: (Users user, _)=>user.toFirestore());
-      
-          await userRef.update({"preferenceTags":preferenceTags});
-          
-          message= "registration sucessfull";
+      await userRef.update({"preferenceTags": preferenceTags});
 
-          return message;
+      message = "registration sucessfull";
 
-          }
-      catch(e)
-      {
-          
-          rethrow; 
-        
-      }
+      return message;
+    } catch (e) {
+      rethrow;
+    }
+  }
 
-} 
+  Future<String> addForbiddenTags(userID, forbiddenTags) async {
+    String message = "";
+    try {
+      final userRef = db.collection("Users").doc(userID).withConverter(
+          fromFirestore: Users.fromFirestore,
+          toFirestore: (Users user, _) => user.toFirestore());
 
-Future<String> addForbiddenTags(userID,forbiddenTags) async
- {
-  
-    
-      String message="";
-      try{
+      await userRef.update({"forbiddenTags": forbiddenTags});
 
-          final userRef= db.collection("Users").doc(userID).withConverter(fromFirestore: Users.fromFirestore, toFirestore: (Users user, _)=>user.toFirestore());
-      
-          await userRef.update({"forbiddenTags":forbiddenTags});
-          
-          message= "registration sucessful";
+      message = "registration sucessful";
 
-          return message;
-
-          }
-      catch(e)
-      {
-          
-          rethrow; 
-        
-      }
-
-} 
-
-
-
-
-
-
+      return message;
+    } catch (e) {
+      rethrow;
+    }
+  }
 
 //update
 
+  Future<String> updateUserInfo(Users user) async {
+    String message = "";
+    try {
+      final userRef = db.collection("Users").doc(user.userID).withConverter(
+          fromFirestore: Users.fromFirestore,
+          toFirestore: (Users user, _) => user.toFirestore());
 
-Future<String> updateUserInfo(Users user) async
- {
-  
-    
-      String message="";
-      try{
+      await userRef.update({"fullName": user.fullName});
 
+      message = "registration sucessful";
 
-          final userRef= db.collection("Users").doc(user.userID).withConverter(fromFirestore: Users.fromFirestore, toFirestore: (Users user, _)=>user.toFirestore());
-      
-          await userRef.update({"fullName": user.fullName});
-          
-          message= "registration sucessful";
+      return message;
+    } catch (e) {
+      rethrow;
+    }
+  }
 
-          return message;
+  Future<String> updatePreferenceTags(userID, preferenceTags) async {
+    String message = "";
+    try {
+      final userRef = db.collection("Users").doc(userID).withConverter(
+          fromFirestore: Users.fromFirestore,
+          toFirestore: (Users user, _) => user.toFirestore());
 
-          }
-      catch(e)
-      {
-          
-          rethrow; 
-        
-      }
+      await userRef.update({"preferenceTags": preferenceTags});
 
-}
+      message = "update sucessfull";
 
-Future<String> updatePreferenceTags(userID,preferenceTags) async
- {
-      
-      
-      String message="";
-      try{
+      return message;
+    } catch (e) {
+      rethrow;
+    }
+  }
 
+  Future<String> updateForbiddenTags(userID, forbiddenTags) async {
+    String message = "";
+    try {
+      final userRef = db.collection("Users").doc(userID).withConverter(
+          fromFirestore: Users.fromFirestore,
+          toFirestore: (Users user, _) => user.toFirestore());
 
-          final userRef= db.collection("Users").doc(userID).withConverter(fromFirestore: Users.fromFirestore, toFirestore: (Users user, _)=>user.toFirestore());
-      
-          await userRef.update({"preferenceTags":preferenceTags});
-          
-          message= "update sucessfull";
+      await userRef.update({"forbiddenTags": forbiddenTags});
 
-          return message;
+      message = "udate sucessful";
 
-          }
-      catch(e)
-      {
-          
-          rethrow; 
-        
-      }
-
-} 
-
-Future<String> updateForbiddenTags(userID,forbiddenTags) async
- {
-  
-     
-    
-      String message="";
-      try{
-
-
-          final userRef= db.collection("Users").doc(userID).withConverter(fromFirestore: Users.fromFirestore, toFirestore: (Users user, _)=>user.toFirestore());
-      
-          await userRef.update({"forbiddenTags": forbiddenTags});
-          
-          message= "udate sucessful";
-
-          return message;
-
-          }
-      catch(e)
-      {
-          
-          rethrow; 
-        
-      }
-
-} 
-
-
-
+      return message;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

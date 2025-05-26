@@ -48,6 +48,7 @@ class ArticleCard extends StatelessWidget {
   // Logic to get author name from UsersRepo
   Future<String> _getAuthorName(String authorId) async {
     final UsersRepo usersRepo = UsersRepo();
+    print(authorId);
     try {
       final Users user = await usersRepo.getAUserByID(authorId);
       return user.fullName; // Use fullName field
@@ -90,21 +91,6 @@ class ArticleCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: () async {
-        // Add view before navigating
-        if (document.documentID != null) {
-          try {
-            // Placeholder user ID - replace with actual user ID
-            // You would typically get the authenticated user's ID here
-            const String currentUserId = 'placeholder_user_id';
-            final LS view = LS(
-                userID: currentUserId, date: DateTime.now().toIso8601String());
-            await documentRepo.addAView(document.documentID!, view);
-            // Optional: Log success
-          } catch (e) {
-            // Optionally show a snackbar or other feedback for the user
-          }
-        }
-
         // Navigate to article detail page
         Navigator.push(
           // ignore: use_build_context_synchronously
@@ -113,6 +99,21 @@ class ArticleCard extends StatelessWidget {
             builder: (context) => ArticleDetailPage(document: document),
           ),
         );
+        // Add view after navigating (fire and forget)
+        if (document.documentID != null) {
+          try {
+            const String currentUserId =
+                'placeholder_user_id'; // Replace with actual user ID
+            final LS view = LS(
+                userID: currentUserId, date: DateTime.now().toIso8601String());
+            // No await here, so it doesn't block navigation
+            documentRepo.addAView(document.documentID!, view);
+            // Optional: Log success within the async operation if needed
+          } catch (e) {
+            print('Error adding view asynchronously: $e');
+            // Handle error appropriately, but don't block navigation
+          }
+        }
       },
       child: Card(
         elevation: 4,
@@ -202,7 +203,9 @@ class ArticleCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        document.documentType,
+                        document.tags.isNotEmpty
+                            ? document.tags[0]
+                            : document.documentType,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 12,
@@ -279,7 +282,7 @@ class ArticleCard extends StatelessWidget {
                   Row(
                     children: [
                       // Source/Author (using authorID as placeholder for now)
-                      if (document.authorID == "")
+                      if (document.authorID != "")
                         FutureBuilder<String>(
                           future: _getAuthorName(
                               document.authorID), // Call async method

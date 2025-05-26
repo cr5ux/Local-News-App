@@ -62,12 +62,22 @@ class Explore extends StatelessWidget {
 
                     // Calculate category counts
                     Map<String, int> categoryCounts = {};
+                    // Initialize counts for all categories to 0
+                    for (var category in DocumentTags.types) {
+                      categoryCounts[category] = 0;
+                    }
+
+                    // Count documents based on tags matching categories
                     for (var doc in snapshot.data!.docs) {
-                      String category = (doc.data()
-                              as Map<String, dynamic>)['documentType'] ??
-                          'Uncategorized';
-                      categoryCounts[category] =
-                          (categoryCounts[category] ?? 0) + 1;
+                      final data = doc.data() as Map<String, dynamic>;
+                      final List<dynamic> tags =
+                          data['tags'] ?? []; // Use 'tags' field
+
+                      for (var tag in tags) {
+                        if (DocumentTags.types.contains(tag)) {
+                          categoryCounts[tag] = (categoryCounts[tag] ?? 0) + 1;
+                        }
+                      }
                     }
 
                     return GridView.count(
@@ -95,7 +105,6 @@ class Explore extends StatelessWidget {
                     );
                   },
                 ),
-                
               ],
             ),
           ),
@@ -103,5 +112,4 @@ class Explore extends StatelessWidget {
       ),
     );
   }
-
 }
