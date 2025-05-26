@@ -110,6 +110,7 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
         await _documentRepo.addDocument(newDocument);
 
         // Provide user feedback
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Article submitted successfully')),
         );
@@ -126,9 +127,10 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
         });
       } catch (e) {
         // Handle submission errors
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error submitting article: $e')),
-        );
+        ); 
       }
     }
   }

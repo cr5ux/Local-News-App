@@ -56,9 +56,9 @@ class ArticleCard extends StatelessWidget {
     final UsersRepo usersRepo = UsersRepo();
     try {
       // Use getAUserByuniqueID instead of getAUserByID
-      final Users? user = await usersRepo.getAUserByuniqueID(authorId);
+      final Users user = await usersRepo.getAUserByuniqueID(authorId);
 
-      if (user != null && user.fullName.isNotEmpty) {
+      if (user.fullName.isNotEmpty) {
         return user.fullName;
       } else {
         return 'Unknown Author'; // Return a default name if user not found or fullName is empty
@@ -357,8 +357,7 @@ class ArticleCard extends StatelessWidget {
                   Row(
                     children: [
                       // Source/Author (using authorID as placeholder for now)
-                      if (document.authorID != null &&
-                          document.authorID.isNotEmpty)
+                      if (document.authorID.isNotEmpty)
                         FutureBuilder<String>(
                           future: _getAuthorName(
                               document.authorID), // Call async method
@@ -395,8 +394,7 @@ class ArticleCard extends StatelessWidget {
                             style: TextStyle(
                                 fontSize: 12,
                                 color: Colors.black54,
-                                fontWeight: FontWeight
-                                    .w500)), // Show default if authorID is null
+                                fontWeight: FontWeight.w500)),
 
                       const SizedBox(width: 12), // Spacing
 
@@ -445,6 +443,7 @@ class ArticleCard extends StatelessWidget {
                               style: const TextStyle(
                                 fontSize: 12,
                                 color: Colors.black54,
+                                fontWeight: FontWeight.w500,
                               ),
                             );
                           },
@@ -453,8 +452,8 @@ class ArticleCard extends StatelessWidget {
                         const Text('N/A',
                             style: TextStyle(
                                 fontSize: 12,
-                                color: Colors
-                                    .black54)), // Show N/A if documentID is null
+                                color: Colors.black54,
+                                fontWeight: FontWeight.w500)),
 
                       const SizedBox(width: 12), // Spacing
 
