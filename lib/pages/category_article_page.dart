@@ -18,7 +18,7 @@ class CategoryArticlePage extends StatelessWidget {
         elevation: 1,
       ),
       body: FutureBuilder<List<Document>>(
-        future: DocumentRepo().getDocumentByTags([categoryName]),
+        future: DocumentRepo().getDocumentByTags(categoryName),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());

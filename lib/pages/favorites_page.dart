@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:localnewsapp/dataAccess/document_repo.dart';
 import 'package:localnewsapp/dataAccess/model/document.dart';
 
 class FavoritesPage extends StatefulWidget {
@@ -11,7 +10,6 @@ class FavoritesPage extends StatefulWidget {
 
 class _FavoritesPageState extends State<FavoritesPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final DocumentRepo _documentRepo = DocumentRepo();
   List<Document> _favoriteArticles = [];
   List<Document> _favoriteVideos = [];
   bool _isLoading = true;
@@ -26,7 +24,6 @@ class _FavoritesPageState extends State<FavoritesPage> with SingleTickerProvider
   Future<void> _loadFavorites() async {
     setState(() => _isLoading = true);
     try {
-      // TODO: Implement actual favorites loading logic
       // For now, we'll just simulate empty states
       _favoriteArticles = [];
       _favoriteVideos = [];

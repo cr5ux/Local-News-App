@@ -2,37 +2,133 @@ import 'package:flutter/material.dart';
 import 'package:localnewsapp/dataAccess/document_repo.dart';
 import 'package:localnewsapp/dataAccess/model/document.dart';
 import 'package:localnewsapp/widgets/article_card.dart';
+import 'package:localnewsapp/constants/categories.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
+  const Home({super.key});
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
   final DocumentRepo _documentRepo = DocumentRepo();
+  String selectedFilter = 'Recent';
+  late Future<List<Document>> _articlesFuture;
 
-  Home({super.key});
+  @override
+  void initState() {
+    super.initState();
+    _articlesFuture = _documentRepo.getAllDocuments();
+  }
+
+  void _onFilterSelected(String filter) {
+    setState(() {
+      selectedFilter = filter;
+      if (filter == 'Recent') {
+        _articlesFuture = _documentRepo.getAllDocuments();
+      } else {
+        _articlesFuture = _documentRepo.getDocumentByTags(filter);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Document>>(
-      future: _documentRepo.getAllDocuments(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
+    final List<String> filters = ['Recent', ...NewsCategories.allCategories];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              RichText(
+                text: const TextSpan(
+                  style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
+                  children: [
+                    TextSpan(text: 'Welcome back, '),
+                    TextSpan(
+                        text: 'Reader',
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Discover stories that matter to you',
+                style: TextStyle(fontSize: 15, color: Colors.black54),
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                height: 40,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: filters.length,
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(width: 8),
+                  itemBuilder: (context, index) {
+                    final filter = filters[index];
+                    final isSelected = selectedFilter == filter;
+                    return ChoiceChip(
+                      label: Text(filter),
+                      selected: isSelected,
+                      onSelected: (_) => _onFilterSelected(filter),
+                      selectedColor: Colors.black,
+                      labelStyle: TextStyle(
+                        color: isSelected ? Colors.white : Colors.black87,
+                        fontWeight:
+                            isSelected ? FontWeight.bold : FontWeight.normal,
+                      ),
+                      backgroundColor: Colors.grey.shade200,
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
+        Expanded(
+          child: FutureBuilder<List<Document>>(
+            future: _articlesFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-        if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        }
+              if (snapshot.hasError) {
+                return Center(child: Text('Error: [31m${snapshot.error}[0m'));
+              }
 
-        if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text('No articles available'));
-        }
+              if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return const Center(child: Text('No articles available'));
+              }
 
-        return ListView.builder(
-          padding: const EdgeInsets.only(top: 16),
-          itemCount: snapshot.data!.length,
-          itemBuilder: (context, index) {
-            return ArticleCard(document: snapshot.data![index]);
-          },
-        );
-      },
+              final articles = snapshot.data!;
+              // If 'Recent', sort by registrationDate descending
+              final sortedArticles = selectedFilter == 'Recent'
+                  ? (List<Document>.from(articles)
+                    ..sort((a, b) =>
+                        b.registrationDate.compareTo(a.registrationDate)))
+                  : articles;
+
+              return ListView.builder(
+                padding: const EdgeInsets.only(top: 16),
+                itemCount: sortedArticles.length,
+                itemBuilder: (context, index) {
+                  return ArticleCard(document: sortedArticles[index]);
+                },
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

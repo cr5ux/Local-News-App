@@ -324,6 +324,7 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
                         } catch (e) {
                           // Show error feedback
                           if (mounted) {
+                            // ignore: use_build_context_synchronously
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text('Failed to update like status'),

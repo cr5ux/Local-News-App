@@ -103,14 +103,14 @@ class HomeContainer extends StatelessWidget {
               body: TabBarView(
               children: Identification().isAdmin?
                 [
-                  Home(),
+                  const Home(),
                   const Explore(),
                   const Add(),
                   const Profile(),
                 
                 ]:
                 [
-                  Home(),
+                  const Home(),
                   const Explore(),
                   const Profile(),
                 ]

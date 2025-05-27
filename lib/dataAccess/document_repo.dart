@@ -76,12 +76,12 @@ class DocumentRepo {
     return docs;
   }
 
-  Future<List<Document>> getDocumentByTags(tags) async {
+  Future<List<Document>> getDocumentByTags(String tag) async {
     List<Document> docs = [];
     try {
       final docRef = db
           .collection("Document")
-          .where("tags", arrayContains: tags)
+          .where("tags", arrayContains: tag)
           .withConverter(
               fromFirestore: Document.fromFirestore,
               toFirestore: (Document doc, _) => doc.toFirestore());
@@ -187,9 +187,8 @@ class DocumentRepo {
           if (docSnap.docs.isNotEmpty) {
             for (var snap in docSnap.docs) {
               final data = snap.data();
-              if (data != null && data.date != null) {
                 i = i.copyWith(registrationDate: data.date);
-              }
+              
             }
 
             docLikes.add(i);
@@ -222,9 +221,7 @@ class DocumentRepo {
           if (docSnap.docs.isNotEmpty) {
             for (var snap in docSnap.docs) {
               final data = snap.data();
-              if (data != null && data.date != null) {
                 i = i.copyWith(registrationDate: data.date);
-              }
             }
             docShare.add(i);
           }
@@ -257,9 +254,7 @@ class DocumentRepo {
           if (docSnap.docs.isNotEmpty) {
             for (var snap in docSnap.docs) {
               final data = snap.data();
-              if (data != null && data.date != null) {
                 i = i.copyWith(registrationDate: data.date);
-              }
             }
             docView.add(i);
           }
