@@ -87,13 +87,14 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
       try {
         final likes =
             await DocumentRepo().getDocumentLikes(widget.document.documentID!);
-        setState(() {
-          _likeCount = likes.length;
-        });
+        if (mounted) {
+          setState(() {
+            _likeCount = likes.length;
+          });
+        }
       } catch (e) {
-        setState(() {
-          _likeCount = 0;
-        });
+        // Don't update the state if there's an error fetching likes
+        // This ensures we keep the previous count until we can successfully fetch
       }
     }
   }
@@ -109,7 +110,6 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
 
   // Helper to format time ago (reused from ArticleCard)
   // Keeping this method for now, but the display will use DateFormat
-  
 
   @override
   Widget build(BuildContext context) {
@@ -321,9 +321,16 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
                               _likeCount++;
                             });
                           }
-                          _fetchLikeCount(); // Update like count after like/unlike
                         } catch (e) {
-                          // Optionally show a snackbar or other feedback
+                          // Show error feedback
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Failed to update like status'),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          }
                         }
                       }
                     },

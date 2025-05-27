@@ -105,7 +105,6 @@ class DocumentRepo {
           .collection("Document")
           .doc(documentID)
           .collection("Like")
-          .where("isActive", isEqualTo: "true")
           .withConverter(
               fromFirestore: LS.fromFirestore,
               toFirestore: (LS ls, _) => ls.toFirestore());
