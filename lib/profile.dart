@@ -1,13 +1,19 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:localnewsapp/activity.dart';
 import 'package:localnewsapp/dataAccess/model/users.dart';
-
 import 'package:localnewsapp/dataAccess/users_repo.dart';
 import 'package:localnewsapp/settings.dart';
+import 'package:localnewsapp/pages/favorites_page.dart';
+import 'package:localnewsapp/pages/offline_reading_page.dart';
+import 'package:localnewsapp/pages/read_later_page.dart';
+import 'package:localnewsapp/pages/blocked_users_page.dart';
+import 'package:localnewsapp/pages/language_settings_page.dart';
+import 'package:localnewsapp/pages/feedback_page.dart';
+import 'package:localnewsapp/providers/theme_provider.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -18,8 +24,8 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   final user = FirebaseAuth.instance.currentUser;
-  // final _firestore = FirebaseFirestore.instance;
-  Users userInfo= Users(uniqueID: "", isAdmin:false , fullName: "");
+  Users userInfo = Users(uniqueID: "", isAdmin:false , fullName: "");
+
 
   // int reputation = 0;
   // int followings = 0;
@@ -29,41 +35,12 @@ class _ProfileState extends State<Profile> {
   void initState() {
     super.initState();
     _loadUserData();
-   
   }
-
 
   Future<void> _loadUserData() async {
-
     final uR=UsersRepo();
-
     userInfo= await uR.getAUserByuniqueID(user!.uid);
-    
-    
   }
-
-  // Widget _buildStatColumn(String label, String value) {
-  //   return Column(
-  //     mainAxisSize: MainAxisSize.min,
-  //     children: [
-  //       Text(
-  //         value,
-  //         style: const TextStyle(
-  //           fontSize: 20,
-  //           fontWeight: FontWeight.bold,
-  //         ),
-  //       ),
-  //       const SizedBox(height: 4),
-  //       Text(
-  //         label,
-  //         style: TextStyle(
-  //           color: Colors.grey[600],
-  //           fontSize: 14,
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
 
   Widget _buildMenuItem(IconData icon, String title, {
     String? subtitle,
@@ -87,7 +64,7 @@ class _ProfileState extends State<Profile> {
                 shape: BoxShape.circle,
               ),
             ),
-          if (trailing != null) ...[  
+          if (trailing != null) ...[
             const SizedBox(width: 8),
             trailing,
           ],
@@ -99,27 +76,8 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  // Widget _buildNavItem(IconData icon, String label, bool isSelected) {
-  //   final color = isSelected ? Colors.red : Colors.grey;
-  //   return Column(
-  //     mainAxisSize: MainAxisSize.min,
-  //     children: [
-  //       Icon(icon, color: color),
-  //       const SizedBox(height: 4),
-  //       Text(
-  //         label,
-  //         style: TextStyle(
-  //           color: color,
-  //           fontSize: 12,
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: _loadUserData,
@@ -195,28 +153,72 @@ class _ProfileState extends State<Profile> {
                               context,
                               MaterialPageRoute(builder: (context) => Activity()),
                             );}),
-              _buildMenuItem(Icons.star_border, 'Favorites', onTap: () {}),
+              _buildMenuItem(Icons.star_border, 'Favorites', onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const FavoritesPage()),
+                );
+              }),
               _buildMenuItem(
                 Icons.offline_pin_outlined, 
                 'Offline reading',
                 subtitle: 'Read news without the internet', 
-                onTap: () {}
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const OfflineReadingPage()),
+                  );
+                }
               ),
-              _buildMenuItem(Icons.access_time, 'Read it later', onTap: () {}),
-              _buildMenuItem(Icons.block, 'Blocked users', onTap: () {}),
-              _buildMenuItem(Icons.language, 'Country & language', onTap: () {}),
+              _buildMenuItem(Icons.access_time, 'Read it later', onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ReadLaterPage()),
+                );
+              }),
+              _buildMenuItem(Icons.block, 'Blocked users', onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const BlockedUsersPage()),
+                );
+              }),
+              _buildMenuItem(Icons.language, 'Country & language', onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LanguageSettingsPage()),
+                );
+              }),
               _buildMenuItem(
                 Icons.dark_mode, 
                 'Dark mode',
-                trailing: const Text('Automatic'),
+                trailing: Consumer<ThemeProvider>(
+                  builder: (context, themeProvider, _) {
+                    return Switch(
+                      value: themeProvider.isDarkMode,
+                      onChanged: (bool value) {
+                        themeProvider.toggleTheme();
+                      },
+                    );
+                  },
+                ),
                 onTap: () {}
               ),
-              _buildMenuItem(Icons.star_rate, 'Rate us', onTap: () {}),
+              _buildMenuItem(Icons.star_rate, 'Rate us', onTap: () async {
+                final Uri url = Uri.parse('https://play.google.com/store/apps/details?id=com.localnewsapp');
+                if (await canLaunchUrl(url)) {
+                  await launchUrl(url);
+                }
+              }),
               _buildMenuItem(
                 Icons.feedback_outlined, 
                 'Suggestions&Feedback',
                 hasNotification: true, 
-                onTap: () {}
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const FeedbackPage()),
+                  );
+                }
               ),
               
               // Bottom navigation

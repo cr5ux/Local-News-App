@@ -186,7 +186,10 @@ class DocumentRepo {
         await docLikeRef.get().then((docSnap) {
           if (docSnap.docs.isNotEmpty) {
             for (var snap in docSnap.docs) {
-              i.registrationDate = snap.data().date;
+              final data = snap.data();
+              if (data != null && data.date != null) {
+                i = i.copyWith(registrationDate: data.date);
+              }
             }
 
             docLikes.add(i);
@@ -218,7 +221,10 @@ class DocumentRepo {
         await docShareRef.get().then((docSnap) {
           if (docSnap.docs.isNotEmpty) {
             for (var snap in docSnap.docs) {
-              i.registrationDate = snap.data().date;
+              final data = snap.data();
+              if (data != null && data.date != null) {
+                i = i.copyWith(registrationDate: data.date);
+              }
             }
             docShare.add(i);
           }
@@ -250,7 +256,10 @@ class DocumentRepo {
         await docViewRef.get().then((docSnap) {
           if (docSnap.docs.isNotEmpty) {
             for (var snap in docSnap.docs) {
-              i.registrationDate = snap.data().date;
+              final data = snap.data();
+              if (data != null && data.date != null) {
+                i = i.copyWith(registrationDate: data.date);
+              }
             }
             docView.add(i);
           }
