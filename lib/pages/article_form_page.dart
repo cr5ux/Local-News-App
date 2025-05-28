@@ -3,6 +3,7 @@ import '../constants/categories.dart';
 import '../dataAccess/model/document.dart'; // Import Document model
 import '../dataAccess/document_repo.dart'; // Import DocumentRepo
 import 'package:firebase_auth/firebase_auth.dart'; // Add FirebaseAuth import
+import 'package:easy_localization/easy_localization.dart'; // Add easy_localization import
 
 class ArticleFormPage extends StatefulWidget {
   const ArticleFormPage({super.key});
@@ -49,28 +50,28 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
     if (_formKey.currentState!.validate()) {
       if (_linkController.text.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please enter a valid link')),
+          SnackBar(content: Text('please_enter_valid_url'.tr())),
         );
         return;
       }
 
       if (_selectedTags.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please select at least one tag')),
+          SnackBar(content: Text('please_select_at_least_one_tag'.tr())),
         );
         return;
       }
 
       if (_selectedLanguage == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please select a language')),
+          SnackBar(content: Text('please_select_language'.tr())),
         );
         return;
       }
 
       if (_selectedDocumentType == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please select a document type')),
+          SnackBar(content: Text('please_select_document_type'.tr())),
         );
         return;
       }
@@ -79,8 +80,7 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
       final currentUser = FirebaseAuth.instance.currentUser;
       if (currentUser == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('You must be logged in to submit an article')),
+          SnackBar(content: Text('you_must_be_logged_in'.tr())),
         );
         return;
       }
@@ -112,7 +112,7 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
         // Provide user feedback
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Article submitted successfully')),
+          SnackBar(content: Text('article_submitted_successfully'.tr())),
         );
 
         // Clear the form
@@ -129,8 +129,8 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
         // Handle submission errors
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error submitting article: $e')),
-        ); 
+          SnackBar(content: Text('error_submitting_article'.tr())),
+        );
       }
     }
   }
@@ -156,9 +156,9 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Text(
-                    'Create New Article',
-                    style: TextStyle(
+                  Text(
+                    'create_new_article'.tr(),
+                    style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
@@ -169,7 +169,7 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
                   TextFormField(
                     controller: _titleController,
                     decoration: InputDecoration(
-                      labelText: 'Title',
+                      labelText: 'title'.tr(),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: const BorderSide(color: Colors.black),
@@ -187,7 +187,7 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter a title';
+                        return 'please_enter_title'.tr();
                       }
                       return null;
                     },
@@ -200,7 +200,7 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
                       Expanded(
                         child: DropdownButtonFormField<String>(
                           decoration: InputDecoration(
-                            labelText: 'Language',
+                            labelText: 'language'.tr(),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: const BorderSide(color: Colors.black),
@@ -230,7 +230,7 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
                           },
                           validator: (value) {
                             if (value == null) {
-                              return 'Please select a language';
+                              return 'please_select_language'.tr();
                             }
                             return null;
                           },
@@ -240,7 +240,7 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
                       Expanded(
                         child: DropdownButtonFormField<String>(
                           decoration: InputDecoration(
-                            labelText: 'Document Type',
+                            labelText: 'document_type'.tr(),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: const BorderSide(color: Colors.black),
@@ -270,7 +270,7 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
                           },
                           validator: (value) {
                             if (value == null) {
-                              return 'Please select a document type';
+                              return 'please_select_document_type'.tr();
                             }
                             return null;
                           },
@@ -284,7 +284,7 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
                   TextFormField(
                     controller: _articleController,
                     decoration: InputDecoration(
-                      labelText: 'Article Content',
+                      labelText: 'article_content'.tr(),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: const BorderSide(color: Colors.black),
@@ -303,7 +303,7 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
                     maxLines: 5,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter article content';
+                        return 'please_enter_article_content'.tr();
                       }
                       return null;
                     },
@@ -320,15 +320,15 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Article Link',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                        Text(
+                          'article_link'.tr(),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
                           controller: _linkController,
                           decoration: InputDecoration(
-                            hintText: 'Enter article URL',
+                            hintText: 'enter_article_url'.tr(),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
                               borderSide: const BorderSide(color: Colors.black),
@@ -346,7 +346,7 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter a valid URL';
+                              return 'please_enter_valid_url'.tr();
                             }
                             return null;
                           },
@@ -366,9 +366,9 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Select Tags',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                        Text(
+                          'select_tags'.tr(),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 10),
                         Wrap(
@@ -377,7 +377,7 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
                           children: _availableTags.map((tag) {
                             final isSelected = _selectedTags.contains(tag);
                             return FilterChip(
-                              label: Text(tag),
+                              label: Text('filters.${tag.toLowerCase()}'.tr()),
                               selected: isSelected,
                               onSelected: (_) => _toggleTag(tag),
                               backgroundColor: Colors.white,
@@ -426,9 +426,9 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
                         elevation:
                             0, // Remove default elevation as we're using custom shadow
                       ),
-                      child: const Text(
-                        'Submit',
-                        style: TextStyle(
+                      child: Text(
+                        'submit'.tr(),
+                        style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ),

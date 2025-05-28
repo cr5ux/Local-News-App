@@ -8,7 +8,8 @@ import 'package:localnewsapp/dataAccess/model/users.dart'; // Import Users model
 import 'package:video_thumbnail/video_thumbnail.dart'; // Import video_thumbnail
 import 'dart:typed_data'; // Import Uint8List
 import 'package:firebase_auth/firebase_auth.dart'; // Import FirebaseAuth
-import 'package:localnewsapp/constants/categories.dart'; // Import NewsCategories for categoryImages
+import 'package:localnewsapp/constants/categories.dart';
+import 'package:easy_localization/easy_localization.dart'; // Import EasyLocalization for translations
 
 class ArticleCard extends StatelessWidget {
   final Document document;
@@ -17,7 +18,7 @@ class ArticleCard extends StatelessWidget {
 
   String _getContentPreview() {
     if (document.content == null || document.content!.isEmpty) {
-      return 'No content available';
+      return 'no_content'.tr();
     }
     // Get first 150 characters and add ellipsis
     return document.content!.length > 150
@@ -51,7 +52,7 @@ class ArticleCard extends StatelessWidget {
   // Logic to get author name from UsersRepo
   Future<String> _getAuthorName(String authorId) async {
     if (authorId.isEmpty) {
-      return 'Unknown Author';
+      return 'unknown_author'.tr();
     }
     final UsersRepo usersRepo = UsersRepo();
     try {
@@ -61,34 +62,34 @@ class ArticleCard extends StatelessWidget {
       if (user.fullName.isNotEmpty) {
         return user.fullName;
       } else {
-        return 'Unknown Author'; // Return a default name if user not found or fullName is empty
+        return 'unknown_author'
+            .tr(); // Return a default name if user not found or fullName is empty
       }
     } catch (e) {
-      return 'Unknown Author'; // Return a default name in case of error
+      return 'unknown_author'.tr(); // Return a default name in case of error
     }
   }
 
   // Placeholder for time ago (using registrationDate for now)
   String _getTimeAgo() {
     try {
-      // Assuming registrationDate is in a format DateTime.parse can handle
       final DateTime date = DateTime.parse(document.registrationDate);
       final Duration diff = DateTime.now().difference(date);
 
       if (diff.inDays > 365) {
-        return '${(diff.inDays / 365).floor()} years ago';
+        return (diff.inDays / 365).floor().toString() + 'years_ago'.tr();
       } else if (diff.inDays > 30) {
-        return '${(diff.inDays / 30).floor()} months ago';
+        return (diff.inDays / 30).floor().toString() + 'months_ago'.tr();
       } else if (diff.inDays > 7) {
-        return '${(diff.inDays / 7).floor()} weeks ago';
+        return (diff.inDays / 7).floor().toString() + 'weeks_ago'.tr();
       } else if (diff.inDays > 0) {
-        return '${diff.inDays} days ago';
+        return diff.inDays.toString() + 'days_ago'.tr();
       } else if (diff.inHours > 0) {
-        return '${diff.inHours} hours ago';
+        return diff.inHours.toString() + 'hours_ago'.tr();
       } else if (diff.inMinutes > 0) {
-        return '${diff.inMinutes} minutes ago';
+        return diff.inMinutes.toString() + 'minutes_ago'.tr();
       } else {
-        return 'Just now';
+        return 'just_now'.tr();
       }
     } catch (e) {
       return document.registrationDate; // Fallback to raw date if parsing fails
@@ -372,15 +373,16 @@ class ArticleCard extends StatelessWidget {
                                           2)); // Show loading indicator
                             }
                             if (snapshot.hasError) {
-                              return const Text('Error',
-                                  style: TextStyle(
+                              return Text('error'.tr(),
+                                  style: const TextStyle(
                                       fontSize: 12,
                                       color: Colors.red)); // Show error
                             }
                             // Display author name when available
                             return Text(
                               snapshot.data ??
-                                  'Unknown Author', // Display name or default
+                                  'unknown_author'
+                                      .tr(), // Display name or default
                               style: const TextStyle(
                                 fontSize: 12,
                                 color: Colors.black54,
@@ -390,8 +392,8 @@ class ArticleCard extends StatelessWidget {
                           },
                         )
                       else
-                        const Text('Unknown Author',
-                            style: TextStyle(
+                        Text('unknown_author'.tr(),
+                            style: const TextStyle(
                                 fontSize: 12,
                                 color: Colors.black54,
                                 fontWeight: FontWeight.w500)),
@@ -431,15 +433,16 @@ class ArticleCard extends StatelessWidget {
                                           2)); // Show loading indicator
                             }
                             if (snapshot.hasError) {
-                              return const Text('Error',
-                                  style: TextStyle(
+                              return Text('error'.tr(),
+                                  style: const TextStyle(
                                       fontSize: 12,
                                       color: Colors.red)); // Show error
                             }
                             // Display view count when available
                             return Text(
                               snapshot.data?.toString() ??
-                                  '0', // Display count or 0 if null
+                                  'not_available'
+                                      .tr(), // Display count or 0 if null
                               style: const TextStyle(
                                 fontSize: 12,
                                 color: Colors.black54,
@@ -449,8 +452,8 @@ class ArticleCard extends StatelessWidget {
                           },
                         )
                       else
-                        const Text('N/A',
-                            style: TextStyle(
+                        Text('not_available'.tr(),
+                            style: const TextStyle(
                                 fontSize: 12,
                                 color: Colors.black54,
                                 fontWeight: FontWeight.w500)),

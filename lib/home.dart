@@ -5,7 +5,6 @@ import 'package:localnewsapp/widgets/article_card.dart';
 import 'package:localnewsapp/constants/categories.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -46,8 +45,7 @@ class _HomeState extends State<Home> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("welcome".tr(),
-              style: const TextStyle(fontSize: 24)),
+              Text("welcome".tr(), style: const TextStyle(fontSize: 24)),
               const SizedBox(height: 8),
               Text(
                 "discover".tr(),
@@ -96,7 +94,7 @@ class _HomeState extends State<Home> {
               }
 
               if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(child: Text('No articles available'));
+                return Center(child: Text('no_articles'.tr()));
               }
 
               final articles = snapshot.data!;
