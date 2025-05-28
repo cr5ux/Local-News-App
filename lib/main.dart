@@ -7,17 +7,25 @@ import 'package:localnewsapp/providers/theme_provider.dart';
 import 'package:localnewsapp/providers/offline_reading_provider.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:easy_localization/easy_localization.dart';
 
-Future<void> main() async {
-
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+  await EasyLocalization.ensureInitialized();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
   final prefs = await SharedPreferences.getInstance();
-  runApp(MainApp(prefs: prefs));
+  runApp(
+    EasyLocalization(
+      supportedLocales: const [Locale('en'), Locale('am')],
+      path: 'assets/translations',
+      fallbackLocale: const Locale('en'),
+      child: MainApp(prefs: prefs),
+    ),
+  );
 }
 
 class MainApp extends StatelessWidget {
@@ -33,14 +41,18 @@ class MainApp extends StatelessWidget {
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) {
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            theme: themeProvider.currentTheme,
-            home: const Login(),
+          return Builder(
+            builder: (context) => MaterialApp(
+              debugShowCheckedModeBanner: false,
+              theme: themeProvider.currentTheme,
+              home: const Login(),
+              localizationsDelegates: context.localizationDelegates,
+              supportedLocales: context.supportedLocales,
+              locale: context.locale,
+            ),
           );
         },
       ),
     );
   }
 }
-

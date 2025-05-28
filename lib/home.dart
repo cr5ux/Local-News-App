@@ -3,6 +3,8 @@ import 'package:localnewsapp/dataAccess/document_repo.dart';
 import 'package:localnewsapp/dataAccess/model/document.dart';
 import 'package:localnewsapp/widgets/article_card.dart';
 import 'package:localnewsapp/constants/categories.dart';
+import 'package:easy_localization/easy_localization.dart';
+
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -44,25 +46,12 @@ class _HomeState extends State<Home> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              RichText(
-                text: const TextSpan(
-                  style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black),
-                  children: [
-                    TextSpan(text: 'Welcome back, '),
-                    TextSpan(
-                        text: 'Reader',
-                        style: TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.bold)),
-                  ],
-                ),
-              ),
+              Text("welcome".tr(),
+              style: const TextStyle(fontSize: 24)),
               const SizedBox(height: 8),
-              const Text(
-                'Discover stories that matter to you',
-                style: TextStyle(fontSize: 15, color: Colors.black54),
+              Text(
+                "discover".tr(),
+                style: const TextStyle(fontSize: 15, color: Colors.black54),
               ),
               const SizedBox(height: 16),
               SizedBox(
@@ -76,7 +65,7 @@ class _HomeState extends State<Home> {
                     final filter = filters[index];
                     final isSelected = selectedFilter == filter;
                     return ChoiceChip(
-                      label: Text(filter),
+                      label: Text('filters.${filter.toLowerCase()}'.tr()),
                       selected: isSelected,
                       onSelected: (_) => _onFilterSelected(filter),
                       selectedColor: Colors.black,
