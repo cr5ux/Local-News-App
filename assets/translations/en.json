@@ -71,5 +71,21 @@
     "submit": "Submit",
     "article_submitted_successfully": "Article submitted successfully",
     "error_submitting_article": "Error submitting article:",
-    "you_must_be_logged_in": "You must be logged in to submit an article"
+    
+    "you_must_be_logged_in": "You must be logged in to submit an article",
+
+    "activities": "Activities",
+    "favorites": "Favorites",
+    "offline_reading": "Offline reading",
+    "offline_reading_subtitle": "Read news without the internet",
+    "read_it_later": "Read it later",
+    "blocked_users": "Blocked users",
+    "country_language": "Country & language",
+    "dark_mode": "Dark mode",
+    "rate_us": "Rate us",
+    "suggestions_feedback": "Suggestions & Feedback",
+    "me": "Me",
+    "video": "Video",
+    "clips": "Clips",
+    "football": "Football"
 }

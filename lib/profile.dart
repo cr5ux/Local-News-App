@@ -14,6 +14,7 @@ import 'package:localnewsapp/pages/blocked_users_page.dart';
 import 'package:localnewsapp/pages/language_settings_page.dart';
 import 'package:localnewsapp/pages/feedback_page.dart';
 import 'package:localnewsapp/providers/theme_provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -24,8 +25,7 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   final user = FirebaseAuth.instance.currentUser;
-  Users userInfo = Users(uniqueID: "", isAdmin:false , fullName: "");
-
+  Users userInfo = Users(uniqueID: "", isAdmin: false, fullName: "");
 
   // int reputation = 0;
   // int followings = 0;
@@ -38,11 +38,13 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<void> _loadUserData() async {
-    final uR=UsersRepo();
-    userInfo= await uR.getAUserByuniqueID(user!.uid);
+    final uR = UsersRepo();
+    userInfo = await uR.getAUserByuniqueID(user!.uid);
   }
 
-  Widget _buildMenuItem(IconData icon, String title, {
+  Widget _buildMenuItem(
+    IconData icon,
+    String title, {
     String? subtitle,
     Widget? trailing,
     bool hasNotification = false,
@@ -93,12 +95,13 @@ class _ProfileState extends State<Profile> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.grey.shade300),
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child:Text('${user!.email}'),
+                          child: Text('${user!.email}'),
                         ),
                         const SizedBox(width: 8),
                         IconButton(
@@ -106,7 +109,8 @@ class _ProfileState extends State<Profile> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const SettingsPage()),
+                              MaterialPageRoute(
+                                  builder: (context) => const SettingsPage()),
                             );
                           },
                         ),
@@ -117,110 +121,106 @@ class _ProfileState extends State<Profile> {
                       children: [
                         CircleAvatar(
                           radius: 30,
-                          backgroundImage: user?.photoURL != null 
-                            ? NetworkImage(user!.photoURL!) 
-                            : null,
-                          child: user?.photoURL == null 
-                            ? const Icon(Icons.person, size: 30)
-                            : null,
+                          backgroundImage: user?.photoURL != null
+                              ? NetworkImage(user!.photoURL!)
+                              : null,
+                          child: user?.photoURL == null
+                              ? const Icon(Icons.person, size: 30)
+                              : null,
                         ),
                         const SizedBox(width: 12),
                         FutureBuilder(
-                        future: _loadUserData(), 
-                        builder: (context, snapshot)
-                            {
-                              return  Text(
-                                      userInfo.fullName,
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                );
-                          }
-                        )
-                        
+                            future: _loadUserData(),
+                            builder: (context, snapshot) {
+                              return Text(
+                                userInfo.fullName,
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              );
+                            })
                       ],
                     ),
-                    const SizedBox(height: 24),                    
+                    const SizedBox(height: 24),
                   ],
                 ),
               ),
               const Divider(height: 1),
-              
+
               // Menu items
-              _buildMenuItem(Icons.local_activity, 'Activities', onTap: () { 
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => Activity()),
-                            );}),
-              _buildMenuItem(Icons.star_border, 'Favorites', onTap: () {
+              _buildMenuItem(Icons.local_activity, 'activities'.tr(),
+                  onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const FavoritesPage()),
+                  MaterialPageRoute(builder: (context) => Activity()),
                 );
               }),
-              _buildMenuItem(
-                Icons.offline_pin_outlined, 
-                'Offline reading',
-                subtitle: 'Read news without the internet', 
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const OfflineReadingPage()),
+              _buildMenuItem(Icons.star_border, 'favorites'.tr(), onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const FavoritesPage()),
+                );
+              }),
+              _buildMenuItem(Icons.offline_pin_outlined, 'offline_reading'.tr(),
+                  subtitle: 'offline_reading_subtitle'.tr(), onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const OfflineReadingPage()),
+                );
+              }),
+              _buildMenuItem(Icons.access_time, 'read_it_later'.tr(),
+                  onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ReadLaterPage()),
+                );
+              }),
+              _buildMenuItem(Icons.block, 'blocked_users'.tr(), onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const BlockedUsersPage()),
+                );
+              }),
+              _buildMenuItem(Icons.language, 'country_language'.tr(),
+                  onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const LanguageSettingsPage()),
+                );
+              }),
+              _buildMenuItem(Icons.dark_mode, 'dark_mode'.tr(),
+                  trailing: Consumer<ThemeProvider>(
+                builder: (context, themeProvider, _) {
+                  return Switch(
+                    value: themeProvider.isDarkMode,
+                    onChanged: (bool value) {
+                      themeProvider.toggleTheme();
+                    },
                   );
-                }
-              ),
-              _buildMenuItem(Icons.access_time, 'Read it later', onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ReadLaterPage()),
-                );
-              }),
-              _buildMenuItem(Icons.block, 'Blocked users', onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const BlockedUsersPage()),
-                );
-              }),
-              _buildMenuItem(Icons.language, 'Country & language', onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LanguageSettingsPage()),
-                );
-              }),
-              _buildMenuItem(
-                Icons.dark_mode, 
-                'Dark mode',
-                trailing: Consumer<ThemeProvider>(
-                  builder: (context, themeProvider, _) {
-                    return Switch(
-                      value: themeProvider.isDarkMode,
-                      onChanged: (bool value) {
-                        themeProvider.toggleTheme();
-                      },
-                    );
-                  },
-                ),
-                onTap: () {}
-              ),
-              _buildMenuItem(Icons.star_rate, 'Rate us', onTap: () async {
-                final Uri url = Uri.parse('https://play.google.com/store/apps/details?id=com.localnewsapp');
+                },
+              ), onTap: () {}),
+              _buildMenuItem(Icons.star_rate, 'rate_us'.tr(), onTap: () async {
+                final Uri url = Uri.parse(
+                    'https://play.google.com/store/apps/details?id=com.localnewsapp');
                 if (await canLaunchUrl(url)) {
                   await launchUrl(url);
                 }
               }),
               _buildMenuItem(
-                Icons.feedback_outlined, 
-                'Suggestions&Feedback',
-                hasNotification: true, 
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const FeedbackPage()),
-                  );
-                }
-              ),
-              
+                  Icons.feedback_outlined, 'suggestions_feedback'.tr(),
+                  hasNotification: true, onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const FeedbackPage()),
+                );
+              }),
+
               // Bottom navigation
               // const SizedBox(height: 16),
               // Container(

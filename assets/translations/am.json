@@ -69,5 +69,20 @@
   "submit": "አስገባ",
   "article_submitted_successfully": "መጣጥፉ በተሳካ ሁኔታ ተልኳል",
   "error_submitting_article": "መጣጥፍ ማስገባት ላይ ስህተት:",
-  "you_must_be_logged_in": "መጣጥፍ ለማስገባት መመዝገብ አለብዎት"
+  
+  "you_must_be_logged_in": "መጣጥፍ ለማስገባት መመዝገብ አለብዎት",
+  "activities": "እንቅስቃሴዎች",
+  "favorites": "የተወደዱ",
+  "offline_reading": "ኦፍላይን ንባብ",
+  "offline_reading_subtitle": "ዜናዎችን ያንብቡ ያለ ኢንተርኔት",
+  "read_it_later": "በኋላ ያንብቡ",
+  "blocked_users": "የታገዱ ተጠቃሚዎች",
+  "country_language": "አገር እና ቋንቋ",
+  "dark_mode": "ጨለማ ዘዴ",
+  "rate_us": "አስተያየት ይስጡን",
+  "suggestions_feedback": "ጥቆማዎች እና አስተያየቶች",
+  "me": "እኔ",
+  "video": "ቪዲዮ",
+  "clips": "ክሊፖች",
+  "football": "እግር ኳስ"
 }
