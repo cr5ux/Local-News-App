@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:localnewsapp/widgets/category_card.dart';
 import 'package:localnewsapp/constants/categories.dart'; // Import NewsCategories
 import 'package:localnewsapp/pages/category_article_page.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class Explore extends StatelessWidget {
   const Explore({super.key});
@@ -18,18 +19,18 @@ class Explore extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Explore',
-                  style: TextStyle(
+                Text(
+                  'explore'.tr(),
+                  style: const TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
                 ),
                 const SizedBox(height: 24),
-                const Text(
-                  'Categories',
-                  style: TextStyle(
+                Text(
+                  'categories'.tr(),
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
                     color: Colors.black87,
@@ -43,10 +44,10 @@ class Explore extends StatelessWidget {
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
-                      return const Center(
+                      return Center(
                         child: Text(
-                          'Something went wrong',
-                          style: TextStyle(color: Colors.black87),
+                          'something_went_wrong'.tr(),
+                          style: const TextStyle(color: Colors.black87),
                         ),
                       );
                     }

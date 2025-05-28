@@ -87,5 +87,10 @@
     "me": "Me",
     "video": "Video",
     "clips": "Clips",
-    "football": "Football"
+
+    "football": "Football",
+    "explore": "Explore",
+    "categories": "Categories",
+    "something_went_wrong": "Something went wrong",
+    "articles": "articles"
 }
