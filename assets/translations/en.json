@@ -92,5 +92,15 @@
     "explore": "Explore",
     "categories": "Categories",
     "something_went_wrong": "Something went wrong",
-    "articles": "articles"
+    "articles": "articles",
+    "reference": "Reference",
+
+    "no_restults_found": "No results found",
+    "search_news": "Search News",
+    "not_available": "Not Available",
+    "no_results_found": "No results found",
+    "trending_now": "Trending Now",
+    "recent_searches": "Recent Searches"
+
+
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:localnewsapp/dataAccess/model/document.dart';
 import 'package:localnewsapp/widgets/article_card.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -16,6 +17,7 @@ class _SearchPageState extends State<SearchPage> {
   List<String> _recentSearches = []; // Dynamic list for recent searches
   List<Document> _searchResults = []; // List to hold search results
   bool _isLoading = false;
+  bool _hasSearched = false;
 
   @override
   void dispose() {
@@ -26,18 +28,18 @@ class _SearchPageState extends State<SearchPage> {
   Future<void> _performSearch(String query) async {
     if (query.isEmpty) {
       setState(() {
-        _searchResults = []; // Clear results if query is empty
+        _searchResults = [];
+        _hasSearched = true;
       });
       return;
     }
 
     setState(() {
       _isLoading = true;
-      _searchResults = []; // Clear previous results
-      // Add the search term to the beginning of the list
+      _searchResults = [];
+      _hasSearched = true;
       if (!_recentSearches.contains(query)) {
         _recentSearches.insert(0, query);
-        // Optionally limit the number of recent searches, e.g., to 5
         if (_recentSearches.length > 5) {
           _recentSearches = _recentSearches.take(5).toList();
         }
@@ -45,25 +47,28 @@ class _SearchPageState extends State<SearchPage> {
     });
 
     try {
-      // Perform Firestore query
-      // Note: Firestore's query capabilities for text search are limited.
-      // This example performs a basic prefix search on the 'title' field.
-      // For full-text search, consider using a dedicated search service like Algolia or Elasticsearch.
+      // Fetch all active documents
       final querySnapshot = await FirebaseFirestore.instance
           .collection('Document')
           .where('isActive', isEqualTo: true)
-          .where('title', isGreaterThanOrEqualTo: query)
-          .where('title',
-              isLessThan: '$query\uf8ff') // \uf8ff is a high-range character
           .get();
 
+      final lowerQuery = query.toLowerCase();
+      final results = querySnapshot.docs
+          .map((doc) => Document.fromMap(doc.data()))
+          .where((doc) {
+        final inTitle = doc.title.toLowerCase().contains(lowerQuery);
+        final inContent =
+            (doc.content ?? '').toLowerCase().contains(lowerQuery);
+        final inTags =
+            doc.tags.any((tag) => tag.toLowerCase().contains(lowerQuery));
+        return inTitle || inContent || inTags;
+      }).toList();
+
       setState(() {
-        _searchResults = querySnapshot.docs
-            .map((doc) => Document.fromMap(doc.data()))
-            .toList();
+        _searchResults = results;
       });
     } catch (e) {
-      //print('Error performing search: $e');
       // Optionally show an error message to the user
     } finally {
       setState(() {
@@ -75,9 +80,9 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1E1E1E), // Dark background
+      backgroundColor: const Color(0xFF1E1E1E),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E1E1E), // Dark background
+        backgroundColor: const Color(0xFF1E1E1E),
         foregroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
@@ -89,26 +94,25 @@ class _SearchPageState extends State<SearchPage> {
         title: Container(
           height: 40,
           decoration: BoxDecoration(
-            color:
-                const Color(0xFF2D2D2D), // Slightly lighter dark for search bar
+            color: const Color(0xFF2D2D2D),
             borderRadius: BorderRadius.circular(8),
           ),
           child: TextField(
             controller: _searchController,
-            onSubmitted: _performSearch, // Call _performSearch when submitting
-            decoration: const InputDecoration(
-              hintText: 'Search for news...',
-              hintStyle: TextStyle(color: Colors.white54),
-              prefixIcon: Icon(Icons.search, color: Colors.white54),
+            onSubmitted: _performSearch,
+            decoration: InputDecoration(
+              hintText: 'search_news'.tr(),
+              hintStyle: const TextStyle(color: Colors.white54),
+              prefixIcon: const Icon(Icons.search, color: Colors.white54),
               border: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(vertical: 10),
+              contentPadding: const EdgeInsets.symmetric(vertical: 10),
             ),
             style: const TextStyle(color: Colors.white),
           ),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.filter_list), // Filter icon
+            icon: const Icon(Icons.filter_list),
             onPressed: () {
               setState(() {
                 _showFilters = !_showFilters;
@@ -122,24 +126,34 @@ class _SearchPageState extends State<SearchPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (_showFilters) _buildFilterSection(),
-            if (_isLoading) // Show loading indicator
+            if (_isLoading)
               const Center(
                 child: Padding(
                   padding: EdgeInsets.all(20.0),
                   child: CircularProgressIndicator(color: Colors.white),
                 ),
-              ) // Show loading indicator
-            else if (_searchResults.isNotEmpty) // Show results if available
+              )
+            else if (_hasSearched && _searchResults.isNotEmpty)
               _buildSearchResults()
-            else // Show recent searches and trending if no search performed or no results
+            else if (_hasSearched && _searchResults.isEmpty)
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Text(
+                    'no_results_found'.tr(),
+                    style: const TextStyle(color: Colors.white70, fontSize: 16),
+                  ),
+                ),
+              )
+            else
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 20),
-                  _buildSectionTitle('Recent Searches'),
+                  _buildSectionTitle('recent_searches'.tr()),
                   _buildRecentSearches(),
                   const SizedBox(height: 20),
-                  _buildSectionTitle('Trending Now'),
+                  _buildSectionTitle('trending_now'.tr()),
                   _buildTrendingNow(),
                 ],
               ),
@@ -165,13 +179,13 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget _buildFilterSection() {
     return Container(
-      color: const Color(0xFF2D2D2D), // Match search bar background
+      color: const Color(0xFF2D2D2D),
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Filter Results',
-              style: TextStyle(
+          Text('filter_results'.tr(),
+              style: const TextStyle(
                   color: Colors.white,
                   fontSize: 18,
                   fontWeight: FontWeight.bold)),
@@ -190,17 +204,17 @@ class _SearchPageState extends State<SearchPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Category',
-            style: TextStyle(color: Colors.white70, fontSize: 16)),
+        Text('category'.tr(),
+            style: const TextStyle(color: Colors.white70, fontSize: 16)),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
           runSpacing: 8,
           children: [
-            _buildFilterChip('All'),
-            _buildFilterChip('Politics'),
-            _buildFilterChip('Technology'),
-            _buildFilterChip('Business'),
+            _buildFilterChip('all'.tr()),
+            _buildFilterChip('filters.politics'.tr()),
+            _buildFilterChip('filters.technology'.tr()),
+            _buildFilterChip('filters.business'.tr()),
             // Add other categories here based on DocumentTags.types
           ],
         ),
@@ -212,16 +226,16 @@ class _SearchPageState extends State<SearchPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Time',
-            style: TextStyle(color: Colors.white70, fontSize: 16)),
+        Text('time'.tr(),
+            style: const TextStyle(color: Colors.white70, fontSize: 16)),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
           runSpacing: 8,
           children: [
-            _buildFilterChip('Any time'),
-            _buildFilterChip('Past 24 hours'),
-            _buildFilterChip('Past week'),
+            _buildFilterChip('any_time'.tr()),
+            _buildFilterChip('past_24_hours'.tr()),
+            _buildFilterChip('past_week'.tr()),
             // Add other time filters here
           ],
         ),
@@ -233,16 +247,16 @@ class _SearchPageState extends State<SearchPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Source',
-            style: TextStyle(color: Colors.white70, fontSize: 16)),
+        Text('source'.tr(),
+            style: const TextStyle(color: Colors.white70, fontSize: 16)),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
           runSpacing: 8,
           children: [
-            _buildFilterChip('All sources'),
-            _buildFilterChip('World News'),
-            _buildFilterChip('Tech Today'),
+            _buildFilterChip('all_sources'.tr()),
+            _buildFilterChip('world_news'.tr()),
+            _buildFilterChip('tech_today'.tr()),
             // Add other sources here
           ],
         ),
@@ -327,12 +341,12 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget _buildSearchResults() {
     if (_searchResults.isEmpty) {
-      return const Center(
+      return Center(
         child: Padding(
-          padding: EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(20.0),
           child: Text(
-            'No results found.',
-            style: TextStyle(color: Colors.white70, fontSize: 16),
+            'no_results_found'.tr(),
+            style: const TextStyle(color: Colors.white70, fontSize: 16),
           ),
         ),
       );

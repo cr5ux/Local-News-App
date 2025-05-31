@@ -89,5 +89,14 @@
   "explore": "ያስሱ",
   "categories": "ምድቦች",
   "something_went_wrong": "ችግር ተፈጥሯል",
-  "articles": "መጣጥፍ"
+  "articles": "መጣጥፍ",
+  "reference": "ማጣቀሻ",
+
+  "no_restults_found": "ምንም ውጤት አልተገኘም",
+  "search_news": "ፈልግ",
+  "not_available": "አልተገኘም",
+  "no_results_found": "ምንም ውጤት አልተገኘም",
+  "trending_now": "አሁን በሚያስገኙ",
+  "recent_searches": "የቅርብ ፈልግቶች" 
+
 }

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:localnewsapp/dataAccess/model/document.dart';
 import 'package:video_player/video_player.dart';
@@ -388,9 +389,9 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Read More:',
-                      style: TextStyle(
+                    Text(
+                      'reference'.tr(),
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
