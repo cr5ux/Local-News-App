@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:localnewsapp/business/identification.dart';
 import 'package:localnewsapp/dataAccess/users_repo.dart';
 import 'package:localnewsapp/login.dart';
-
+import 'package:localnewsapp/constants/app_colors.dart';
 import '../constants/categories.dart';
 
 
@@ -68,12 +68,21 @@ class _InterestsSelectionPageState extends State<InterestsSelectionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 12.0),
+          child: Image.asset(
+            'assets/logo.png',
+            height: 32,
+            width: 32,
+          ),
+        ),
         title: const Text(
           'Choose Your Interests',
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.white,
-        elevation: 0,
+        backgroundColor: AppColors.background,
+        elevation: 8, // Increased for visible shadow
+        shadowColor: Colors.black.withOpacity(0.25), // Drop shadow color
         centerTitle: true,
       ),
       body: Container(
@@ -95,8 +104,8 @@ class _InterestsSelectionPageState extends State<InterestsSelectionPage> {
               child: GridView.builder(
                 padding: const EdgeInsets.all(8.0),  // Reduced padding
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,  // Increased to show more items per row
-                  childAspectRatio: 2.0,  // Made cards wider than tall
+                  crossAxisCount: 2,  // Increased to show more items per row
+                  childAspectRatio: 1.5,  // Made cards wider than tall
                   crossAxisSpacing: 8,  // Reduced spacing
                   mainAxisSpacing: 8,
                 ),
@@ -104,16 +113,28 @@ class _InterestsSelectionPageState extends State<InterestsSelectionPage> {
                 itemBuilder: (context, index) {
                   final category = NewsCategories.allCategories[index];
                   final isSelected = NewsCategories.userPreferences[category] ?? true;
-                  
+
+                  // Sanitize category name for file path (e.g., "World News" -> "world_news.png")
+                  final imageName = 'assets/${category.toLowerCase().replaceAll(' ', '_')}.jpg';
+
                   return GestureDetector(
                     onTap: () => _toggleInterest(category),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: isSelected ? Colors.black : Colors.white,
+                        color: isSelected ? Colors.black.withOpacity(0.7) : Colors.black.withOpacity(0.6),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                           color: isSelected ? Colors.transparent : Colors.grey[300]!,
                           width: 1,
+                        ),
+                        image: DecorationImage(
+        
+                          image: AssetImage(imageName),
+                          fit: BoxFit.cover,
+                          colorFilter: ColorFilter.mode(
+                            isSelected ? Colors.black.withOpacity(0.4) : Colors.white.withOpacity(0.6),
+                            BlendMode.darken,
+                          ),
                         ),
                       ),
                       child: Stack(
@@ -122,9 +143,16 @@ class _InterestsSelectionPageState extends State<InterestsSelectionPage> {
                             child: Text(
                               category,
                               style: TextStyle(
-                                color: isSelected ? Colors.white : Colors.black,
+                                color: isSelected ? Colors.white : Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
+                                shadows: [
+                                  Shadow(
+                                    blurRadius: 4,
+                                    color: Colors.black.withOpacity(0.5),
+                                    offset: Offset(1, 1),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -135,12 +163,12 @@ class _InterestsSelectionPageState extends State<InterestsSelectionPage> {
                               child: Container(
                                 padding: const EdgeInsets.all(2),
                                 decoration: const BoxDecoration(
-                                  color: Colors.white,
+                                  color: AppColors.primary,
                                   shape: BoxShape.circle,
                                 ),
                                 child: const Icon(
                                   Icons.check,
-                                  color: Colors.black,
+                                  color: Colors.white,
                                   size: 16,
                                 ),
                               ),
@@ -165,7 +193,7 @@ class _InterestsSelectionPageState extends State<InterestsSelectionPage> {
                      
                     },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
+                    backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),

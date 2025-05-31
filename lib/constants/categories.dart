@@ -8,7 +8,7 @@ class NewsCategories {
     'Health',
     'Education',
     'Business',
-    'Environment',
+    'Enviroment',
     'Science',
     'Local',
     'Fashion', // New category
