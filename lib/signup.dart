@@ -10,7 +10,7 @@ import 'package:localnewsapp/login.dart';
 import 'package:localnewsapp/splash_screen.dart';
 import 'package:string_validator/string_validator.dart';
 import 'package:easy_localization/easy_localization.dart';
-
+import 'package:localnewsapp/constants/app_colors.dart';
 
 
 class Signup extends StatefulWidget {
@@ -34,6 +34,7 @@ class SignupState extends State<Signup> {
   String confirmPassword = "";
 
   bool isEnable = true;
+  bool isFormValid = false; // Add this
 
   String? validateEmail(String value) {
     if (value.isEmpty) {
@@ -159,156 +160,254 @@ class SignupState extends State<Signup> {
     }
   }
 
+  void _onFormChanged() {
+    setState(() {
+      isFormValid = _formStateKey.currentState?.validate() ?? false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 600;
+
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.background,
       body: SafeArea(
-          child: Center(
-              child: Container(
-        padding: const EdgeInsets.all(50.0),
-        margin: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 15.0),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(50.0), color: Colors.white),
-        child: SingleChildScrollView(
-          child: Form(
-              key: _formStateKey,
-              autovalidateMode: AutovalidateMode.onUnfocus,
-              child: Column(children: [
-                 Text(
-                  "signup".tr(),
-                  style: const TextStyle(fontSize: 36),
+        child: Stack(
+          children: [
+            if (isMobile)
+              Positioned.fill(
+                child: Image.asset(
+                  'assets/bk2.png',
+                  fit: BoxFit.cover,
                 ),
-                Text(
-                  "create_account".tr(),
-                  style: const TextStyle(fontSize: 18),
-                ),
-                const Padding(padding: EdgeInsets.all(10.0)),
-                TextFormField(
-                  decoration: InputDecoration(
-                    hintText: "full_name".tr(),
-                    label: Text("full_name".tr()),
-                    icon: const Icon(Icons.person),
-                    constraints: const BoxConstraints(maxHeight: 80, maxWidth: 500),
-                  ),
-                  validator: (value) => validateFullName(value!),
-                  keyboardType: TextInputType.name,
-                  onSaved: (value) => user.fullName = value!,
-                ),
-                const Padding(padding: EdgeInsets.all(20.0)),
-                TextFormField(
-                  decoration: InputDecoration(
-                      hintText: "email".tr(),
-                      label: Text("email".tr()),
-                      icon: const Icon(Icons.email),
-                      constraints:
-                          const BoxConstraints(maxHeight: 80, maxWidth: 500)),
-                  validator: (value) => validateEmail(value!),
-                  keyboardType: TextInputType.emailAddress,
-                  onSaved: (value) => logdto.email = value!,
-                ),
-                const Padding(padding: EdgeInsets.all(20.0)),
-                Stack(
-                  alignment: AlignmentDirectional.topEnd,
-                  children: [
-                    TextFormField(
-                      decoration: InputDecoration(
-                          hintText: "password".tr(),
-                          label: Text("password".tr()),
-                          icon: const Icon(Icons.password),
-                          constraints:
-                              const BoxConstraints(maxHeight: 80, maxWidth: 500)),
-                      validator: (value) => validatePassword(value!),
-                      keyboardType: TextInputType.text,
-                      onSaved: (value) => logdto.password = value!,
-                      obscureText: passwordvisible,
+              ),
+            Center(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+                  child: Form(
+                    key: _formStateKey,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    onChanged: _onFormChanged, // Add this
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        AnimatedOpacity(
+                          opacity: 1.0,
+                          duration: const Duration(milliseconds: 800),
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 24.0),
+                            child: Image.asset(
+                              'assets/logo.png',
+                              height: 80,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          "signup".tr(),
+                          style: TextStyle(
+                            fontSize: 36,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          "create_account".tr(),
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: AppColors.text.withOpacity(0.7),
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+                        AnimatedOpacity(
+                          opacity: 1.0,
+                          duration: const Duration(milliseconds: 900),
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              hintText: "full_name".tr(),
+                              labelText: "full_name".tr(),
+                              prefixIcon: const Icon(Icons.person),
+                              filled: true,
+                              fillColor: Colors.white,
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: const BorderSide(color: Colors.white, width: 2),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: const BorderSide(color: Colors.white, width: 2),
+                              ),
+                            ),
+                            validator: (value) => validateFullName(value!),
+                            keyboardType: TextInputType.name,
+                            onSaved: (value) => user.fullName = value!,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        AnimatedOpacity(
+                          opacity: 1.0,
+                          duration: const Duration(milliseconds: 950),
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              hintText: "email".tr(),
+                              labelText: "email".tr(),
+                              prefixIcon: const Icon(Icons.email),
+                              filled: true,
+                              fillColor: Colors.white,
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: const BorderSide(color: Colors.white, width: 2),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: const BorderSide(color: Colors.white, width: 2),
+                              ),
+                            ),
+                            validator: (value) => validateEmail(value!),
+                            keyboardType: TextInputType.emailAddress,
+                            onSaved: (value) => logdto.email = value!,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        AnimatedOpacity(
+                          opacity: 1.0,
+                          duration: const Duration(milliseconds: 1000),
+                          child: Stack(
+                            alignment: AlignmentDirectional.topEnd,
+                            children: [
+                              TextFormField(
+                                decoration: InputDecoration(
+                                  hintText: "password".tr(),
+                                  labelText: "password".tr(),
+                                  prefixIcon: const Icon(Icons.lock_outline),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                    borderSide: const BorderSide(color: Colors.white, width: 2),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                    borderSide: const BorderSide(color: Colors.white, width: 2),
+                                  ),
+                                ),
+                                validator: (value) => validatePassword(value!),
+                                keyboardType: TextInputType.text,
+                                onSaved: (value) => logdto.password = value!,
+                                obscureText: passwordvisible,
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    passwordvisible = !passwordvisible;
+                                  });
+                                },
+                                icon: passwordvisible
+                                    ? const Icon(Icons.visibility)
+                                    : const Icon(Icons.visibility_off),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        AnimatedOpacity(
+                          opacity: 1.0,
+                          duration: const Duration(milliseconds: 1050),
+                          child: Stack(
+                            alignment: AlignmentDirectional.topEnd,
+                            children: [
+                              TextFormField(
+                                decoration: InputDecoration(
+                                  hintText: "confirm_password".tr(),
+                                  labelText: "confirm_password".tr(),
+                                  prefixIcon: const Icon(Icons.lock_outline),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                    borderSide: const BorderSide(color: Colors.white, width: 2),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                    borderSide: const BorderSide(color: Colors.white, width: 2),
+                                  ),
+                                ),
+                                validator: (value) => validatePassword(value!),
+                                keyboardType: TextInputType.text,
+                                onSaved: (value) => confirmPassword = value!,
+                                obscureText: confirmvisible,
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    confirmvisible = !confirmvisible;
+                                  });
+                                },
+                                icon: confirmvisible
+                                    ? const Icon(Icons.visibility)
+                                    : const Icon(Icons.visibility_off),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 56, // Increased height
+                          child: ElevatedButton(
+                            onPressed: (isEnable && isFormValid)
+                                ? () => _onSubmit(
+                                      context: context,
+                                      fullscreenDialog: false,
+                                    )
+                                : null,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              elevation: 4,
+                            ),
+                            child: isEnable
+                                ? Text(
+                                    "register".tr(),
+                                    style: const TextStyle(fontSize: 20.0),
+                                  )
+                                : const Center(child: CircularProgressIndicator()),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: AppColors.primary,
+                            shadowColor: Colors.transparent,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) => const Login()));
+                          },
+                          child: Text(
+                            "do_have_account".tr(),
+                            style: TextStyle(color: AppColors.primary),
+                          ),
+                        ),
+                      ],
                     ),
-                    const Padding(padding: EdgeInsets.all(20.0)),
-                    IconButton(
-                        onPressed: () {
-                          setState(() {
-                            passwordvisible
-                                ? passwordvisible = false
-                                : passwordvisible = true;
-                          });
-                        },
-                        icon: passwordvisible
-                            ? const Icon(Icons.visibility)
-                            : const Icon(Icons.visibility_off))
-                  ],
+                  ),
                 ),
-                const Padding(padding: EdgeInsets.all(20.0)),
-                Stack(alignment: AlignmentDirectional.topEnd, children: [
-                  TextFormField(
-                    decoration: InputDecoration(
-                        hintText: "confirm_password".tr(),
-                        label: Text("confirm_password".tr()),
-                        icon: const Icon(Icons.password),
-                        constraints:
-                            const BoxConstraints(maxHeight: 80, maxWidth: 500)),
-                    validator: (value) => validatePassword(value!),
-                    keyboardType: TextInputType.text,
-                    onSaved: (value) => confirmPassword = value!,
-                    obscureText: confirmvisible,
-                  ),
-                  const Padding(padding: EdgeInsets.all(20.0)),
-                  IconButton(
-                      onPressed: () {
-                        setState(() {
-                          confirmvisible
-                              ? confirmvisible = false
-                              : confirmvisible = true;
-                        });
-                      },
-                      icon: confirmvisible
-                          ? const Icon(Icons.visibility)
-                          : const Icon(Icons.visibility_off))
-                ]),
-                const Padding(padding: EdgeInsets.all(10.0)),
-                SizedBox(
-                  width: 250.0,
-                  child: ElevatedButton(
-                      onPressed: isEnable
-                          ? () => _onSubmit(
-                                context: context,
-                                fullscreenDialog: false,
-                              )
-                          : null,
-                      style: const ButtonStyle(
-                        backgroundColor:
-                            WidgetStatePropertyAll<Color>(Colors.black),
-                        foregroundColor:
-                            WidgetStatePropertyAll<Color>(Colors.white),
-                      ),
-                      child: isEnable
-                          ? Text(
-                              "register".tr(),
-                              style: const TextStyle(fontSize: 16.0),
-                            )
-                          : const Center(child: CircularProgressIndicator())),
-                ),
-                const Padding(padding: EdgeInsets.all(10.0)),
-                ElevatedButton(
-                  style: const ButtonStyle(
-                    backgroundColor:
-                        WidgetStatePropertyAll<Color>(Colors.white),
-                    shadowColor:
-                        WidgetStatePropertyAll<Color>(Colors.transparent),
-                    overlayColor:
-                        WidgetStatePropertyAll<Color>(Colors.transparent),
-                  ),
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => const Login()));
-                  },
-                  child: Text(
-                    "do_have_account".tr(),
-                    style: const TextStyle(color: Colors.black),
-                  ),
-                )
-              ])),
+              ),
+            ),
+          ],
         ),
-      ))),
+      ),
     );
   }
 }
