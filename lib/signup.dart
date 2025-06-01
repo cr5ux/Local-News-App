@@ -78,61 +78,61 @@ class SignupState extends State<Signup> {
     return value.isEmpty ? "item_required".tr() : null;
   }
 
-  String? validatePassword(String value) {
-    bool isAlphafound = false;
-    bool ischarfound = false;
-    bool isLowerFound = false;
-    bool isNumberfound = false;
-    AsciiEncoder asciiEncoder = const AsciiEncoder();
+String? validatePassword(String value) {
+  bool isAlphafound = false;
+  bool ischarfound = false;
+  bool isLowerFound = false;
+  bool isNumberfound = false;
+  AsciiEncoder asciiEncoder = const AsciiEncoder();
 
-    if (value.isEmpty) {
-      return "password_required".tr();
-    } else if (value.isNotEmpty) {
-      if (value.length < 8) {
-        return "min_8_char".tr();
-      }
+  if (value.isEmpty) {
+    return "password_required".tr();
+  } else if (value.isNotEmpty) {
+    if (value.length < 8) {
+      return "min_8_char".tr();
+    }
 
-      var splitvalue = value.split('');
+    var splitvalue = value.split('');
 
-      for (var i in splitvalue) {
-        var val = asciiEncoder.convert(i);
+    for (var i in splitvalue) {
+      var val = asciiEncoder.convert(i);
 
-        if (val[0] >= 65 && val[0] <= 90) {
-          isAlphafound = true;
-        }
-        if ((val[0] >= 33 && val[0] <= 47) || (val[0] >= 58 && val[0] <= 64)) {
-          ischarfound = true;
-        }
-        if (val[0] >= 48 && val[0] <= 57) {
-          isNumberfound = true;
-        }
-        if (val[0] >= 97 && val[0] <= 122) {
-          isLowerFound = true;
-        }
+      if (val[0] >= 65 && val[0] <= 90) {
+        isAlphafound = true;
       }
-
-      if (!isAlphafound) {
-        return "password_uppercase".tr();
+      if ((val[0] >= 33 && val[0] <= 47) || (val[0] >= 58 && val[0] <= 64)) {
+        ischarfound = true;
       }
-      if (!ischarfound) {
-        return "password_special".tr();
+      if (val[0] >= 48 && val[0] <= 57) {
+        isNumberfound = true;
       }
-      if (!isNumberfound) {
-        return "password_number".tr();
-      }
-      if (!isLowerFound) {
-        return "password_lowercase".tr();
+      if (val[0] >= 97 && val[0] <= 122) {
+        isLowerFound = true;
       }
     }
 
-    return null;
+    if (!isAlphafound) {
+      return "password_uppercase".tr();
+    }
+    if (!ischarfound) {
+      return "password_special".tr();
+    }
+    if (!isNumberfound) {
+      return "password_number".tr();
+    }
+    if (!isLowerFound) {
+      return "password_lowercase".tr();
+    }
   }
+
+  return null;
+}
 
   void _onSubmit(
       {required BuildContext context, bool fullscreenDialog = false}) async {
-    setState(() {
-      isEnable = false;
-    });
+    // setState(() {
+    //   isEnable = false;
+    // });
 
     if (_formStateKey.currentState!.validate()) {
       _formStateKey.currentState!.save();
@@ -208,20 +208,26 @@ class SignupState extends State<Signup> {
 
   @override
   Widget build(BuildContext context) {
-  final isMobile = MediaQuery.of(context).size.width < 600;
+  final isMobile = MediaQuery.of(context).size.width < 2000;
 
   return Scaffold(
-    backgroundColor: AppColors.primary,
+    backgroundColor: AppColors.background,
     body: SafeArea(
-      child: Stack(
-        children: [
-          if (isMobile)
-            Positioned.fill(
-              child: Image.asset(
-                'assets/bk2.png',
-                fit: BoxFit.cover,
-              ),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: 500, // Limit width to a phone size
+              maxHeight: 1000, // Limit height to a phone size
             ),
+            child: Stack(
+              children: [
+                if (isMobile)
+                  Positioned.fill(
+                    child: Image.asset(
+                      'assets/bk2.png',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
           Center(
             child: SingleChildScrollView(
               child: Padding(
@@ -334,6 +340,11 @@ class SignupState extends State<Signup> {
                               ),
                             ),
                             validator: (value) => validatePassword(value!),
+                            onChanged: (value) {
+                              setState(() {
+                                user.password = value; // Dynamically update the password
+                              });
+                            },
                             keyboardType: TextInputType.text,
                             onSaved: (value) => user.password = value!,
                             obscureText: passwordvisible,
@@ -341,7 +352,7 @@ class SignupState extends State<Signup> {
                           IconButton(
                             onPressed: () {
                               setState(() {
-                                passwordvisible = !passwordvisible;
+                                passwordvisible = !passwordvisible; // Toggle visibility
                               });
                             },
                             icon: passwordvisible
@@ -370,7 +381,17 @@ class SignupState extends State<Signup> {
                                 borderSide: const BorderSide(color: Colors.white, width: 2),
                               ),
                             ),
-                            validator: (value) => validatePassword(value!),
+                            validator: (value) {
+                              if (value != user.password) {
+                                return "Passwords do not match";
+                              }
+                              return null;
+                            },
+                            onChanged: (value) {
+                              setState(() {
+                                confirmPassword = value; // Dynamically update the confirm password
+                              });
+                            },
                             keyboardType: TextInputType.text,
                             onSaved: (value) => confirmPassword = value!,
                             obscureText: confirmvisible,
@@ -378,7 +399,7 @@ class SignupState extends State<Signup> {
                           IconButton(
                             onPressed: () {
                               setState(() {
-                                confirmvisible = !confirmvisible;
+                                confirmvisible = !confirmvisible; // Toggle visibility
                               });
                             },
                             icon: confirmvisible
@@ -439,6 +460,8 @@ class SignupState extends State<Signup> {
         ],
       ),
     ),
+        )
+    )
   );
   }
 }
