@@ -17,6 +17,7 @@ class ServerRepo
 
         password=hashFunction(password);
 
+
         
           var response= await http.post(uri, 
 
@@ -63,14 +64,18 @@ class ServerRepo
             );
 
         
+    if(!response.body.contains("failure"))
+    {
+         Identification().userID=response.body;
+            
 
-          Identification().userID=response.body;
-
-          final ur=UsersRepo();
-          var result =await ur.getAUserByID(Identification().userID);
+            final ur=UsersRepo();
+            var result =await ur.getAUserByID(Identification().userID);
+            
+            Identification().isAdmin=result.isAdmin;
           
-          Identification().isAdmin=result.isAdmin;
-        
+    }
+            
           
           return response;
 
@@ -92,7 +97,7 @@ class ServerRepo
   Future<http.Response> sendPasswordResetRequest(email)async {
         
 
-    Uri uri=Uri.http('local-news-app-server.vercel.app','/authentication/password_Forget_Reset_Request');
+    Uri uri=Uri.https('local-news-app-server.vercel.app','/authentication/password_Forget_Reset_Request');
     
       var response= await http.post(uri, 
 
