@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -11,6 +10,9 @@ import 'package:localnewsapp/dataAccess/users_repo.dart';
 import 'package:localnewsapp/login.dart';
 import 'package:localnewsapp/splash_screen.dart';
 import 'package:string_validator/string_validator.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:localnewsapp/constants/app_colors.dart';
+
 
 class Signup extends StatefulWidget {
 
@@ -22,9 +24,8 @@ class Signup extends StatefulWidget {
 
 }
 
-class  SignupState extends State <Signup> {
-
-  final GlobalKey<FormState> _formStateKey =GlobalKey<FormState>();
+class SignupState extends State<Signup> {
+  final GlobalKey<FormState> _formStateKey = GlobalKey<FormState>();
 
   Users user = Users(isAdmin: false, fullName: "",phonenumber:"", email: '', password: '');
   // LoginDTO logdto = LoginDTO();
@@ -32,13 +33,12 @@ class  SignupState extends State <Signup> {
   final ur = UsersRepo();
   // final auth = AuthenticationRepo();
 
-  bool passwordvisible=true;
+  bool passwordvisible = true;
   bool confirmvisible = true;
-  String confirmPassword="";
+  String confirmPassword = "";
 
-  bool isEnable=true;
-
-
+  bool isEnable = true;
+  bool isFormValid = false; // Add this
 
   String? validateEmail(String value){
     
@@ -74,84 +74,67 @@ class  SignupState extends State <Signup> {
    
   }
 
-  String? validateFullName(String value)
-  {
-    return value.isEmpty?"Item is required":null;
-  }
-  String? validatePassword(String value)
-  {
-    bool isAlphafound=false;
-    bool ischarfound=false;
-    bool isLowerFound=false;
-    bool isNumberfound=false;
-    AsciiEncoder asciiEncoder=const AsciiEncoder();
-
-      if (value.isEmpty)
-      {
-        return "Password is required";
-      }
-      else if(value.isNotEmpty)
-      {
-          if(value.length<8)
-          {
-            return "Minimum of  8 characters required";
-          }
-
-          var splitvalue= value.split('');
-
-          for (var i in splitvalue)
-          {
-           
-              var val=asciiEncoder.convert(i);
-              
-              if(val[0]>=65 && val[0]<= 90 )
-              {
-                  isAlphafound=true;
-              }
-              if((val[0]>=33 && val[0]<= 47) || (val[0]>=58 && val[0]<=64))
-              {
-                ischarfound=true;
-              }
-              if(val[0]>=48 && val[0]<=57)
-              {
-                isNumberfound=true;
-              }
-              if(val[0]>=97 && val[0]<=122)
-              {
-                isLowerFound=true;
-              }
-          }
-
-          if(!isAlphafound)
-          {
-            return "password must contain uppercase letter";
-          }
-          if(!ischarfound)
-          {
-            return "password must contain special characters";
-          }
-           if(!isNumberfound)
-          {
-            return "password must contain number";
-          }
-           if(!isLowerFound)
-          {
-            return "password must contain lowercase letter";
-          }
-      }
-      
-      return null;
-      
+  String? validateFullName(String value) {
+    return value.isEmpty ? "item_required".tr() : null;
   }
 
-  void _onSubmit({required BuildContext context, bool fullscreenDialog = false}) async
-  {
-        setState(() {
-            isEnable=false;
-          });
+  String? validatePassword(String value) {
+    bool isAlphafound = false;
+    bool ischarfound = false;
+    bool isLowerFound = false;
+    bool isNumberfound = false;
+    AsciiEncoder asciiEncoder = const AsciiEncoder();
 
-    if(_formStateKey.currentState!.validate())
-    {
+    if (value.isEmpty) {
+      return "password_required".tr();
+    } else if (value.isNotEmpty) {
+      if (value.length < 8) {
+        return "min_8_char".tr();
+      }
+
+      var splitvalue = value.split('');
+
+      for (var i in splitvalue) {
+        var val = asciiEncoder.convert(i);
+
+        if (val[0] >= 65 && val[0] <= 90) {
+          isAlphafound = true;
+        }
+        if ((val[0] >= 33 && val[0] <= 47) || (val[0] >= 58 && val[0] <= 64)) {
+          ischarfound = true;
+        }
+        if (val[0] >= 48 && val[0] <= 57) {
+          isNumberfound = true;
+        }
+        if (val[0] >= 97 && val[0] <= 122) {
+          isLowerFound = true;
+        }
+      }
+
+      if (!isAlphafound) {
+        return "password_uppercase".tr();
+      }
+      if (!ischarfound) {
+        return "password_special".tr();
+      }
+      if (!isNumberfound) {
+        return "password_number".tr();
+      }
+      if (!isLowerFound) {
+        return "password_lowercase".tr();
+      }
+    }
+
+    return null;
+  }
+
+  void _onSubmit(
+      {required BuildContext context, bool fullscreenDialog = false}) async {
+    setState(() {
+      isEnable = false;
+    });
+
+    if (_formStateKey.currentState!.validate()) {
       _formStateKey.currentState!.save();
 
  
@@ -217,8 +200,15 @@ class  SignupState extends State <Signup> {
     }
   }
 
+  void _onFormChanged() {
+    setState(() {
+      isFormValid = _formStateKey.currentState?.validate() ?? false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 600;
 
     return Scaffold(
 

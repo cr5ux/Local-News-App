@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:localnewsapp/pages/interests_selection_page.dart';
+import 'package:localnewsapp/constants/app_colors.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -36,7 +37,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       body: PageView(
         controller: _pageController,
         onPageChanged: (int page) {
@@ -59,7 +60,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 SizedBox(height: 20),
                 // App name
                 Text(
-                  'Local News App',
+                  'Local News',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -69,7 +70,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 SizedBox(height: 20),
                 // Loading indicator
                 CircularProgressIndicator(
-                  color: Colors.black,
+                  color:AppColors.primary,
                 ),
                 SizedBox(height: 20),
                 // Loading text
@@ -146,7 +147,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
+                      backgroundColor:AppColors.primary,
                       foregroundColor: Colors.white,
                     ),
                     child: const Text('Next'),
@@ -217,7 +218,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
+                      backgroundColor: AppColors.primary,
                       foregroundColor: Colors.white,
                     ),
                     child: const Text('Next'),

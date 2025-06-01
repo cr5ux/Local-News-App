@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class CategoryCard extends StatelessWidget {
@@ -39,7 +40,7 @@ class CategoryCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                categoryName,
+                'filters.${categoryName.toLowerCase()}'.tr(),
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 18,
@@ -48,7 +49,7 @@ class CategoryCard extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                '$articleCount articles',
+                '${articleCount.toString()} ${'articles'.tr()}',
                 style: const TextStyle(
                   color: Colors.white70,
                   fontSize: 14,

@@ -1,5 +1,7 @@
 
 // import 'package:localnewsapp/homecontainer.dart';
+import 'package:localnewsapp/dataAccess/authentication_repo.dart';
+import 'package:localnewsapp/homecontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:localnewsapp/dataAccess/serverside_repo.dart';
@@ -7,8 +9,8 @@ import 'package:localnewsapp/otp_screen.dart';
 import 'package:localnewsapp/reset_password.dart';
 import 'package:localnewsapp/signup.dart';
 import 'package:string_validator/string_validator.dart';
-
-
+import 'package:easy_localization/easy_localization.dart';
+import 'package:localnewsapp/constants/app_colors.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -18,9 +20,7 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  
-  final GlobalKey<FormState>  _formStateKey = GlobalKey<FormState>();
-
+  final GlobalKey<FormState> _formStateKey = GlobalKey<FormState>();
   final LoginData _logindata = LoginData();
 
   bool isEmail=true;
@@ -69,7 +69,6 @@ class _LoginState extends State<Login> {
     //   return "Input needs to be email address";
     // }
     return null;
-   
   }
  
   void _submitOrder({required BuildContext context, bool fullscreenDialog = false}) async
@@ -77,13 +76,10 @@ class _LoginState extends State<Login> {
     Response result;
 
     setState(() {
-          isEnable=false;
+      isEnable = false;
     });
 
-
-
-    if(_formStateKey.currentState!.validate())
-    {
+    if (_formStateKey.currentState!.validate()) {
       _formStateKey.currentState!.save();
       
 /*
@@ -136,10 +132,10 @@ class _LoginState extends State<Login> {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 600;
+
     return Scaffold(
         backgroundColor: Colors.black,
         body:SafeArea(
@@ -304,21 +300,19 @@ class _LoginState extends State<Login> {
                           
                           )
                   ),
+                ),
+              ),
             ),
-          ),
-        )
+          ],
+        ),
+      ),
     );
   }
 }
 
-
-class LoginData
-{
-  String? address='';
-  String? password='';
-
+class LoginData {
+  String? address = '';
+  String? password = '';
 
   LoginData({this.address, this.password});
-  
 }
-

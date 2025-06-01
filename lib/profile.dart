@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 
@@ -10,6 +8,14 @@ import 'package:localnewsapp/dataAccess/dto/user_basic.dart';
 
 import 'package:localnewsapp/dataAccess/users_repo.dart';
 import 'package:localnewsapp/settings.dart';
+import 'package:localnewsapp/pages/favorites_page.dart';
+import 'package:localnewsapp/pages/offline_reading_page.dart';
+import 'package:localnewsapp/pages/read_later_page.dart';
+import 'package:localnewsapp/pages/blocked_users_page.dart';
+import 'package:localnewsapp/pages/language_settings_page.dart';
+import 'package:localnewsapp/pages/feedback_page.dart';
+import 'package:localnewsapp/providers/theme_provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -32,9 +38,7 @@ class _ProfileState extends State<Profile> {
   void initState() {
     super.initState();
     _loadUserData();
-   
   }
-
 
   Future<void> _loadUserData() async {
 
@@ -91,7 +95,7 @@ class _ProfileState extends State<Profile> {
                 shape: BoxShape.circle,
               ),
             ),
-          if (trailing != null) ...[  
+          if (trailing != null) ...[
             const SizedBox(width: 8),
             trailing,
           ],
@@ -103,27 +107,8 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  // Widget _buildNavItem(IconData icon, String label, bool isSelected) {
-  //   final color = isSelected ? Colors.red : Colors.grey;
-  //   return Column(
-  //     mainAxisSize: MainAxisSize.min,
-  //     children: [
-  //       Icon(icon, color: color),
-  //       const SizedBox(height: 4),
-  //       Text(
-  //         label,
-  //         style: TextStyle(
-  //           color: color,
-  //           fontSize: 12,
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: _loadUserData,
@@ -139,7 +124,8 @@ class _ProfileState extends State<Profile> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.grey.shade300),
                             borderRadius: BorderRadius.circular(20),
@@ -152,7 +138,8 @@ class _ProfileState extends State<Profile> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const SettingsPage()),
+                              MaterialPageRoute(
+                                  builder: (context) => const SettingsPage()),
                             );
                           },
                         ),
@@ -188,42 +175,85 @@ class _ProfileState extends State<Profile> {
                         
                       ],
                     ),
-                    const SizedBox(height: 24),                    
+                    const SizedBox(height: 24),
                   ],
                 ),
               ),
               const Divider(height: 1),
-              
+
               // Menu items
-              _buildMenuItem(Icons.local_activity, 'Activities', onTap: () { 
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => Activity()),
-                            );}),
-              _buildMenuItem(Icons.star_border, 'Favorites', onTap: () {}),
+              _buildMenuItem(Icons.local_activity, 'activities'.tr(),
+                  onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Activity()),
+                );
+              }),
+              _buildMenuItem(Icons.star_border, 'favorites'.tr(), onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const FavoritesPage()),
+                );
+              }),
+              _buildMenuItem(Icons.offline_pin_outlined, 'offline_reading'.tr(),
+                  subtitle: 'offline_reading_subtitle'.tr(), onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const OfflineReadingPage()),
+                );
+              }),
+              _buildMenuItem(Icons.access_time, 'read_it_later'.tr(),
+                  onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ReadLaterPage()),
+                );
+              }),
+              _buildMenuItem(Icons.block, 'blocked_users'.tr(), onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const BlockedUsersPage()),
+                );
+              }),
+              _buildMenuItem(Icons.language, 'country_language'.tr(),
+                  onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const LanguageSettingsPage()),
+                );
+              }),
+              _buildMenuItem(Icons.dark_mode, 'dark_mode'.tr(),
+                  trailing: Consumer<ThemeProvider>(
+                builder: (context, themeProvider, _) {
+                  return Switch(
+                    value: themeProvider.isDarkMode,
+                    onChanged: (bool value) {
+                      themeProvider.toggleTheme();
+                    },
+                  );
+                },
+              ), onTap: () {}),
+              _buildMenuItem(Icons.star_rate, 'rate_us'.tr(), onTap: () async {
+                final Uri url = Uri.parse(
+                    'https://play.google.com/store/apps/details?id=com.localnewsapp');
+                if (await canLaunchUrl(url)) {
+                  await launchUrl(url);
+                }
+              }),
               _buildMenuItem(
-                Icons.offline_pin_outlined, 
-                'Offline reading',
-                subtitle: 'Read news without the internet', 
-                onTap: () {}
-              ),
-              _buildMenuItem(Icons.access_time, 'Read it later', onTap: () {}),
-              _buildMenuItem(Icons.block, 'Blocked users', onTap: () {}),
-              _buildMenuItem(Icons.language, 'Country & language', onTap: () {}),
-              _buildMenuItem(
-                Icons.dark_mode, 
-                'Dark mode',
-                trailing: const Text('Automatic'),
-                onTap: () {}
-              ),
-              _buildMenuItem(Icons.star_rate, 'Rate us', onTap: () {}),
-              _buildMenuItem(
-                Icons.feedback_outlined, 
-                'Suggestions&Feedback',
-                hasNotification: true, 
-                onTap: () {}
-              ),
-              
+                  Icons.feedback_outlined, 'suggestions_feedback'.tr(),
+                  hasNotification: true, onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const FeedbackPage()),
+                );
+              }),
+
               // Bottom navigation
               // const SizedBox(height: 16),
               // Container(

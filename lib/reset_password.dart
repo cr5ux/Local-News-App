@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:localnewsapp/dataAccess/authentication_repo.dart';
 
 import 'package:string_validator/string_validator.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 // ignore: must_be_immutable
 class ResetPassword extends StatelessWidget {
@@ -16,11 +17,11 @@ class ResetPassword extends StatelessWidget {
     
     if(value.isEmpty)
     {
-      return 'Item is Required';
+      return 'item_required'.tr();
     }
     else if(!value.isEmail)
     {
-      return "Input needs to be email address";
+      return "input_email".tr();
     }
     return null;
    
@@ -74,7 +75,7 @@ class ResetPassword extends StatelessWidget {
                         child:Form(
 
                               key: _formStateKey,
-                              autovalidateMode: AutovalidateMode.always,
+                              autovalidateMode: AutovalidateMode.onUnfocus,
 
                               child: Column(
                                 
@@ -84,9 +85,9 @@ class ResetPassword extends StatelessWidget {
                                     children: [
 
                                         
-                                        const Text(
-                                          "Reset password",
-                                          style: TextStyle(fontSize: 36),
+                                        Text(
+                                          "reset_password".tr(),
+                                          style: const TextStyle(fontSize: 36),
                                         ),
 
                                         
@@ -94,11 +95,11 @@ class ResetPassword extends StatelessWidget {
 
 
                                         TextFormField(
-                                            decoration: const InputDecoration(
-                                                      hintText: "Email Address",
-                                                      label: Text("Address"),
-                                                      icon: Icon(Icons.email),
-                                                      constraints: BoxConstraints(maxHeight: 80, maxWidth: 500)
+                                            decoration: InputDecoration(
+                                                      hintText: "email".tr(),
+                                                      label: Text("email".tr()),
+                                                      icon: const Icon(Icons.email),
+                                                      constraints: const BoxConstraints(maxHeight: 80, maxWidth: 500)
                                               
                                             ),
                                             validator:(value)=> validateEmail(value!),
@@ -122,8 +123,8 @@ class ResetPassword extends StatelessWidget {
                                              
                                                     ),
                                                   
-                                                child:const Text(
-                                                  "Send Link", 
+                                                child: Text(
+                                                  "send_reset_link".tr(), 
                                                 
                                                   )
                                               ),

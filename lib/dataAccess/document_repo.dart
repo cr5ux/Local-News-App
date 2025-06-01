@@ -76,12 +76,12 @@ class DocumentRepo {
     return docs;
   }
 
-  Future<List<Document>> getDocumentByTags(tags) async {
+  Future<List<Document>> getDocumentByTags(String tag) async {
     List<Document> docs = [];
     try {
       final docRef = db
           .collection("Document")
-          .where("tags", arrayContains: tags)
+          .where("tags", arrayContains: tag)
           .withConverter(
               fromFirestore: Document.fromFirestore,
               toFirestore: (Document doc, _) => doc.toFirestore());
@@ -105,7 +105,6 @@ class DocumentRepo {
           .collection("Document")
           .doc(documentID)
           .collection("Like")
-          .where("isActive", isEqualTo: "true")
           .withConverter(
               fromFirestore: LS.fromFirestore,
               toFirestore: (LS ls, _) => ls.toFirestore());
@@ -187,7 +186,9 @@ class DocumentRepo {
         await docLikeRef.get().then((docSnap) {
           if (docSnap.docs.isNotEmpty) {
             for (var snap in docSnap.docs) {
-              i.registrationDate = snap.data().date;
+              final data = snap.data();
+                i = i.copyWith(registrationDate: data.date);
+              
             }
 
             docLikes.add(i);
@@ -219,7 +220,8 @@ class DocumentRepo {
         await docShareRef.get().then((docSnap) {
           if (docSnap.docs.isNotEmpty) {
             for (var snap in docSnap.docs) {
-              i.registrationDate = snap.data().date;
+              final data = snap.data();
+                i = i.copyWith(registrationDate: data.date);
             }
             docShare.add(i);
           }
@@ -251,7 +253,8 @@ class DocumentRepo {
         await docViewRef.get().then((docSnap) {
           if (docSnap.docs.isNotEmpty) {
             for (var snap in docSnap.docs) {
-              i.registrationDate = snap.data().date;
+              final data = snap.data();
+                i = i.copyWith(registrationDate: data.date);
             }
             docView.add(i);
           }
