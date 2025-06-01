@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:localnewsapp/dataAccess/serverside_repo.dart';
 import 'package:localnewsapp/otp_screen.dart';
-import 'package:localnewsapp/reset_password.dart';
+import 'package:localnewsapp/forget_password.dart';
 import 'package:localnewsapp/signup.dart';
 import 'package:string_validator/string_validator.dart';
 // import 'package:easy_localization/easy_localization.dart';
@@ -140,7 +140,7 @@ class _LoginState extends State<Login> {
                       children: [
                         Image.asset('assets/logo.png', height: 80),
                         const SizedBox(height: 24),
-                        Text(
+                        const Text(
                           "Log in",
                           style: TextStyle(
                             fontSize: 36,
@@ -149,7 +149,7 @@ class _LoginState extends State<Login> {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        Text(
+                        const Text(
                           "Sign in to your account",
                           style: TextStyle(
                             fontSize: 18,
@@ -226,7 +226,7 @@ class _LoginState extends State<Login> {
                               elevation: 2,
                             ),
                             onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => ResetPassword()));
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => ForgetPassword()));
                             },
                             child: const Text(
                               "Forget password?",

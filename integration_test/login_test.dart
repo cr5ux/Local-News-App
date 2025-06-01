@@ -9,7 +9,7 @@ import 'package:localnewsapp/otp_screen.dart';
 
 // import 'package:localnewsapp/homecontainer.dart';
 
-import 'package:localnewsapp/reset_password.dart';
+import 'package:localnewsapp/forget_password.dart';
 
 import 'package:localnewsapp/main.dart' as app;
 import 'package:localnewsapp/signup.dart';
@@ -126,7 +126,7 @@ void main()
 
                 await tester.pumpAndSettle();
                 Future.delayed(const Duration(seconds: 4));
-                expect(find.byType(ResetPassword),findsOneWidget);
+                expect(find.byType(ForgetPassword),findsOneWidget);
 
                
             }
