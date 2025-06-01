@@ -4,9 +4,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
 import 'package:localnewsapp/login.dart';
+import 'package:localnewsapp/otp_screen.dart';
 
 
-import 'package:localnewsapp/homecontainer.dart';
+// import 'package:localnewsapp/homecontainer.dart';
+
 import 'package:localnewsapp/reset_password.dart';
 
 import 'package:localnewsapp/main.dart' as app;
@@ -40,7 +42,7 @@ void main()
                 
                 
                 Future.delayed(const Duration(seconds: 8));
-                await tester.enterText(find.byType(TextFormField).at(0), 'armatemsamuel@gmail.com');
+                await tester.enterText(find.byType(TextFormField).at(0), '+25124415315');
 
                 Future.delayed(const Duration(seconds: 8));
                 await tester.enterText(find.byType(TextFormField).at(1), 'Abc21235');
@@ -80,7 +82,7 @@ void main()
                 
                 
                 Future.delayed(const Duration(seconds: 4));
-                await tester.enterText(find.byType(TextFormField).at(0), 'armatemsamuel@gmail.com');
+                await tester.enterText(find.byType(TextFormField).at(0), '+251924415315');
 
                 Future.delayed(const Duration(seconds: 4));
                 await tester.enterText(find.byType(TextFormField).at(1), 'Abc@1234');
@@ -94,7 +96,9 @@ void main()
                 await tester.pumpAndSettle();
 
                 Future.delayed(const Duration(seconds: 4));
-                expect(find.byType(HomeContainer),findsOneWidget);
+                
+                Future.delayed(const Duration(seconds: 10));
+                expect(find.byType(OtpScreen), findsOneWidget);
 
                
             }

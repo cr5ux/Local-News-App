@@ -1,0 +1,111 @@
+
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
+import 'package:crypto/crypto.dart';
+import 'package:localnewsapp/business/identification.dart';
+import 'package:localnewsapp/dataAccess/users_repo.dart';
+
+
+class ServerRepo
+{
+
+   Future<http.Response> sendLoginRequest(phonenumber, password)async {
+        
+
+
+    Uri uri=Uri.https('local-news-app-server.vercel.app','/authentication/login_Request');
+    
+
+    password=hashFunction(password);
+
+    
+      var response= await http.post(uri, 
+
+                headers: {
+                            "Content-Type":"application/json"
+
+                        },
+
+                body:jsonEncode(
+                  { 
+                      "phonenumber":phonenumber,
+                      "password":password ,
+                  }
+                    
+                )
+            );
+
+
+
+            return response;
+
+   }
+
+  
+   Future<http.Response> sendOTPVerification(otp,phonenumber)async {
+
+      Uri uri=Uri.https('local-news-app-server.vercel.app','/authentication/otp_verification');
+
+    
+      var response= await http.post(uri, 
+
+                headers: {
+                            "Content-Type":"application/json"
+
+                        },
+
+                body:jsonEncode(
+                  { 
+                      "otp":otp,
+                      "phonenumber":phonenumber,
+                  }
+                    
+                )
+            );
+
+        
+
+          Identification().userID=response.body;
+
+          final ur=UsersRepo();
+          var result =await ur.getAUserByID(Identification().userID);
+          
+          Identification().isAdmin=result.isAdmin;
+        
+          
+          return response;
+
+   }
+   
+   hashFunction(plainText)
+   {
+      var key = utf8.encode(plainText);
+     var bytes = utf8.encode("foobar");
+
+     var hmacSha256 = Hmac(sha256, key); 
+     var digest = hmacSha256.convert(bytes);
+
+     return digest.toString();
+
+   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}

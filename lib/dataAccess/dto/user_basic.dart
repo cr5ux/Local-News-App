@@ -1,11 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Users {
+class UsersBasic {
 
   String? userID;
   String fullName;
-
-  String? uniqueID;
 
   List<dynamic>? preferenceTags;
   List<dynamic>? forbiddenTags;
@@ -14,21 +12,18 @@ class Users {
 
   String phonenumber;
 
-  // String? otp;
-  String? sceretKey;
 
   String email;
-  String password;
 
-  Users({
+
+  UsersBasic({
       this.userID,
-       this.uniqueID,
       required this.isAdmin,
       required this.fullName,
       this.preferenceTags,
-      this.forbiddenTags, this.sceretKey, required this.phonenumber,  required this.email, required this.password});//, this.otp required this.birthday,
+      this.forbiddenTags, required this.phonenumber,  required this.email});
 
-  factory Users.fromFirestore(
+  factory UsersBasic.fromFirestore(
 
 
     DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -39,13 +34,12 @@ class Users {
 
     final data = snapshot.data();
 
-    return Users(
+    return UsersBasic(
       
       userID: snapshot.id,
       
       fullName: data?['fullName'],
 
-      uniqueID: data?['uniqueID'],
 
       isAdmin: data?['isAdmin'],
       preferenceTags: data?['preferenceTags'],
@@ -53,11 +47,9 @@ class Users {
 
       phonenumber: data?['phonenumber'],
 
-      // otp: data?['otp'],
-      sceretKey: data?['sceretKey'],
+ 
 
-      email: data?['email'],
-      password: data?['password'] ,
+      email: data?['email']
 
     );
   }
@@ -70,7 +62,6 @@ class Users {
 
       "fullName": fullName,
 
-      "uniqueID": uniqueID,
 
       "isAdmin": isAdmin,
 
@@ -79,11 +70,9 @@ class Users {
 
       "phonenumber": phonenumber,
        
-      // "otp":otp,
-      "sceretKey":sceretKey,
+  
 
-      "email": email,
-      "password": password,
+      "email": email
 
     };
   }

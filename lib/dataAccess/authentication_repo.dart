@@ -80,6 +80,8 @@ Future<String?> adduser(email, password)async
       String value="";
       try {
 
+
+        
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
               email:email,
               password: password

@@ -1,10 +1,12 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:localnewsapp/activity.dart';
-import 'package:localnewsapp/dataAccess/model/users.dart';
+import 'package:localnewsapp/business/identification.dart';
+import 'package:localnewsapp/dataAccess/dto/user_basic.dart';
+// import 'package:localnewsapp/dataAccess/model/users.dart';
 
 import 'package:localnewsapp/dataAccess/users_repo.dart';
 import 'package:localnewsapp/settings.dart';
@@ -17,10 +19,11 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  final user = FirebaseAuth.instance.currentUser;
-  // final _firestore = FirebaseFirestore.instance;
-  Users userInfo= Users(uniqueID: "", isAdmin:false , fullName: "");
+  // final user = FirebaseAuth.instance.currentUser;
+ 
+  UsersBasic  userInfo=UsersBasic(isAdmin: Identification().isAdmin, fullName: "", phonenumber: "", email: "");
 
+ // final _firestore = FirebaseFirestore.instance;
   // int reputation = 0;
   // int followings = 0;
   // int followers = 0;
@@ -37,7 +40,8 @@ class _ProfileState extends State<Profile> {
 
     final uR=UsersRepo();
 
-    userInfo= await uR.getAUserByuniqueID(user!.uid);
+    // userInfo= await uR.getAUserByuniqueID(user!.uid);
+    userInfo = await uR.getAUserByID(Identification().userID);
     
     
   }
@@ -140,7 +144,7 @@ class _ProfileState extends State<Profile> {
                             border: Border.all(color: Colors.grey.shade300),
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child:Text('${user!.email}'),
+                          child:Text(userInfo.email),
                         ),
                         const SizedBox(width: 8),
                         IconButton(
@@ -157,21 +161,22 @@ class _ProfileState extends State<Profile> {
                     const SizedBox(height: 16),
                     Row(
                       children: [
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundImage: user?.photoURL != null 
-                            ? NetworkImage(user!.photoURL!) 
-                            : null,
-                          child: user?.photoURL == null 
-                            ? const Icon(Icons.person, size: 30)
-                            : null,
-                        ),
+                        // CircleAvatar(
+                        //   radius: 30,
+                        //   backgroundImage: user?.photoURL != null 
+                        //     ? NetworkImage(user!.photoURL!) 
+                        //     : null,
+                        //   child: user?.photoURL == null 
+                        //     ? const Icon(Icons.person, size: 30)
+                        //     : null,
+                        // ),
                         const SizedBox(width: 12),
                         FutureBuilder(
                         future: _loadUserData(), 
                         builder: (context, snapshot)
                             {
                               return  Text(
+
                                       userInfo.fullName,
                                       style: const TextStyle(
                                         fontSize: 20,

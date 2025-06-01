@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localnewsapp/business/identification.dart';
 import '../constants/categories.dart';
 import '../dataAccess/model/document.dart'; // Import Document model
 import '../dataAccess/document_repo.dart'; // Import DocumentRepo
@@ -100,7 +101,7 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
         indexTermsEN: [], // Placeholder
         registrationDate: DateTime.now().toIso8601String(), // Current date/time
         isActive: true, // Default to active
-        authorID: currentUser.uid, // Use current user's ID
+        authorID: Identification().userID, // Use current user's ID
         tags: _selectedTags,
         documentType: _selectedDocumentType!, // Use selected document type
       );

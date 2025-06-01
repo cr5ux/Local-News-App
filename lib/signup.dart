@@ -3,8 +3,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:localnewsapp/business/identification.dart';
-import 'package:localnewsapp/dataAccess/authentication_repo.dart';
-import 'package:localnewsapp/dataAccess/dto/login_dto.dart';
+// import 'package:localnewsapp/business/identification.dart';
+// import 'package:localnewsapp/dataAccess/authentication_repo.dart';
+// import 'package:localnewsapp/dataAccess/dto/login_dto.dart';
 import 'package:localnewsapp/dataAccess/model/users.dart';
 import 'package:localnewsapp/dataAccess/users_repo.dart';
 import 'package:localnewsapp/login.dart';
@@ -12,21 +13,24 @@ import 'package:localnewsapp/splash_screen.dart';
 import 'package:string_validator/string_validator.dart';
 
 class Signup extends StatefulWidget {
+
   const Signup({super.key});
 
   @override
   State <Signup> createState() =>  SignupState();
+
+
 }
 
 class  SignupState extends State <Signup> {
 
   final GlobalKey<FormState> _formStateKey =GlobalKey<FormState>();
 
-  Users user = Users(uniqueID: "", isAdmin: false, fullName: "");
-  LoginDTO logdto = LoginDTO();
+  Users user = Users(isAdmin: false, fullName: "",phonenumber:"", email: '', password: '');
+  // LoginDTO logdto = LoginDTO();
 
   final ur = UsersRepo();
-  final auth = AuthenticationRepo();
+  // final auth = AuthenticationRepo();
 
   bool passwordvisible=true;
   bool confirmvisible = true;
@@ -45,6 +49,26 @@ class  SignupState extends State <Signup> {
     else if(!value.isEmail)
     {
       return "Input needs to be email address";
+    }
+    return null;
+   
+  }
+  String? validatePhone(String value){
+    
+    if(value.isEmpty)
+    {
+      return 'Item is Required';
+    }
+    else
+    {
+      String pattern = r'^(?:[+0][1-9])?[0-9]{10,12}$';
+      RegExp regExp = RegExp(pattern);
+
+      if(!regExp.hasMatch(value))
+      {
+           return "Input needs to be phonenumber";
+      }
+     
     }
     return null;
    
@@ -130,7 +154,8 @@ class  SignupState extends State <Signup> {
     {
       _formStateKey.currentState!.save();
 
-      if(confirmPassword!=logdto.password)
+ 
+      if(confirmPassword!=user.password)
       {
           setState(() {
             isEnable=true;
@@ -139,6 +164,7 @@ class  SignupState extends State <Signup> {
       }
       else
       {
+         /*
         String? value = await auth.adduser(logdto.email, logdto.password);
           if (value != null && value.startsWith("failure"))
           {
@@ -152,13 +178,12 @@ class  SignupState extends State <Signup> {
               auth.deleteUser();
           }
           else if (value != null)
-          {
-              user.uniqueID = value;
-              user.isAdmin=false;
-
-              String result=await ur.addUser(user);
+          { */
 
              
+            
+
+              String result=await ur.addUser(user);
 
               if (result.startsWith("failure"))
               { 
@@ -169,21 +194,26 @@ class  SignupState extends State <Signup> {
                 // ignore: use_build_context_synchronously
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result)));
 
-                auth.deleteUser();
+              ///  auth.deleteUser();
               }
               else
               {
-                user= await ur.getAUserByuniqueID(user.uniqueID);
+                // user= await ur.getAUserByuniqueID(user.uniqueID);
              
-                  Identification().userID=user.userID!;
+                  Identification().userID=result;
                   
                   Identification().isAdmin=user.isAdmin;
                   
                 // ignore: use_build_context_synchronously
                 Navigator.push(context, MaterialPageRoute(fullscreenDialog: fullscreenDialog,builder: (context)=>const SplashScreen())); 
               }
+              
+   /*   }  */
+            
+            
         }
-      }
+      
+
     }
   }
 
@@ -251,7 +281,22 @@ class  SignupState extends State <Signup> {
 
                                       validator: (value) => validateEmail(value!),
                                       keyboardType: TextInputType.emailAddress,
-                                      onSaved: (value) => logdto.email=value!,
+                                      onSaved: (value) => user.email=value!,
+                                  ),
+
+                                   const Padding(padding: EdgeInsets.all(20.0)),
+
+                                   TextFormField(
+                                      decoration: const InputDecoration(
+                                        hintText: "Phone Number",
+                                        label: Text("Phone Number"),
+                                        icon: Icon(Icons.phone),
+                                        constraints: BoxConstraints(maxHeight: 80, maxWidth: 500) 
+                                      ),
+
+                                      validator: (value) => validatePhone(value!),
+                                      keyboardType: TextInputType.number,
+                                      onSaved: (value) => user.phonenumber=value!,
                                   ),
 
                                   const Padding(padding: EdgeInsets.all(20.0)),
@@ -269,7 +314,7 @@ class  SignupState extends State <Signup> {
 
                                               validator: (value) => validatePassword(value!),
                                               keyboardType: TextInputType.text,
-                                              onSaved: (value) => logdto.password=value!,
+                                              onSaved: (value) => user.password=value!,
                                               obscureText: passwordvisible,
                                         ),
 
@@ -324,8 +369,6 @@ class  SignupState extends State <Signup> {
                                   
 
                                   const Padding(padding: EdgeInsets.all(10.0)),
-
-                                 
 
                                    SizedBox(
                                           

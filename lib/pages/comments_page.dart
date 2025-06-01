@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:localnewsapp/dataAccess/comment_repo.dart'; // Import CommentRepo
+import 'package:localnewsapp/dataAccess/dto/user_basic.dart';
 import 'package:localnewsapp/dataAccess/model/comment.dart'; // Import Comment model
 import 'package:localnewsapp/dataAccess/users_repo.dart';
-import 'package:localnewsapp/dataAccess/model/users.dart'; // Import Users model
+// import 'package:localnewsapp/dataAccess/model/users.dart'; // Import Users model
 import 'package:firebase_auth/firebase_auth.dart'; // Import FirebaseAuth
 
 class CommentsPage extends StatefulWidget {
@@ -53,7 +54,7 @@ class _CommentsPageState extends State<CommentsPage> {
   Future<String> _getAuthorName(String authorId) async {
     final UsersRepo usersRepo = UsersRepo();
     try {
-      final Users user = await usersRepo.getAUserByID(authorId);
+      final UsersBasic user = await usersRepo.getAUserByID(authorId);
       return user.fullName;
       // Use fullName field
     } catch (e) {

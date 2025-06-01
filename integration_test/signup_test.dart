@@ -43,6 +43,7 @@ void main()
                 expect(find.byType(TextFormField).at(1), findsOneWidget);
                 expect(find.byType(TextFormField).at(2), findsOneWidget); 
                 expect(find.byType(TextFormField).at(3), findsOneWidget);
+                expect(find.byType(TextFormField).at(4), findsOneWidget);
                 expect(find.byType(ElevatedButton).at(0), findsOneWidget);
 
 
@@ -56,10 +57,13 @@ void main()
                 await tester.enterText(find.byType(TextFormField).at(1), 'armatemsamuel@gmail.com');
 
                 Future.delayed(const Duration(seconds: 8));
-                await tester.enterText(find.byType(TextFormField).at(2), 'Abc@1234');
+                await tester.enterText(find.byType(TextFormField).at(2), '+251748596327');
 
                 Future.delayed(const Duration(seconds: 8));
                 await tester.enterText(find.byType(TextFormField).at(3), 'Abc@1234');
+
+                Future.delayed(const Duration(seconds: 8));
+                await tester.enterText(find.byType(TextFormField).at(4), 'Abc@1234');
 
                 Future.delayed(const Duration(seconds: 8));
                 await tester.ensureVisible(find.byType(ElevatedButton).at(1));
@@ -100,6 +104,7 @@ void main()
                 expect(find.byType(TextFormField).at(1), findsOneWidget);
                 expect(find.byType(TextFormField).at(2), findsOneWidget); 
                 expect(find.byType(TextFormField).at(3), findsOneWidget);
+                 expect(find.byType(TextFormField).at(4), findsOneWidget);
                 expect(find.byType(ElevatedButton).at(0), findsOneWidget);
                 
                 Future.delayed(const Duration(seconds: 8));
@@ -159,6 +164,7 @@ void main()
                 expect(find.byType(TextFormField).at(1), findsOneWidget);
                 expect(find.byType(TextFormField).at(2), findsOneWidget); 
                 expect(find.byType(TextFormField).at(3), findsOneWidget);
+                 expect(find.byType(TextFormField).at(4), findsOneWidget);
                 expect(find.byType(ElevatedButton).at(0), findsOneWidget);
               
                 
@@ -169,10 +175,13 @@ void main()
                 await tester.enterText(find.byType(TextFormField).at(1), 'xyzx@gmail.com');
 
                 Future.delayed(const Duration(seconds: 8));
-                await tester.enterText(find.byType(TextFormField).at(2), 'Abc@1224');
+                await tester.enterText(find.byType(TextFormField).at(2), '+251748596327');
 
                 Future.delayed(const Duration(seconds: 8));
-                await tester.enterText(find.byType(TextFormField).at(3), 'Abc@1236');
+                await tester.enterText(find.byType(TextFormField).at(3), 'Abc@1224');
+
+                Future.delayed(const Duration(seconds: 8));
+                await tester.enterText(find.byType(TextFormField).at(4), 'Abc@1236');
 
                 Future.delayed(const Duration(seconds: 8));
                 await tester.ensureVisible(find.byType(ElevatedButton).at(0));
@@ -211,6 +220,7 @@ void main()
       //           expect(find.byType(TextFormField).at(1), findsOneWidget);
       //           expect(find.byType(TextFormField).at(2), findsOneWidget); 
       //           expect(find.byType(TextFormField).at(3), findsOneWidget);
+       expect(find.byType(TextFormField).at(4), findsOneWidget);
 
                 
       //           Future.delayed(const Duration(seconds: 8));
@@ -267,6 +277,7 @@ void main()
                 expect(find.byType(TextFormField).at(1), findsOneWidget);
                 expect(find.byType(TextFormField).at(2), findsOneWidget); 
                 expect(find.byType(TextFormField).at(3), findsOneWidget);
+                 expect(find.byType(TextFormField).at(4), findsOneWidget);
 
                 
                 Future.delayed(const Duration(seconds: 8));
@@ -276,10 +287,13 @@ void main()
                 await tester.enterText(find.byType(TextFormField).at(1), 'xyzx@gmail.com');
 
                 Future.delayed(const Duration(seconds: 8));
-                await tester.enterText(find.byType(TextFormField).at(2), 'abcbc@1234');
+                await tester.enterText(find.byType(TextFormField).at(2), '+251748596327');
 
                 Future.delayed(const Duration(seconds: 8));
-                await tester.enterText(find.byType(TextFormField).at(3), 'abcbc@1236');
+                await tester.enterText(find.byType(TextFormField).at(3), 'abcbc@1234');
+
+                Future.delayed(const Duration(seconds: 8));
+                await tester.enterText(find.byType(TextFormField).at(4), 'abcbc@1236');
 
 
                 await tester.pumpAndSettle();
@@ -314,6 +328,7 @@ void main()
                 expect(find.byType(TextFormField).at(1), findsOneWidget);
                 expect(find.byType(TextFormField).at(2), findsOneWidget); 
                 expect(find.byType(TextFormField).at(3), findsOneWidget);
+                 expect(find.byType(TextFormField).at(4), findsOneWidget);
 
                 
                 Future.delayed(const Duration(seconds: 8));
@@ -323,10 +338,13 @@ void main()
                 await tester.enterText(find.byType(TextFormField).at(1), 'xyzx@gmail.com');
 
                 Future.delayed(const Duration(seconds: 8));
-                await tester.enterText(find.byType(TextFormField).at(2), 'ABC/1234');
+                await tester.enterText(find.byType(TextFormField).at(2), '+251748596327');
 
                 Future.delayed(const Duration(seconds: 8));
                 await tester.enterText(find.byType(TextFormField).at(3), 'ABC/1234');
+
+                Future.delayed(const Duration(seconds: 8));
+                await tester.enterText(find.byType(TextFormField).at(4), 'ABC/1234');
 
 
                 await tester.pumpAndSettle();
@@ -361,6 +379,7 @@ void main()
                 expect(find.byType(TextFormField).at(1), findsOneWidget);
                 expect(find.byType(TextFormField).at(2), findsOneWidget); 
                 expect(find.byType(TextFormField).at(3), findsOneWidget);
+                 expect(find.byType(TextFormField).at(4), findsOneWidget);
 
                 
                 Future.delayed(const Duration(seconds: 8));
@@ -370,10 +389,13 @@ void main()
                 await tester.enterText(find.byType(TextFormField).at(1), 'xyzx@gmail.com');
 
                 Future.delayed(const Duration(seconds: 8));
-                await tester.enterText(find.byType(TextFormField).at(2), '1234Abda');
+                await tester.enterText(find.byType(TextFormField).at(2), '+251748596327');
 
                 Future.delayed(const Duration(seconds: 8));
                 await tester.enterText(find.byType(TextFormField).at(3), '1234Abda');
+
+                Future.delayed(const Duration(seconds: 8));
+                await tester.enterText(find.byType(TextFormField).at(4), '1234Abda');
 
                 await tester.pumpAndSettle();
                 Future.delayed(const Duration(seconds: 8));
@@ -406,6 +428,7 @@ void main()
                 expect(find.byType(TextFormField).at(1), findsOneWidget);
                 expect(find.byType(TextFormField).at(2), findsOneWidget); 
                 expect(find.byType(TextFormField).at(3), findsOneWidget);
+                 expect(find.byType(TextFormField).at(4), findsOneWidget);
 
                 
                 Future.delayed(const Duration(seconds: 8));
@@ -415,10 +438,13 @@ void main()
                 await tester.enterText(find.byType(TextFormField).at(1), 'xyzx@gmail.com');
 
                 Future.delayed(const Duration(seconds: 8));
-                await tester.enterText(find.byType(TextFormField).at(2), 'abc@EIGH');
+                await tester.enterText(find.byType(TextFormField).at(2), '+251748596327');
 
                 Future.delayed(const Duration(seconds: 8));
                 await tester.enterText(find.byType(TextFormField).at(3), 'abc@EIGH');
+
+                Future.delayed(const Duration(seconds: 8));
+                await tester.enterText(find.byType(TextFormField).at(4), 'abc@EIGH');
 
 
 
@@ -449,6 +475,7 @@ void main()
                 expect(find.byType(TextFormField).at(1), findsOneWidget);
                 expect(find.byType(TextFormField).at(2), findsOneWidget); 
                 expect(find.byType(TextFormField).at(3), findsOneWidget);
+                 expect(find.byType(TextFormField).at(4), findsOneWidget);
 
                 
                 Future.delayed(const Duration(seconds: 8));
@@ -458,10 +485,13 @@ void main()
                 await tester.enterText(find.byType(TextFormField).at(1), 'xyzx@gmail.com');
 
                 Future.delayed(const Duration(seconds: 8));
-                await tester.enterText(find.byType(TextFormField).at(2), '12@8rtG');
+                await tester.enterText(find.byType(TextFormField).at(2), '+251748596327');
 
                 Future.delayed(const Duration(seconds: 8));
                 await tester.enterText(find.byType(TextFormField).at(3), '12@8rtG');
+
+                Future.delayed(const Duration(seconds: 8));
+                await tester.enterText(find.byType(TextFormField).at(4), '12@8rtG');
 
 
                 await tester.pumpAndSettle();
@@ -501,6 +531,7 @@ void main()
                 expect(find.byType(TextFormField).at(1), findsOneWidget);
                 expect(find.byType(TextFormField).at(2), findsOneWidget); 
                 expect(find.byType(TextFormField).at(3), findsOneWidget);
+                 expect(find.byType(TextFormField).at(4), findsOneWidget);
 
                 
                 Future.delayed(const Duration(seconds: 8));
@@ -510,10 +541,13 @@ void main()
                 await tester.enterText(find.byType(TextFormField).at(1), 'armatemsamuel@gmail.com');
 
                 Future.delayed(const Duration(seconds: 8));
-                await tester.enterText(find.byType(TextFormField).at(2), '');
+                await tester.enterText(find.byType(TextFormField).at(2), '+251748596327');
 
                 Future.delayed(const Duration(seconds: 8));
                 await tester.enterText(find.byType(TextFormField).at(3), '');
+
+                Future.delayed(const Duration(seconds: 8));
+                await tester.enterText(find.byType(TextFormField).at(4), '');
 
 
                 await tester.pumpAndSettle();
@@ -558,6 +592,7 @@ void main()
                 expect(find.byType(TextFormField).at(1), findsOneWidget);
                 expect(find.byType(TextFormField).at(2), findsOneWidget); 
                 expect(find.byType(TextFormField).at(3), findsOneWidget);
+                 expect(find.byType(TextFormField).at(4), findsOneWidget);
 
                 
                 
@@ -568,10 +603,13 @@ void main()
                 await tester.enterText(find.byType(TextFormField).at(1), '');
 
                 Future.delayed(const Duration(seconds: 8));
-                await tester.enterText(find.byType(TextFormField).at(2), 'Abc@1234');
+                await tester.enterText(find.byType(TextFormField).at(2), '+251748596327');
 
                 Future.delayed(const Duration(seconds: 8));
                 await tester.enterText(find.byType(TextFormField).at(3), 'Abc@1234');
+
+                Future.delayed(const Duration(seconds: 8));
+                await tester.enterText(find.byType(TextFormField).at(4), 'Abc@1234');
 
 
                 await tester.pumpAndSettle();
@@ -605,6 +643,7 @@ void main()
                 expect(find.byType(TextFormField).at(1), findsOneWidget);
                 expect(find.byType(TextFormField).at(2), findsOneWidget); 
                 expect(find.byType(TextFormField).at(3), findsOneWidget);
+                expect(find.byType(TextFormField).at(4), findsOneWidget);
 
                 
                 
@@ -614,11 +653,14 @@ void main()
                 Future.delayed(const Duration(seconds: 8));
                 await tester.enterText(find.byType(TextFormField).at(1), 'jdaksfhlkdshfk.fcsd');
 
-                Future.delayed(const Duration(seconds: 8));
-                await tester.enterText(find.byType(TextFormField).at(2), 'Abc@1234');
+                 Future.delayed(const Duration(seconds: 8));
+                await tester.enterText(find.byType(TextFormField).at(2), '+251748596327');
 
                 Future.delayed(const Duration(seconds: 8));
                 await tester.enterText(find.byType(TextFormField).at(3), 'Abc@1234');
+
+                Future.delayed(const Duration(seconds: 8));
+                await tester.enterText(find.byType(TextFormField).at(4), 'Abc@1234');
 
                 await tester.pumpAndSettle();
                 Future.delayed(const Duration(seconds: 8));
@@ -651,6 +693,7 @@ void main()
                 expect(find.byType(TextFormField).at(1), findsOneWidget);
                 expect(find.byType(TextFormField).at(2), findsOneWidget); 
                 expect(find.byType(TextFormField).at(3), findsOneWidget);
+                expect(find.byType(TextFormField).at(4), findsOneWidget);
 
                 
                 
@@ -661,10 +704,13 @@ void main()
                 await tester.enterText(find.byType(TextFormField).at(1), 'jdaksfhlkdshfk@fcsd');
 
                 Future.delayed(const Duration(seconds: 8));
-                await tester.enterText(find.byType(TextFormField).at(2), 'Abc@1234');
+                await tester.enterText(find.byType(TextFormField).at(2), '+251748596327');
 
                 Future.delayed(const Duration(seconds: 8));
                 await tester.enterText(find.byType(TextFormField).at(3), 'Abc@1234');
+
+                Future.delayed(const Duration(seconds: 8));
+                await tester.enterText(find.byType(TextFormField).at(4), 'Abc@1234');
 
 
                 await tester.pumpAndSettle();

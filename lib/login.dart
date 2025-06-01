@@ -1,7 +1,9 @@
 
-import 'package:localnewsapp/dataAccess/authentication_repo.dart';
-import 'package:localnewsapp/homecontainer.dart';
+// import 'package:localnewsapp/homecontainer.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:localnewsapp/dataAccess/serverside_repo.dart';
+import 'package:localnewsapp/otp_screen.dart';
 import 'package:localnewsapp/reset_password.dart';
 import 'package:localnewsapp/signup.dart';
 import 'package:string_validator/string_validator.dart';
@@ -21,37 +23,59 @@ class _LoginState extends State<Login> {
 
   final LoginData _logindata = LoginData();
 
-  List<bool> isEmail=[true,false];
+  bool isEmail=true;
 
   bool passwordvisible=true;
   bool isEnable=true;
  
 
+ final access=ServerRepo();
 
-  final  access= AuthenticationRepo();
 
-  // ignore: non_constant_identifier_names
+  // List<bool> isEmail=[true,false];
+  // final  access= AuthenticationRepo();
+
+
   String? validateitemrequired(String value){
     
-    return  value.isEmpty?'Item is Required':null;
+      if(value.isEmail)
+      {
+          validateEmail(value);
+          setState(() {
+            isEmail=true;
+          });
+
+      }
+      else if(value.isNumeric)
+      {
+         setState(() {
+            isEmail=false;
+          });
+          return  value.isEmpty?'Item is Required':null;
+      }
+      return null;
+
+  
   }
+
   String? validateEmail(String value){
     
     if(value.isEmpty)
     {
       return 'Item is Required';
     }
-    else if(!value.isEmail)
-    {
-      return "Input needs to be email address";
-    }
+    // else if(!value.isEmail)
+    // {
+    //   return "Input needs to be email address";
+    // }
     return null;
    
   }
  
   void _submitOrder({required BuildContext context, bool fullscreenDialog = false}) async
   {
-    String? result ="";
+    Response result;
+
     setState(() {
           isEnable=false;
     });
@@ -62,8 +86,8 @@ class _LoginState extends State<Login> {
     {
       _formStateKey.currentState!.save();
       
-
-      if(isEmail[0])
+/*
+      if(isEmail)
       {
           result= await access.loginwithEmailandPassword( _logindata.address,  _logindata.password);
           
@@ -83,7 +107,31 @@ class _LoginState extends State<Login> {
           }
           
       }
+      // else if(!isEmail)
+      // {
+        
+      // }
+      */
     
+      result=await access.sendLoginRequest(_logindata.address, _logindata.password);
+
+      if(result.body.contains("failure") || result.body.isEmpty)
+      {
+          setState(() {
+              isEnable=true;
+        });
+         // ignore: use_build_context_synchronously
+         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result.body)));
+      }
+      else
+      {
+        
+         // ignore: use_build_context_synchronously
+         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result.body)));
+        // ignore: use_build_context_synchronously
+         Navigator.push(context, MaterialPageRoute(fullscreenDialog: fullscreenDialog,builder: (context)=>OtpScreen(phonenumber:_logindata.address))); 
+     }
+
 
     }
   }
@@ -132,13 +180,14 @@ class _LoginState extends State<Login> {
                                         ),
                                         
                                         const Padding(padding: EdgeInsets.all(20.0)),
-
+                                          
+                                       
 
                                         TextFormField(
                                             decoration: const InputDecoration(
-                                                      hintText: "Email Address",
-                                                      label: Text("Address"),
-                                                      icon: Icon(Icons.email),
+                                                      hintText: "+251947586952",
+                                                      label: Text("Phonenumber"),
+                                                      icon: Icon(Icons.phone),
                                                       constraints: BoxConstraints(maxHeight: 80, maxWidth: 500)
                                               
                                             ),
@@ -220,7 +269,7 @@ class _LoginState extends State<Login> {
                                                       foregroundColor:WidgetStatePropertyAll<Color>(Colors.white),
                                              
                                                     ),
-                                                    child:isEnable?const Text("Log in",style:TextStyle(fontSize: 16.0),):const Center(child: CircularProgressIndicator())
+                                                    child:isEnable?const Text("Send OTP",style:TextStyle(fontSize: 16.0),):const Center(child: CircularProgressIndicator())
                                                   ),
                                         ),
 
