@@ -1,9 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:localnewsapp/dataAccess/serverside_repo.dart';
 import 'package:localnewsapp/homecontainer.dart';
-
+import 'package:localnewsapp/constants/app_colors.dart';
 // ignore: must_be_immutable
 class OtpScreen extends StatefulWidget {
 
@@ -60,97 +59,91 @@ class _OtpScreenState extends State<OtpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    final isMobile = MediaQuery.of(context).size.width < 600;
 
-        backgroundColor: Colors.black,
-
-        body:SafeArea(
-
-          child:Center(
-              
-              child: Container(
-
-                  padding: const EdgeInsets.all(50.0),
-                  margin: const EdgeInsets.fromLTRB(15.0,15.0,15.0,15.0),
-                 
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50.0),
-                    color: Colors.white
-
-                  ), 
-                  child: SingleChildScrollView(
-
-                           child:Form(
-
-                              key: _formStateKey,
-                              autovalidateMode: AutovalidateMode.always,
-
-                              child: Column(
-                                
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-
-                                    children: [
-
-                                        
-                                        const Text(
-                                          "OTP",
-                                          style: TextStyle(fontSize: 48),
-                                        ),
-
-                                        const Text(
-                                          "otp has been sent",
-                                          style: TextStyle(fontSize: 22),
-                                        ),
-                                        
-                                        const Padding(padding: EdgeInsets.all(20.0)),
-                                          
-                                       
-
-                                        TextFormField(
-                                            decoration: const InputDecoration(
-                                                      hintText: "OTP",
-                                                      label: Text("OTP"),
-                                                      icon: Icon(Icons.pin),
-                                                      constraints: BoxConstraints(maxHeight: 80, maxWidth: 500)
-                                              
-                                            ),
-                                            onSaved:(value)=>otp=value!,
-                                        ),
-
-                                        const Padding(padding: EdgeInsets.all(20.0)),
-
-                                        SizedBox(
-                                          
-                                          width: 250.0,
-                                          
-                                          child:ElevatedButton(
-
-                                                    onPressed:()=>isEnable? _submitOrder(context: context,
-                                                                fullscreenDialog: false):null, 
-
-                                                    style:const ButtonStyle(
-
-                                                      backgroundColor:WidgetStatePropertyAll<Color>(Colors.black),
-                                                      foregroundColor:WidgetStatePropertyAll<Color>(Colors.white),
-                                             
-                                                    ),
-                                                    child:isEnable?const Text("Log in",style:TextStyle(fontSize: 16.0),):const Center(child: CircularProgressIndicator())
-                                                  ),
-                                        ),
-
-                                        const Padding(padding: EdgeInsets.all(10.0)),
-
-                                    ],
-                              ),
-                          
-                          )
+    return Scaffold(
+      backgroundColor: AppColors.primary,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            if (isMobile)
+              Positioned.fill(
+                child: Image.asset(
+                  'assets/bk3.png',
+                  fit: BoxFit.cover,
+                ),
+              ),
+            Center(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+                  child: Form(
+                    key: _formStateKey,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset('assets/logo.png', height: 80),
+                        const SizedBox(height: 24),
+                        const Text(
+                          "OTP",
+                          style: TextStyle(fontSize: 36, color: Colors.white, fontWeight: FontWeight.bold),
                         ),
-             )
-          )
-        )
-        
-      );
+                        const SizedBox(height: 8),
+                        const Text(
+                          "OTP has been sent",
+                          style: TextStyle(fontSize: 18, color: Colors.white70),
+                        ),
+                        const SizedBox(height: 32),
+                        TextFormField(
+                          decoration: InputDecoration(
+                            hintText: "OTP",
+                            label: const Text("OTP"),
+                            prefixIcon: const Icon(Icons.pin),
+                            filled: true,
+                            fillColor: Colors.white,
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: const BorderSide(color: Colors.white, width: 2),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: const BorderSide(color: Colors.white, width: 2),
+                            ),
+                          ),
+                          onSaved: (value) => otp = value!,
+                        ),
+                        const SizedBox(height: 24),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 56,
+                          child: ElevatedButton(
+                            onPressed: isEnable && _formStateKey.currentState?.validate() == true
+                                ? () => _submitOrder(context: context, fullscreenDialog: false)
+                                : null,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              elevation: 4,
+                            ),
+                            child: isEnable
+                                ? const Text("Log in", style: TextStyle(fontSize: 18.0))
+                                : const Center(child: CircularProgressIndicator()),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
   
 
