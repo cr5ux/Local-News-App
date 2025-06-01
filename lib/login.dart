@@ -126,16 +126,29 @@ String? validateitemrequired(String value) {
 
   @override
   Widget build(BuildContext context) {
-    final isMobile = MediaQuery.of(context).size.width < 2000;
+    final isMobile = MediaQuery.of(context).size.width < 501;
+    final double height=MediaQuery.of(context).size.height;
 
     return Scaffold(
       backgroundColor: AppColors.background,
+
       body: SafeArea(
+
         child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
+
+          child: Container(
+
+           
+
+            decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50.0),
+                    color: AppColors.background,
+
+              ),
+            constraints: BoxConstraints(
+            
               maxWidth: 500, // Limit width to a phone size
-              maxHeight: 1000, // Limit height to a phone size
+              maxHeight: height, // Limit height to a phone size
             ),
             child: Stack(
               children: [
@@ -148,16 +161,25 @@ String? validateitemrequired(String value) {
                   ),
                 Center(
                   child: SingleChildScrollView(
+
                     child: Padding(
+
                       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+
                       child: Form(
+
                         key: _formStateKey,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
+
                         child: Column(
+
                           mainAxisSize: MainAxisSize.min,
+
                           children: [
+
                             Image.asset('assets/logo.png', height: 80),
                             const SizedBox(height: 24),
+
                            const Text(
                               "Log in",
                               style: TextStyle(
@@ -174,9 +196,12 @@ String? validateitemrequired(String value) {
                                 color: AppColors.primary,
                               ),
                             ),
+
                             const SizedBox(height: 32),
+
                             TextFormField(
                               decoration: InputDecoration(
+
                                 hintText: "+251947586952",
                                 label: const Text("Phonenumber"),
                                 prefixIcon: const Icon(Icons.phone),
@@ -190,6 +215,7 @@ String? validateitemrequired(String value) {
                                   borderRadius: BorderRadius.circular(16),
                                   borderSide: const BorderSide(color: Colors.white, width: 2),
                                 ),
+
                               ),
                               validator: (value) => validateEmail(value!),
                               keyboardType: TextInputType.emailAddress,
@@ -200,6 +226,7 @@ String? validateitemrequired(String value) {
                               },
                               onSaved: (value) => _logindata.address = value,
                             ),
+                            
                             const SizedBox(height: 20),
                             Stack(
                               alignment: AlignmentDirectional.topEnd,

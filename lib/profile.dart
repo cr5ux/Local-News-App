@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:localnewsapp/activity.dart';
 import 'package:localnewsapp/business/identification.dart';
+import 'package:localnewsapp/constants/app_colors.dart';
 import 'package:localnewsapp/dataAccess/dto/user_basic.dart';
 // import 'package:localnewsapp/dataAccess/model/users.dart';
 
@@ -82,7 +83,7 @@ class _ProfileState extends State<Profile> {
     required VoidCallback onTap,
   }) {
     return ListTile(
-      leading: Icon(icon),
+      leading: Icon(icon,color: AppColors.primary,),
       title: Text(title),
       subtitle: subtitle != null ? Text(subtitle) : null,
       trailing: Row(

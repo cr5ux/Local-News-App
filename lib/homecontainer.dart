@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:localnewsapp/business/identification.dart';
+import 'package:localnewsapp/constants/app_colors.dart';
 
 import 'package:localnewsapp/explore.dart';
 import 'package:localnewsapp/add.dart';
@@ -22,7 +23,7 @@ class HomeContainer extends StatelessWidget {
         child: Scaffold(
             appBar: AppBar(
               leading: const Icon(Icons.newspaper),
-              backgroundColor: Colors.black,
+              backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
               title: Text("name".tr()),
               actions: <Widget>[
@@ -61,11 +62,12 @@ class HomeContainer extends StatelessWidget {
             ),
             bottomNavigationBar: BottomAppBar(
               height: 60.0,
+              
               // color: Theme.of(context).colorScheme.secondary,
               child: TabBar(
                 //unselectedLabelColor: Colors.white,
-                labelColor: Colors.black,
-
+                labelColor:  AppColors.background,
+                unselectedLabelColor:  AppColors.primary,
                 tabs: Identification().isAdmin
                     ? const [
                         Tab(

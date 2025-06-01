@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:localnewsapp/constants/app_colors.dart';
 // import 'package:localnewsapp/dataAccess/authentication_repo.dart';
 import 'package:localnewsapp/dataAccess/serverside_repo.dart';
 
@@ -68,9 +69,9 @@ class ForgetPassword extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: AppColors.background,
         appBar: AppBar(
-              backgroundColor: Colors.black,
+              backgroundColor: AppColors.primary,
               elevation: 0,
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -87,11 +88,12 @@ class ForgetPassword extends StatelessWidget {
                  
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(50.0),
-                    color: Colors.white
+                    color: AppColors.background
 
                   ),
 
                   child: SingleChildScrollView(
+
                         child:Form(
 
                               key: _formStateKey,
@@ -133,18 +135,22 @@ class ForgetPassword extends StatelessWidget {
                                       SizedBox(
                                           
                                           width: 250.0,
+                                          height: 56,
                                           
                                           child:ElevatedButton(
                                                     onPressed:()=>sendLink(context),
                                                 
-                                                    style:const ButtonStyle(
-                                                       backgroundColor:WidgetStatePropertyAll<Color>(Colors.black),
-                                                       foregroundColor:WidgetStatePropertyAll<Color>(Colors.white),
-                                             
-                                                    ),
+                                                    style:ElevatedButton.styleFrom(
+                                                          backgroundColor: AppColors.primary,
+                                                          foregroundColor: Colors.white,
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(16),
+                                                          ),
+                                                          elevation: 4,
+                                                      ),
                                                   
                                                 child: Text(
-                                                  "send_reset_link".tr(), 
+                                                  "Reset Password".tr(), 
                                                 
                                                   )
                                               ),

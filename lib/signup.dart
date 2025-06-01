@@ -135,6 +135,7 @@ String? validatePassword(String value) {
     // });
 
     if (_formStateKey.currentState!.validate()) {
+
       _formStateKey.currentState!.save();
 
  
@@ -208,16 +209,28 @@ String? validatePassword(String value) {
 
   @override
   Widget build(BuildContext context) {
-  final isMobile = MediaQuery.of(context).size.width < 2000;
+
+  final isMobile = MediaQuery.of(context).size.width < 501;
+  final double height=MediaQuery.of(context).size.height;
 
   return Scaffold(
     backgroundColor: AppColors.background,
     body: SafeArea(
+
         child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
+          child: Container(
+
+           
+
+            decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50.0),
+                    color: AppColors.background,
+
+              ),
+            constraints: BoxConstraints(
+            
               maxWidth: 500, // Limit width to a phone size
-              maxHeight: 1000, // Limit height to a phone size
+              maxHeight: height, // Limit height to a phone size
             ),
             child: Stack(
               children: [
@@ -228,17 +241,27 @@ String? validatePassword(String value) {
                       fit: BoxFit.cover,
                     ),
                   ),
+                
           Center(
             child: SingleChildScrollView(
+
               child: Padding(
+
                 padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+
                 child: Form(
+
                   key: _formStateKey,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
+
                   child: Column(
+
                     mainAxisSize: MainAxisSize.min,
+                    
                     children: [
+
                       Image.asset('assets/logo.png', height: 80),
+
                       const SizedBox(height: 24),
                       const Text(
                         "Sign Up",
@@ -257,7 +280,9 @@ String? validatePassword(String value) {
                         ),
                       ),
                       const SizedBox(height: 24),
+
                       TextFormField(
+                        
                         decoration: InputDecoration(
                           hintText: "Full Name",
                           label: const Text("Full Name"),
@@ -272,12 +297,15 @@ String? validatePassword(String value) {
                             borderRadius: BorderRadius.circular(16),
                             borderSide: const BorderSide(color: Colors.white, width: 2),
                           ),
+                          constraints:const BoxConstraints(maxHeight: 80, maxWidth: 500)
                         ),
                         validator: (value) => validateFullName(value!),
                         keyboardType: TextInputType.name,
                         onSaved: (value) => user.fullName = value!,
                       ),
+
                       const SizedBox(height: 20),
+
                       TextFormField(
                         decoration: InputDecoration(
                           hintText: "Email",
@@ -293,14 +321,18 @@ String? validatePassword(String value) {
                             borderRadius: BorderRadius.circular(16),
                             borderSide: const BorderSide(color: Colors.white, width: 2),
                           ),
+                          constraints:const BoxConstraints(maxHeight: 80, maxWidth: 500)
                         ),
                         validator: (value) => validateEmail(value!),
                         keyboardType: TextInputType.emailAddress,
                         onSaved: (value) => user.email = value!,
                       ),
                       const SizedBox(height: 20),
+
                       TextFormField(
+
                         decoration: InputDecoration(
+
                           hintText: "Phone Number",
                           label: const Text("Phone Number"),
                           prefixIcon: const Icon(Icons.phone),
@@ -314,16 +346,22 @@ String? validatePassword(String value) {
                             borderRadius: BorderRadius.circular(16),
                             borderSide: const BorderSide(color: Colors.white, width: 2),
                           ),
+                          constraints:const BoxConstraints(maxHeight: 80, maxWidth: 500)
                         ),
                         validator: (value) => validatePhone(value!),
                         keyboardType: TextInputType.number,
                         onSaved: (value) => user.phonenumber = value!,
                       ),
+
                       const SizedBox(height: 20),
+
                       Stack(
+
                         alignment: AlignmentDirectional.topEnd,
+                        
                         children: [
                           TextFormField(
+
                             decoration: InputDecoration(
                               hintText: "Password",
                               label: const Text("Password"),
@@ -338,6 +376,7 @@ String? validatePassword(String value) {
                                 borderRadius: BorderRadius.circular(16),
                                 borderSide: const BorderSide(color: Colors.white, width: 2),
                               ),
+                              constraints:const BoxConstraints(maxHeight: 80, maxWidth: 500)
                             ),
                             validator: (value) => validatePassword(value!),
                             onChanged: (value) {
@@ -361,7 +400,9 @@ String? validatePassword(String value) {
                           ),
                         ],
                       ),
+
                       const SizedBox(height: 20),
+
                       Stack(
                         alignment: AlignmentDirectional.topEnd,
                         children: [
@@ -380,13 +421,9 @@ String? validatePassword(String value) {
                                 borderRadius: BorderRadius.circular(16),
                                 borderSide: const BorderSide(color: Colors.white, width: 2),
                               ),
+                              constraints:const BoxConstraints(maxHeight: 80, maxWidth: 500)
                             ),
-                            validator: (value) {
-                              if (value != user.password) {
-                                return "Passwords do not match";
-                              }
-                              return null;
-                            },
+                            validator: (value) => validatePassword(value!),
                             onChanged: (value) {
                               setState(() {
                                 confirmPassword = value; // Dynamically update the confirm password
@@ -409,7 +446,9 @@ String? validatePassword(String value) {
                         ],
                       ),
                       const SizedBox(height: 24),
+
                       SizedBox(
+
                         width: double.infinity,
                         height: 56,
                         child: ElevatedButton(
@@ -417,8 +456,8 @@ String? validatePassword(String value) {
                               ? () => _onSubmit(context: context, fullscreenDialog: false)
                               : null,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            foregroundColor: Colors.white,
+                            backgroundColor: AppColors.background,
+                            foregroundColor: AppColors.primary,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             ),
@@ -429,7 +468,9 @@ String? validatePassword(String value) {
                               : const Center(child: CircularProgressIndicator()),
                         ),
                       ),
+
                       const SizedBox(height: 16),
+
                       SizedBox(
                         width: double.infinity,
                         height: 56,

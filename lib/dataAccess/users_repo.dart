@@ -416,6 +416,30 @@ Future<String> addUser(user) async {
   }
 
 
+  Future<String> updateUserPasswordInfo(Users user) async {
+
+    String message = "";
+
+    try {
+
+
+      final userRef = db.collection("Users").doc(user.userID).withConverter(fromFirestore: Users.fromFirestore,toFirestore: (Users user, _) => user.toFirestore());
+
+          
+
+      await userRef.update({"password": user.password});
+
+      message = "registration sucessful";
+
+      return message;
+
+    } catch (e)
+    {
+      rethrow;
+    }
+  }
+
+
   Future<String> updatePreferenceTags(userID, preferenceTags) async {
 
     String message = "";

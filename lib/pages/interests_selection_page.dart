@@ -84,7 +84,7 @@ class _InterestsSelectionPageState extends State<InterestsSelectionPage> {
         ),
         backgroundColor: AppColors.background,
         elevation: 8, // Increased for visible shadow
-        shadowColor: Colors.black.withOpacity(0.25), // Drop shadow color
+        // shadowColor: Colors.black.withOpacity(0.25), // Drop shadow color
         centerTitle: true,
       ),
       body: Container(
@@ -123,7 +123,7 @@ class _InterestsSelectionPageState extends State<InterestsSelectionPage> {
                     onTap: () => _toggleInterest(category),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: isSelected ? Colors.black.withOpacity(0.7) : Colors.black.withOpacity(0.6),
+                        // color: isSelected ? Colors.black.withOpacity(0.7) : Colors.black.withOpacity(0.6),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                           color: isSelected ? Colors.transparent : Colors.grey[300]!,
@@ -133,10 +133,10 @@ class _InterestsSelectionPageState extends State<InterestsSelectionPage> {
         
                           image: AssetImage(imageName),
                           fit: BoxFit.cover,
-                          colorFilter: ColorFilter.mode(
-                            isSelected ? Colors.black.withOpacity(0.4) : Colors.white.withOpacity(0.6),
-                            BlendMode.darken,
-                          ),
+                          // colorFilter: ColorFilter.mode(
+                          //   isSelected ? Colors.black : Colors.white.withOpacity(0.6),
+                          //   BlendMode.darken,
+                          // ),
                         ),
                       ),
                       child: Stack(
@@ -148,11 +148,11 @@ class _InterestsSelectionPageState extends State<InterestsSelectionPage> {
                                 color: isSelected ? Colors.white : Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
-                                shadows: [
+                                shadows: const [
                                   Shadow(
                                     blurRadius: 4,
-                                    color: Colors.black.withOpacity(0.5),
-                                    offset: const Offset(1, 1),
+                                    // color: Colors.black.withOpacity(0.5),
+                                    offset: Offset(1, 1),
                                   ),
                                 ],
                               ),

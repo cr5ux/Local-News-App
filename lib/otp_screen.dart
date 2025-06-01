@@ -54,16 +54,26 @@ void _submitOrder({required BuildContext context, required bool fullscreenDialog
 }
   @override
   Widget build(BuildContext context) {
-    final isMobile = MediaQuery.of(context).size.width < 2000;
+    final isMobile = MediaQuery.of(context).size.width < 501;
+     final double height=MediaQuery.of(context).size.height;
 
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
+          child: Container(
+
+           
+
+            decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50.0),
+                    color: AppColors.background,
+
+              ),
+            constraints: BoxConstraints(
+            
               maxWidth: 500, // Limit width to a phone size
-              maxHeight: 1000, // Limit height to a phone size
+              maxHeight: height, // Limit height to a phone size
             ),
             child: Stack(
               children: [

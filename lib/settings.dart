@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:localnewsapp/constants/app_colors.dart';
+import 'package:localnewsapp/reset_password.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -25,8 +27,8 @@ class _SettingsState extends State<SettingsPage> {
       padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
       child: Text(
         title,
-        style: TextStyle(
-          color: Colors.grey[600],
+        style: const TextStyle(
+          color: AppColors.primary,
           fontSize: 13,
         ),
       ),
@@ -51,7 +53,7 @@ class _SettingsState extends State<SettingsPage> {
     return Switch(
       value: value,
       onChanged: onChanged,
-      activeColor: Colors.red,
+      activeColor: AppColors.primary,
     );
   }
 
@@ -59,6 +61,8 @@ class _SettingsState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppColors.primary,
+        foregroundColor: AppColors.secondary,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
@@ -67,6 +71,22 @@ class _SettingsState extends State<SettingsPage> {
       ),
       body: ListView(
         children: [
+          _buildSectionHeader('Account Setting'),
+          _buildSettingItem(
+            title: 'Reset Password',
+             onTap: () { Navigator.push(context, MaterialPageRoute(fullscreenDialog: false,builder: (context)=>const ResetPassword())); },
+          ),
+          _buildSettingItem(
+            title: 'News notification settings',
+            onTap: () {},
+          ),
+          _buildSettingItem(
+            title: 'Message',
+            trailing: _buildSwitch(
+              messageNotification,
+              (value) => setState(() => messageNotification = value),
+            ),
+          ),
           _buildSectionHeader('Features'),
           _buildSettingItem(
             title: 'News notification',
