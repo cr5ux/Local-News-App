@@ -24,126 +24,150 @@ class _OtpScreenState extends State<OtpScreen> {
   // ignore: prefer_typing_uninitialized_variables
   var otp;
 
-  _submitOrder({required BuildContext context, required bool fullscreenDialog})
-  async {
+void _submitOrder({required BuildContext context, required bool fullscreenDialog}) async {
+  if (_formStateKey.currentState!.validate()) {
+    _formStateKey.currentState!.save();
+
+    setState(() {
+      isEnable = false; // Disable the button while processing
+    });
+
+    Response result = await access.sendOTPVerification(otp, widget.phonenumber);
+
+    if (result.body.contains("failure")) {
       setState(() {
-            isEnable=false;
+        isEnable = true; // Re-enable the button on failure
       });
-      
-    if(_formStateKey.currentState!.validate())
-      {
-        _formStateKey.currentState!.save();
-
-      Response result=await access.sendOTPVerification(otp,widget.phonenumber);
-
-      if(result.body.contains("failure"))
-      {
-          setState(() {
-              isEnable=true;
-        });
-         // ignore: use_build_context_synchronously
-         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result.body)));
-      }
-      else
-      {
-         // ignore: use_build_context_synchronously
-         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result.body)));
-        // ignore: use_build_context_synchronously
-        Navigator.push(context, MaterialPageRoute(fullscreenDialog: fullscreenDialog,builder: (context)=>const HomeContainer(title:"Zena" ))); 
-      }
-      
-        
-      }
-
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result.body)));
+    } else {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result.body)));
+      // ignore: use_build_context_synchronously
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          fullscreenDialog: fullscreenDialog,
+          builder: (context) => const HomeContainer(title: "Zena"),
+        ),
+      );
+    }
   }
-
+}
   @override
   Widget build(BuildContext context) {
-    final isMobile = MediaQuery.of(context).size.width < 600;
+    final isMobile = MediaQuery.of(context).size.width < 2000;
 
     return Scaffold(
-      backgroundColor: AppColors.primary,
+      backgroundColor: AppColors.background,
       body: SafeArea(
-        child: Stack(
-          children: [
-            if (isMobile)
-              Positioned.fill(
-                child: Image.asset(
-                  'assets/bk3.png',
-                  fit: BoxFit.cover,
-                ),
-              ),
-            Center(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
-                  child: Form(
-                    key: _formStateKey,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Image.asset('assets/logo.png', height: 80),
-                        const SizedBox(height: 24),
-                        const Text(
-                          "OTP",
-                          style: TextStyle(fontSize: 36, color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 8),
-                        const Text(
-                          "OTP has been sent",
-                          style: TextStyle(fontSize: 18, color: Colors.white70),
-                        ),
-                        const SizedBox(height: 32),
-                        TextFormField(
-                          decoration: InputDecoration(
-                            hintText: "OTP",
-                            label: const Text("OTP"),
-                            prefixIcon: const Icon(Icons.pin),
-                            filled: true,
-                            fillColor: Colors.white,
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(16),
-                              borderSide: const BorderSide(color: Colors.white, width: 2),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(16),
-                              borderSide: const BorderSide(color: Colors.white, width: 2),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: 500, // Limit width to a phone size
+              maxHeight: 1000, // Limit height to a phone size
+            ),
+            child: Stack(
+              children: [
+                if (isMobile)
+                  Positioned.fill(
+                    child: Image.asset(
+                      'assets/bk3.png',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+              Center(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+                    child: Form(
+                      key: _formStateKey,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Image.asset('assets/logo.png', height: 80),
+                          const SizedBox(height: 24),
+                          const Text(
+                            "OTP",
+                            style: TextStyle(
+                              fontSize: 36,
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          onSaved: (value) => otp = value!,
-                        ),
-                        const SizedBox(height: 24),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 56,
-                          child: ElevatedButton(
-                            onPressed: isEnable && _formStateKey.currentState?.validate() == true
-                                ? () => _submitOrder(context: context, fullscreenDialog: false)
-                                : null,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary,
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
+                          const SizedBox(height: 8),
+                          const Text(
+                            "OTP has been sent",
+                            style: TextStyle(fontSize: 18, color: AppColors.primary),
+                          ),
+                          const SizedBox(height: 32),
+                    TextFormField(
+                              decoration: InputDecoration(
+                                hintText: "OTP",
+                                label: const Text("OTP"),
+                                prefixIcon: const Icon(Icons.pin),
+                                filled: true,
+                                fillColor: Colors.white,
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                  borderSide: const BorderSide(color: Colors.white, width: 2),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                  borderSide: const BorderSide(color: Colors.white, width: 2),
+                                ),
                               ),
-                              elevation: 4,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "OTP is required";
+                                }
+                                return null;
+                              },
+                              onChanged: (value) {
+                                setState(() {
+                                  otp = value; // Dynamically update the OTP value
+                                  isEnable = _formStateKey.currentState?.validate() ?? false; // Re-evaluate form validity
+                                });
+                              },
+                              onSaved: (value) => otp = value!,
                             ),
-                            child: isEnable
-                                ? const Text("Log in", style: TextStyle(fontSize: 18.0))
-                                : const Center(child: CircularProgressIndicator()),
+                          const SizedBox(height: 24),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 56,
+                            child: ElevatedButton(
+                              onPressed: isEnable && _formStateKey.currentState?.validate() == true
+                                  ? () => _submitOrder(context: context, fullscreenDialog: false)
+                                  : null,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.primary,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                elevation: 4,
+                              ),
+                              child: isEnable
+                                  ? const Text("Log in", style: TextStyle(fontSize: 18.0))
+                                  : const Center(child: CircularProgressIndicator()),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    );
+    
+    ),
+    
+      );
+
   }
   
 

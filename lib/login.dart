@@ -32,20 +32,31 @@ class _LoginState extends State<Login> {
   // List<bool> isEmail=[true,false];
   // final  access= AuthenticationRepo();
 
-  String? validateitemrequired(String value) {
-    if (value.isEmail) {
-      validateEmail(value);
-      setState(() {
-        isEmail = true;
-      });
-    } else if (value.isNumeric) {
-      setState(() {
-        isEmail = false;
-      });
-      return value.isEmpty ? 'Item is Required' : null;
-    }
-    return null;
+  // String? validateitemrequired(String value) {
+  //   if (value.isEmail) {
+  //     validateEmail(value);
+  //     setState(() {
+  //       isEmail = true;
+  //     });
+  //   } else if (value.isNumeric) {
+  //     setState(() {
+  //       isEmail = false;
+  //     });
+  //     return value.isEmpty ? 'Item is Required' : null;
+  //   }
+  //   return null;
+  // }
+
+String? validateitemrequired(String value) {
+  if (value.isEmail) {
+    validateEmail(value);
+    isEmail = true; // Update state without calling setState
+  } else if (value.isNumeric) {
+    isEmail = false; // Update state without calling setState
+    return value.isEmpty ? 'Item is Required' : null;
   }
+  return null;
+}
 
   String? validateEmail(String value) {
     if (value.isEmpty) {
@@ -62,7 +73,7 @@ class _LoginState extends State<Login> {
     Response result;
 
     setState(() {
-      isEnable = false;
+      isEnable = true;
     });
 
     if (_formStateKey.currentState!.validate()) {
@@ -114,7 +125,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    final isMobile = MediaQuery.of(context).size.width < 600;
+    final isMobile = MediaQuery.of(context).size.width < 2000;
 
     return Scaffold(
       backgroundColor: AppColors.background,
