@@ -12,33 +12,31 @@ class ServerRepo
 
    Future<http.Response> sendLoginRequest(phonenumber, password)async {
         
+        Uri uri=Uri.https('local-news-app-server.vercel.app','/authentication/login_Request');
+        
 
+        password=hashFunction(password);
 
-    Uri uri=Uri.https('local-news-app-server.vercel.app','/authentication/login_Request');
-    
+        
+          var response= await http.post(uri, 
 
-    password=hashFunction(password);
+                    headers: {
+                                "Content-Type":"application/json"
 
-    
-      var response= await http.post(uri, 
+                            },
 
-                headers: {
-                            "Content-Type":"application/json"
-
-                        },
-
-                body:jsonEncode(
-                  { 
-                      "phonenumber":phonenumber,
-                      "password":password ,
-                  }
-                    
-                )
-            );
+                    body:jsonEncode(
+                      { 
+                          "phonenumber":phonenumber,
+                          "password":password ,
+                      }
+                        
+                    )
+                );
 
 
 
-            return response;
+                return response;
 
    }
 
@@ -91,7 +89,31 @@ class ServerRepo
    }
 
 
+  Future<http.Response> sendPasswordResetRequest(email)async {
+        
 
+    Uri uri=Uri.http('local-news-app-server.vercel.app','/authentication/password_Forget_Reset_Request');
+    
+      var response= await http.post(uri, 
+
+                headers: {
+                            "Content-Type":"application/json"
+
+                        },
+
+                body:jsonEncode(
+                  { 
+                      "email":email,
+                  }
+                    
+                )
+            );
+
+
+
+            return response;
+
+   }
 
 
 

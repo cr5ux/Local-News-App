@@ -240,7 +240,7 @@ String? validatePassword(String value) {
                     children: [
                       Image.asset('assets/logo.png', height: 80),
                       const SizedBox(height: 24),
-                      Text(
+                      const Text(
                         "Sign Up",
                         style: TextStyle(
                           fontSize: 36,
@@ -249,7 +249,7 @@ String? validatePassword(String value) {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      Text(
+                     const Text(
                         "Create your account",
                         style: TextStyle(
                           fontSize: 18,

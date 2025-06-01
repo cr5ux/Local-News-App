@@ -44,11 +44,7 @@ void _submitOrder({required BuildContext context, required bool fullscreenDialog
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result.body)));
       // ignore: use_build_context_synchronously
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          fullscreenDialog: fullscreenDialog,
-          builder: (context) => const HomeContainer(title: "Zena"),
+      Navigator.push(context, MaterialPageRoute(fullscreenDialog: fullscreenDialog,builder: (context) => const HomeContainer(title: "Zena"),
         ),
       );
     }
