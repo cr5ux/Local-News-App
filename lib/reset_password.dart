@@ -75,7 +75,7 @@ class ResetPassword extends StatelessWidget {
                         child:Form(
 
                               key: _formStateKey,
-                              autovalidateMode: AutovalidateMode.onUnfocus,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
 
                               child: Column(
                                 

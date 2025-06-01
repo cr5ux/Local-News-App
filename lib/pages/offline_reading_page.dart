@@ -126,7 +126,7 @@ class OfflineReadingContent extends StatelessWidget {
                                 ),
                                 trailing: const Icon(Icons.arrow_forward_ios),
                                 onTap: () {
-                                  // TODO: Navigate to article detail
+                                
                                 },
                               );
                             },

@@ -11,7 +11,7 @@ import 'package:localnewsapp/login.dart';
 import 'package:localnewsapp/splash_screen.dart';
 import 'package:string_validator/string_validator.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:localnewsapp/constants/app_colors.dart';
+// import 'package:localnewsapp/constants/app_colors.dart';
 
 
 class Signup extends StatefulWidget {
@@ -200,15 +200,15 @@ class SignupState extends State<Signup> {
     }
   }
 
-  void _onFormChanged() {
-    setState(() {
-      isFormValid = _formStateKey.currentState?.validate() ?? false;
-    });
-  }
+  // void _onFormChanged() {
+  //   setState(() {
+  //     isFormValid = _formStateKey.currentState?.validate() ?? false;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
-    final isMobile = MediaQuery.of(context).size.width < 600;
+    // final isMobile = MediaQuery.of(context).size.width < 600;
 
     return Scaffold(
 

@@ -16,6 +16,8 @@ import 'package:localnewsapp/pages/language_settings_page.dart';
 import 'package:localnewsapp/pages/feedback_page.dart';
 import 'package:localnewsapp/providers/theme_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});

@@ -1,7 +1,7 @@
 
 // import 'package:localnewsapp/homecontainer.dart';
-import 'package:localnewsapp/dataAccess/authentication_repo.dart';
-import 'package:localnewsapp/homecontainer.dart';
+// import 'package:localnewsapp/dataAccess/authentication_repo.dart';
+// import 'package:localnewsapp/homecontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:localnewsapp/dataAccess/serverside_repo.dart';
@@ -9,8 +9,8 @@ import 'package:localnewsapp/otp_screen.dart';
 import 'package:localnewsapp/reset_password.dart';
 import 'package:localnewsapp/signup.dart';
 import 'package:string_validator/string_validator.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:localnewsapp/constants/app_colors.dart';
+// import 'package:easy_localization/easy_localization.dart';
+// import 'package:localnewsapp/constants/app_colors.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -134,13 +134,16 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    final isMobile = MediaQuery.of(context).size.width < 600;
+
+    // final isMobile = MediaQuery.of(context).size.width < 600;
 
     return Scaffold(
         backgroundColor: Colors.black,
         body:SafeArea(
 
-            child:Center(child: Container(
+            child:Center(
+              
+              child: Container(
 
                   padding: const EdgeInsets.all(50.0),
                   margin: const EdgeInsets.fromLTRB(15.0,15.0,15.0,15.0),
@@ -303,10 +306,8 @@ class _LoginState extends State<Login> {
                 ),
               ),
             ),
-          ],
-        ),
-      ),
     );
+    
   }
 }
 

@@ -152,7 +152,7 @@ class _InterestsSelectionPageState extends State<InterestsSelectionPage> {
                                   Shadow(
                                     blurRadius: 4,
                                     color: Colors.black.withOpacity(0.5),
-                                    offset: Offset(1, 1),
+                                    offset: const Offset(1, 1),
                                   ),
                                 ],
                               ),
