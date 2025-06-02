@@ -14,7 +14,7 @@ class Users {
 
   String phonenumber;
 
-  // String? otp;
+  String? otpExpirationTime;
   String? sceretKey;
 
   String email;
@@ -26,7 +26,7 @@ class Users {
       required this.isAdmin,
       required this.fullName,
       this.preferenceTags,
-      this.forbiddenTags, this.sceretKey, required this.phonenumber,  required this.email, required this.password});//, this.otp required this.birthday,
+      this.forbiddenTags, this.sceretKey, required this.phonenumber,  required this.email, required this.password,this.otpExpirationTime });//, required this.birthday,
 
   factory Users.fromFirestore(
 

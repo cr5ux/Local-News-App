@@ -76,17 +76,9 @@ class _SettingsState extends State<SettingsPage> {
             title: 'Reset Password',
              onTap: () { Navigator.push(context, MaterialPageRoute(fullscreenDialog: false,builder: (context)=>const ResetPassword())); },
           ),
-          _buildSettingItem(
-            title: 'News notification settings',
-            onTap: () {},
-          ),
-          _buildSettingItem(
-            title: 'Message',
-            trailing: _buildSwitch(
-              messageNotification,
-              (value) => setState(() => messageNotification = value),
-            ),
-          ),
+
+
+
           _buildSectionHeader('Features'),
           _buildSettingItem(
             title: 'News notification',
@@ -135,6 +127,7 @@ class _SettingsState extends State<SettingsPage> {
             onTap: () {},
           ),
 
+
           _buildSectionHeader('Data'),
           _buildSettingItem(
             title: 'Data Saving',
@@ -181,6 +174,8 @@ class _SettingsState extends State<SettingsPage> {
             ),
           ),
 
+
+
           _buildSectionHeader('Terms'),
           _buildSettingItem(
             title: 'End-user license agreement',
@@ -206,6 +201,8 @@ class _SettingsState extends State<SettingsPage> {
             title: 'Contact us',
             onTap: () {},
           ),
+
+
 
           _buildSectionHeader('Version Info'),
           _buildSettingItem(

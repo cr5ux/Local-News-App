@@ -3,6 +3,7 @@ import 'package:http/http.dart';
 import 'package:localnewsapp/dataAccess/serverside_repo.dart';
 import 'package:localnewsapp/homecontainer.dart';
 import 'package:localnewsapp/constants/app_colors.dart';
+import 'package:localnewsapp/login.dart';
 // ignore: must_be_immutable
 class OtpScreen extends StatefulWidget {
 
@@ -36,19 +37,29 @@ void _submitOrder({required BuildContext context, required bool fullscreenDialog
 
     Response result = await access.sendOTPVerification(otp, widget.phonenumber);
 
-    if (result.body.contains("failure")) {
+    if (result.body.contains("failure otp has expired")) {
+      setState(() {
+        isEnable = true; // Re-enable the button on failure
+      });
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result.body)));
+      // ignore: use_build_context_synchronously
+      Navigator.push(context, MaterialPageRoute(fullscreenDialog: fullscreenDialog,builder: (context) => const Login()));
+
+    } 
+    else if (result.body.contains("failure")) {
       setState(() {
         isEnable = true; // Re-enable the button on failure
       });
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result.body)));
     } else {
+
+      
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result.body)));
       // ignore: use_build_context_synchronously
-      Navigator.push(context, MaterialPageRoute(fullscreenDialog: fullscreenDialog,builder: (context) => const HomeContainer(title: "Zena"),
-        ),
-      );
+      Navigator.push(context, MaterialPageRoute(fullscreenDialog: fullscreenDialog,builder: (context) => const HomeContainer(title: "Zena"),),);
     }
   }
 }
