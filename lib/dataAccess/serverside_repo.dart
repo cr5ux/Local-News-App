@@ -12,8 +12,8 @@ class ServerRepo
 
    Future<http.Response> sendLoginRequest(phonenumber, password)async {
         
-        // Uri uri=Uri.https('local-news-app-server.vercel.app','/authentication/login_Request');
-        Uri uri=Uri.http('localhost:3030','/authentication/login_Request');
+        Uri uri=Uri.https('local-news-app-server.vercel.app','/authentication/login_Request');
+        // Uri uri=Uri.http('localhost:3030','/authentication/login_Request');
 
         password=hashFunction(password);
 
@@ -44,8 +44,8 @@ class ServerRepo
   
    Future<http.Response> sendOTPVerification(otp,phonenumber)async {
 
-      // Uri uri=Uri.https('local-news-app-server.vercel.app','/authentication/otp_verification');
-        Uri uri=Uri.http('localhost:3030','/authentication/otp_verification');
+      Uri uri=Uri.https('local-news-app-server.vercel.app','/authentication/otp_verification');
+      
 
       var time="${DateTime.now().toLocal()}";
     
