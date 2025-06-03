@@ -70,8 +70,9 @@ class _InterestsSelectionPageState extends State<InterestsSelectionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 12.0),
+          backgroundColor: AppColors.background,
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 12.0),
           child: Image.asset(
             'assets/logo.png',
             height: 32,
@@ -80,9 +81,9 @@ class _InterestsSelectionPageState extends State<InterestsSelectionPage> {
         ),
         title: const Text(
           'Choose Your Interests',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: AppColors.background,
+        // backgroundColor: AppColors.background,
         elevation: 8, // Increased for visible shadow
         // shadowColor: Colors.black.withOpacity(0.25), // Drop shadow color
         centerTitle: true,
