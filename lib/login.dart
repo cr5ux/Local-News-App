@@ -48,18 +48,9 @@ class _LoginState extends State<Login> {
   //   return null;
   // }
 
-String? validateitemrequired(String value) {
-  if (value.isEmail) {
-    validateEmail(value);
-    isEmail = true; // Update state without calling setState
-  } else if (value.isNumeric) {
-    isEmail = false; // Update state without calling setState
-    return value.isEmpty ? 'Item is Required' : null;
-  }
-  return null;
-}
 
-  String? validateEmail(String value) {
+
+  String? validateitemrequired(String value) {
     if (value.isEmpty) {
       return 'Item is Required';
     }
@@ -74,7 +65,7 @@ String? validateitemrequired(String value) {
     Response result;
 
     setState(() {
-      isEnable = true;
+      isEnable = false;
     });
 
     if (_formStateKey.currentState!.validate()) {
@@ -217,7 +208,7 @@ String? validateitemrequired(String value) {
                                 ),
 
                               ),
-                              validator: (value) => validateEmail(value!),
+                              validator: (value) => validateitemrequired(value!),
                               keyboardType: TextInputType.emailAddress,
                                onChanged: (value) {
                                 setState(() {

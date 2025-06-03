@@ -47,7 +47,9 @@ class ServerRepo
       Uri uri=Uri.https('local-news-app-server.vercel.app','/authentication/otp_verification');
       
 
-      var time="${DateTime.now().toLocal()}";
+      var time="${DateTime.now()}";
+      
+   
     
       var response= await http.post(uri, 
 
