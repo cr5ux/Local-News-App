@@ -148,8 +148,8 @@ class _LoginState extends State<Login> {
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(result.body)));
-        // ignore: use_build_context_synchronously
         Navigator.push(
+            // ignore: use_build_context_synchronously
             context,
             MaterialPageRoute(
                 fullscreenDialog: fullscreenDialog,
