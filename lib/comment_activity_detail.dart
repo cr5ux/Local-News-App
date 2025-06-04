@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localnewsapp/constants/app_colors.dart';
 import 'package:localnewsapp/dataAccess/document_repo.dart';
 import 'package:localnewsapp/dataAccess/model/comment.dart';
 
@@ -37,7 +38,7 @@ class _CommentActivityDetailState extends State<CommentActivityDetail> {
  final dR=DocumentRepo();
      return Scaffold(
         appBar: AppBar(
-              backgroundColor: Colors.black,
+              backgroundColor: AppColors.primary,
               elevation: 0,
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -54,7 +55,7 @@ class _CommentActivityDetailState extends State<CommentActivityDetail> {
                         builder: (context, snapshot)
                           {
                                 return ListTile(
-                                    leading:const Icon(Icons.comment),
+                                    leading:const Icon(Icons.comment,color: AppColors.primary,),
                                     title: Text(_commentsnapshot[index].message),
                                     subtitle: Text(snapshot.data!.title),
                                     trailing: Text(_commentsnapshot[index].registrationDate),

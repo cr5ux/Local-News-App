@@ -60,6 +60,57 @@ class UsersRepo {
 
 
 
+ Future<List<UsersBasic>> getAllAdmin() async {
+
+
+    List<UsersBasic> users = [];
+
+    try {
+
+
+      final userRef = db.collection("Users").where("isAdmin",isEqualTo: true).withConverter(fromFirestore: UsersBasic.fromFirestore,toFirestore: (UsersBasic user, _) => user.toFirestore());
+
+      await userRef.get().then((userSnap) {
+        for (var snap in userSnap.docs) {
+
+          users.add(snap.data());
+        }
+      });
+    } catch (e) {
+      rethrow;
+    }
+
+    return users;
+  }
+
+ Future<List<UsersBasic>> getAllNonAdmin(searchValue) async {
+
+
+    List<UsersBasic> users = [];
+
+    try {
+
+
+      final userRef = db.collection("Users").where("isAdmin",isEqualTo: false).where('email',isEqualTo: searchValue).withConverter(fromFirestore: UsersBasic.fromFirestore,toFirestore: (UsersBasic user, _) => user.toFirestore());
+
+      await userRef.get().then((userSnap) {
+
+        for (var snap in userSnap.docs) {
+
+          users.add(snap.data());
+        }
+      });
+    } catch (e) {
+      rethrow;
+    }
+
+    return users;
+  }
+
+
+
+
+
   Future<List<dynamic>?> getUserPreferenceTags(userID) async {
     // ignore: prefer_typing_uninitialized_variables
     var user;
@@ -481,4 +532,28 @@ Future<String> addUser(user) async {
       rethrow;
     }
   }
+
+
+  Future<String> updateAsAdminAccount(userID, isAdmin) async {
+
+    String message = "";
+    try {
+
+
+      final userRef = db.collection("Users").doc(userID).withConverter(fromFirestore: Users.fromFirestore,toFirestore: (Users user, _) => user.toFirestore());
+
+      await userRef.update({"isAdmin": isAdmin});
+
+      message = "update sucessful";
+
+      return message;
+
+
+
+    } catch (e) {
+
+      rethrow;
+    }
+  }
+
 }

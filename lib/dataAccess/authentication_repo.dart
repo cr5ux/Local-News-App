@@ -3,7 +3,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:localnewsapp/business/identification.dart';
+import 'package:localnewsapp/singleton/identification.dart';
 import 'package:localnewsapp/dataAccess/model/users.dart';
 import 'package:localnewsapp/dataAccess/users_repo.dart';
 

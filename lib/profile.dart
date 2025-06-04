@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:localnewsapp/activity.dart';
-import 'package:localnewsapp/business/identification.dart';
+import 'package:localnewsapp/singleton/identification.dart';
 import 'package:localnewsapp/constants/app_colors.dart';
 import 'package:localnewsapp/dataAccess/dto/user_basic.dart';
 // import 'package:localnewsapp/dataAccess/model/users.dart';
@@ -127,13 +127,26 @@ class _ProfileState extends State<Profile> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Container(
+                          
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.grey.shade300),
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child:Text(userInfo.email),
+                          child:FutureBuilder(
+                            future: _loadUserData(),
+                            builder: (context, snapshot){
+                              return Text(
+                                      userInfo.email,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                );
+                        
+                            } ,
+                          ),
                         ),
                         const SizedBox(width: 8),
                         IconButton(
@@ -160,7 +173,7 @@ class _ProfileState extends State<Profile> {
                         //     ? const Icon(Icons.person, size: 30)
                         //     : null,
                         // ),
-                        const SizedBox(width: 12),
+                        // const SizedBox(width: 12),
                         FutureBuilder(
                         future: _loadUserData(), 
                         builder: (context, snapshot)

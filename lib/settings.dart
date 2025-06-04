@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:localnewsapp/admin_account_configuration.dart';
 import 'package:localnewsapp/constants/app_colors.dart';
 import 'package:localnewsapp/reset_password.dart';
+import 'package:localnewsapp/singleton/identification.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -76,6 +78,11 @@ class _SettingsState extends State<SettingsPage> {
             title: 'Reset Password',
              onTap: () { Navigator.push(context, MaterialPageRoute(fullscreenDialog: false,builder: (context)=>const ResetPassword())); },
           ),
+          Identification().email=='armatemsamuel@gmail.com'?
+            _buildSettingItem(
+            title: 'Admin Account Configuration',
+             onTap: () { Navigator.push(context, MaterialPageRoute(fullscreenDialog: false,builder: (context)=>const AdminAccountConfiguration())); },
+          ):const Padding(padding: EdgeInsets.all(0)),
 
 
 

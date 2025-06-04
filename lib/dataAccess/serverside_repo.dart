@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:crypto/crypto.dart';
-import 'package:localnewsapp/business/identification.dart';
+import 'package:localnewsapp/singleton/identification.dart';
 import 'package:localnewsapp/dataAccess/users_repo.dart';
 
 
@@ -78,6 +78,7 @@ class ServerRepo
             var result =await ur.getAUserByID(Identification().userID);
             
             Identification().isAdmin=result.isAdmin;
+            Identification().email=result.email;
           
     }
             

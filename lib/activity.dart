@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:localnewsapp/comment_activity_detail.dart';
+import 'package:localnewsapp/constants/app_colors.dart';
 import 'package:localnewsapp/document_activitiy_detail.dart';
-import 'package:localnewsapp/business/identification.dart';
+import 'package:localnewsapp/singleton/identification.dart';
 import 'package:localnewsapp/dataAccess/comment_repo.dart';
 import 'package:localnewsapp/dataAccess/document_repo.dart';
 import 'package:localnewsapp/dataAccess/model/comment.dart';
@@ -60,7 +61,7 @@ class Activity extends StatelessWidget {
   Widget build(BuildContext context) {
      return Scaffold(
       appBar: AppBar(
-              backgroundColor: Colors.black,
+              backgroundColor: AppColors.primary,
               elevation: 0,
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -87,10 +88,10 @@ class Activity extends StatelessWidget {
                   return ListView (
                             children: [
                                 ListTile(
-                                  leading:const Icon(Icons.view_array_outlined),
+                                  leading:const Icon(Icons.view_array_outlined,color: AppColors.primary,),
                                   title: const Text("Views"),
                                   subtitle: Text("${snapshot.data![0].length}"),
-                                  trailing: const Icon(Icons.arrow_forward_ios_outlined),
+                                  trailing: const Icon(Icons.arrow_forward_ios_outlined,color: AppColors.primary,),
                                   
                                   onTap: (){
                                       
@@ -98,18 +99,18 @@ class Activity extends StatelessWidget {
                                   },
                                 ),
                                 ListTile(
-                                  leading:const Icon(Icons.comment),
+                                  leading:const Icon(Icons.comment,color: AppColors.primary,),
                                   title: const Text("Comments"),
                                   subtitle: Text("${snapshot.data![1].length}"),
-                                  trailing: const Icon(Icons.arrow_forward_ios_outlined),
+                                  trailing: const Icon(Icons.arrow_forward_ios_outlined,color: AppColors.primary,),
                                   onTap: (){
                                     
                                       Navigator.push(context, MaterialPageRoute(builder: (context)=>CommentActivityDetail(commentsnapshot: snapshot.data![1])));
                                   },
                                 ),
                                 ListTile(
-                                  leading:const Icon(Icons.heart_broken),
-                                  trailing: const Icon(Icons.arrow_forward_ios_outlined),
+                                  leading:const Icon(Icons.heart_broken,color: AppColors.primary,),
+                                  trailing: const Icon(Icons.arrow_forward_ios_outlined,color: AppColors.primary,),
                                   subtitle: Text("${snapshot.data![2].length}"),
                                   title: const Text("Likes"),
                                   onTap: (){
@@ -118,10 +119,10 @@ class Activity extends StatelessWidget {
                                   },
                                 ),
                                 ListTile(
-                                  leading:const Icon(Icons.share),
+                                  leading:const Icon(Icons.share,color: AppColors.primary,),
                                   title: const Text("Shares"),
                                   subtitle: Text("${snapshot.data![3].length}"),
-                                  trailing: const Icon(Icons.arrow_forward_ios_outlined),
+                                  trailing: const Icon(Icons.arrow_forward_ios_outlined,color: AppColors.primary,),
                                   onTap: (){
                                     
                                       Navigator.push(context, MaterialPageRoute(builder: (context)=>DocumentActivitiyDetail(documentsnapshot: snapshot.data![3],)));

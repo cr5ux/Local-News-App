@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localnewsapp/constants/app_colors.dart';
  
 import 'package:localnewsapp/dataAccess/model/document.dart';
 
@@ -31,7 +32,7 @@ class _DocumentActivitiyDetailState extends State<DocumentActivitiyDetail> {
  
      return Scaffold(
              appBar: AppBar(
-                backgroundColor: Colors.black,
+                backgroundColor: AppColors.primary,
                 elevation: 0,
                 leading: IconButton(
                   icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -44,7 +45,7 @@ class _DocumentActivitiyDetailState extends State<DocumentActivitiyDetail> {
                     itemCount:_documentsnapshot.length,
                     itemBuilder: (context, index) {
                       return ListTile(
-                              leading:const Icon(Icons.view_agenda_outlined),
+                              leading:const Icon(Icons.view_agenda_outlined,color: AppColors.primary,),
                               title: Text(_documentsnapshot[index].title),
                               subtitle: Text(_documentsnapshot[index].language),
                               trailing: Text(_documentsnapshot[index].registrationDate),

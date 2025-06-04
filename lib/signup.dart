@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:localnewsapp/business/identification.dart';
+import 'package:localnewsapp/singleton/identification.dart';
 // import 'package:localnewsapp/business/identification.dart';
 // import 'package:localnewsapp/dataAccess/authentication_repo.dart';
 // import 'package:localnewsapp/dataAccess/dto/login_dto.dart';
