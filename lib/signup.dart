@@ -9,7 +9,7 @@ import 'package:localnewsapp/dataAccess/model/users.dart';
 import 'package:localnewsapp/dataAccess/users_repo.dart';
 import 'package:localnewsapp/login.dart';
 import 'package:localnewsapp/splash_screen.dart';
-import 'package:string_validator/string_validator.dart';
+// import 'package:string_validator/string_validator.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:localnewsapp/constants/app_colors.dart';
 
@@ -44,20 +44,21 @@ class SignupState extends State<Signup> {
     
     if(value.isEmpty)
     {
-      return 'Item is Required';
+      return 'item_required'.tr();
     }
-    else if(!value.isEmail)
+    // else if(!value.isEmail) // isEmail from string_validator might not be available directly. Use a RegExp or other package.
+    else if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value))
     {
-      return "Input needs to be email address";
+      return "input_email".tr();
     }
     return null;
-   
+    
   }
   String? validatePhone(String value){
     
     if(value.isEmpty)
     {
-      return 'Item is Required';
+      return 'item_required'.tr();
     }
     else
     {
@@ -66,12 +67,12 @@ class SignupState extends State<Signup> {
 
       if(!regExp.hasMatch(value))
       {
-           return "Input needs to be phonenumber";
+            return "input_phone".tr(); // Consider using .tr()
       }
-     
+      
     }
     return null;
-   
+    
   }
 
   String? validateFullName(String value) {
@@ -138,21 +139,21 @@ String? validatePassword(String value) {
 
       _formStateKey.currentState!.save();
 
- 
+  
       if(confirmPassword!=user.password)
       {
           setState(() {
             isEnable=true;
           });
-           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Password and confirm password must be the same")));
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Password and confirm password must be the same")));
       }
       else
       {
-         /*
+        /*
         String? value = await auth.adduser(logdto.email, logdto.password);
           if (value != null && value.startsWith("failure"))
           {
-           
+          
               setState(() {
                 isEnable=true;
               });
@@ -164,35 +165,36 @@ String? validatePassword(String value) {
           else if (value != null)
           { */
 
-             
+          
             
 
-              String result=await ur.addUser(user);
+            String result=await ur.addUser(user);
 
-              if (result.startsWith("failure"))
-              { 
-                setState(() {
-                  isEnable=true;
-                });
-                 
-                // ignore: use_build_context_synchronously
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result)));
-
-              ///  auth.deleteUser();
-              }
-              else
-              {
-                // user= await ur.getAUserByuniqueID(user.uniqueID);
-             
-                  Identification().userID=result;
-                  
-                  Identification().isAdmin=user.isAdmin;
-                  
-                // ignore: use_build_context_synchronously
-                Navigator.push(context, MaterialPageRoute(fullscreenDialog: fullscreenDialog,builder: (context)=>const SplashScreen())); 
-              }
+            if (result.startsWith("failure"))
+            { 
+              setState(() {
+                isEnable=true;
+              });
               
-   /*   }  */
+              // ignore: use_build_context_synchronously
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result)));
+
+            ///  auth.deleteUser();
+            }
+            else
+            {
+              
+            
+              
+                Identification().userID=result;
+                
+                Identification().isAdmin=user.isAdmin;
+                
+              // ignore: use_build_context_synchronously
+              Navigator.push(context, MaterialPageRoute(fullscreenDialog: fullscreenDialog,builder: (context)=>const SplashScreen())); 
+            }
+            
+  /* }  */
             
             
         }
@@ -213,6 +215,44 @@ String? validatePassword(String value) {
   final isMobile = MediaQuery.of(context).size.width < 501;
   final double height=MediaQuery.of(context).size.height;
 
+  // Define a common InputDecoration style for text fields
+  InputDecoration modernInputDecoration({
+    required String labelText,
+    required String hintText,
+    Widget? prefixIcon,
+    Widget? suffixIcon,
+  }) {
+    return InputDecoration(
+      label: Text(labelText),
+      hintText: hintText,
+      prefixIcon: prefixIcon,
+      suffixIcon: suffixIcon,
+      filled: true,
+      fillColor: Colors.white,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12.0),
+        borderSide: BorderSide(color: Colors.grey.shade400, width: 1.5),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12.0),
+        borderSide: const BorderSide(color: AppColors.primary, width: 2.0),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12.0),
+        borderSide: BorderSide(color: Colors.red.shade700, width: 1.5),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12.0),
+        borderSide: BorderSide(color: Colors.red.shade700, width: 2.0),
+      ),
+      labelStyle: TextStyle(color: Colors.grey.shade700),
+      floatingLabelStyle: const TextStyle(color: AppColors.primary),
+      hintStyle: TextStyle(color: Colors.grey.shade400),
+    );
+  }
+
+
   return Scaffold(
     backgroundColor: AppColors.background,
     body: SafeArea(
@@ -220,13 +260,13 @@ String? validatePassword(String value) {
         child: Center(
           child: Container(
 
-           
+            
 
             decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50.0),
-                    color: AppColors.background,
+                  borderRadius: BorderRadius.circular(50.0), // This seems to be for an outer container, not the text fields
+                  color: AppColors.background,
 
-              ),
+            ),
             constraints: BoxConstraints(
             
               maxWidth: 500, // Limit width to a phone size
@@ -234,7 +274,7 @@ String? validatePassword(String value) {
             ),
             child: Stack(
               children: [
-                if (isMobile)
+                if (isMobile) // Assuming bk2.png is a background for the whole screen section
                   Positioned.fill(
                     child: Image.asset(
                       'assets/bk2.png',
@@ -263,41 +303,29 @@ String? validatePassword(String value) {
                       Image.asset('assets/logo.png', height: 80),
 
                       const SizedBox(height: 24),
-                      const Text(
-                        "Sign Up",
-                        style: TextStyle(
+                      Text(
+                        "signup".tr(),
+                        style: const TextStyle(
                           fontSize: 36,
                           fontWeight: FontWeight.bold,
                           color: AppColors.primary,
                         ),
                       ),
                       const SizedBox(height: 8),
-                     const Text(
-                        "Create your account",
-                        style: TextStyle(
+                      Text(
+                        "create_account".tr(),
+                        style: const TextStyle(
                           fontSize: 18,
                           color: AppColors.primary,
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 32), // Increased spacing before first field
 
                       TextFormField(
-                        
-                        decoration: InputDecoration(
-                          hintText: "Full Name",
-                          label: const Text("Full Name"),
-                          prefixIcon: const Icon(Icons.person),
-                          filled: true,
-                          fillColor: Colors.white,
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide: const BorderSide(color: Colors.white, width: 2),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide: const BorderSide(color: Colors.white, width: 2),
-                          ),
-                          constraints:const BoxConstraints(maxHeight: 80, maxWidth: 500)
+                        decoration: modernInputDecoration(
+                          labelText: "full_name".tr(),
+                          hintText: "full_name".tr(),
+                          prefixIcon: const Icon(Icons.person, color: AppColors.primary,),
                         ),
                         validator: (value) => validateFullName(value!),
                         keyboardType: TextInputType.name,
@@ -307,21 +335,10 @@ String? validatePassword(String value) {
                       const SizedBox(height: 20),
 
                       TextFormField(
-                        decoration: InputDecoration(
-                          hintText: "Email",
-                          label: const Text("Email"),
-                          prefixIcon: const Icon(Icons.email),
-                          filled: true,
-                          fillColor: Colors.white,
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide: const BorderSide(color: Colors.white, width: 2),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide: const BorderSide(color: Colors.white, width: 2),
-                          ),
-                          constraints:const BoxConstraints(maxHeight: 80, maxWidth: 500)
+                        decoration: modernInputDecoration(
+                          labelText: "email".tr(),
+                          hintText: "email".tr(),
+                          prefixIcon: const Icon(Icons.email, color: AppColors.primary,),
                         ),
                         validator: (value) => validateEmail(value!),
                         keyboardType: TextInputType.emailAddress,
@@ -330,23 +347,10 @@ String? validatePassword(String value) {
                       const SizedBox(height: 20),
 
                       TextFormField(
-
-                        decoration: InputDecoration(
-
-                          hintText: "Phone Number",
-                          label: const Text("Phone Number"),
-                          prefixIcon: const Icon(Icons.phone),
-                          filled: true,
-                          fillColor: Colors.white,
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide: const BorderSide(color: Colors.white, width: 2),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide: const BorderSide(color: Colors.white, width: 2),
-                          ),
-                          constraints:const BoxConstraints(maxHeight: 80, maxWidth: 500)
+                        decoration: modernInputDecoration(
+                          labelText: "phone_number".tr(),
+                          hintText: "enter_phone_number".tr(),
+                          prefixIcon: const Icon(Icons.phone, color: AppColors.primary,),
                         ),
                         validator: (value) => validatePhone(value!),
                         keyboardType: TextInputType.number,
@@ -355,117 +359,93 @@ String? validatePassword(String value) {
 
                       const SizedBox(height: 20),
 
-                      Stack(
-
-                        alignment: AlignmentDirectional.topEnd,
-                        
-                        children: [
-                          TextFormField(
-
-                            decoration: InputDecoration(
-                              hintText: "Password",
-                              label: const Text("Password"),
-                              prefixIcon: const Icon(Icons.password),
-                              filled: true,
-                              fillColor: Colors.white,
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                borderSide: const BorderSide(color: Colors.white, width: 2),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                borderSide: const BorderSide(color: Colors.white, width: 2),
-                              ),
-                              constraints:const BoxConstraints(maxHeight: 80, maxWidth: 500)
+                      TextFormField(
+                        decoration: modernInputDecoration(
+                          labelText: "password".tr(),
+                          hintText: "enter_password".tr(),
+                          prefixIcon: const Icon(Icons.lock_outline, color: AppColors.primary,), // Changed icon for visual variety
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              passwordvisible ? Icons.visibility : Icons.visibility_off, 
+                              color: AppColors.primary,
                             ),
-                            validator: (value) => validatePassword(value!),
-                            onChanged: (value) {
-                              setState(() {
-                                user.password = value; // Dynamically update the password
-                              });
-                            },
-                            keyboardType: TextInputType.text,
-                            onSaved: (value) => user.password = value!,
-                            obscureText: passwordvisible,
-                          ),
-                          IconButton(
                             onPressed: () {
                               setState(() {
-                                passwordvisible = !passwordvisible; // Toggle visibility
+                                passwordvisible = !passwordvisible;
                               });
                             },
-                            icon: passwordvisible
-                                ? const Icon(Icons.visibility)
-                                : const Icon(Icons.visibility_off),
                           ),
-                        ],
+                        ),
+                        validator: (value) => validatePassword(value!),
+                        onChanged: (value) { // Keep onChanged if needed for immediate updates to user.password
+                           setState(() {
+                             user.password = value; 
+                           });
+                        },
+                        onSaved: (value) => user.password = value!, // onSaved is also important
+                        obscureText: passwordvisible,
+                        keyboardType: TextInputType.text,
                       ),
 
                       const SizedBox(height: 20),
 
-                      Stack(
-                        alignment: AlignmentDirectional.topEnd,
-                        children: [
-                          TextFormField(
-                            decoration: InputDecoration(
-                              hintText: "Confirm Password",
-                              label: const Text("Confirm Password"),
-                              prefixIcon: const Icon(Icons.password),
-                              filled: true,
-                              fillColor: Colors.white,
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                borderSide: const BorderSide(color: Colors.white, width: 2),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                borderSide: const BorderSide(color: Colors.white, width: 2),
-                              ),
-                              constraints:const BoxConstraints(maxHeight: 80, maxWidth: 500)
+                      TextFormField(
+                        decoration: modernInputDecoration(
+                          labelText: "confirm_password".tr(),
+                          hintText: "re_enter_your_password".tr(),
+                          prefixIcon: const Icon(Icons.lock_outline, color: AppColors.primary,), // Changed icon
+                           suffixIcon: IconButton(
+                            icon: Icon(
+                              confirmvisible ? Icons.visibility : Icons.visibility_off,
+                              color: AppColors.primary,
                             ),
-                            validator: (value) => validatePassword(value!),
-                            onChanged: (value) {
-                              setState(() {
-                                confirmPassword = value; // Dynamically update the confirm password
-                              });
-                            },
-                            keyboardType: TextInputType.text,
-                            onSaved: (value) => confirmPassword = value!,
-                            obscureText: confirmvisible,
-                          ),
-                          IconButton(
                             onPressed: () {
                               setState(() {
-                                confirmvisible = !confirmvisible; // Toggle visibility
+                                confirmvisible = !confirmvisible;
                               });
                             },
-                            icon: confirmvisible
-                                ? const Icon(Icons.visibility)
-                                : const Icon(Icons.visibility_off),
                           ),
-                        ],
+                        ),
+                        validator: (value) { // Also validate confirm password
+                          if (value == null || value.isEmpty) {
+                            return "password_required".tr();
+                          }
+                          if (value != user.password) {
+                            return "passwords_do_not_match".tr(); // Add localization
+                          }
+                          return validatePassword(value); // Also apply general password rules
+                        },
+                        onChanged: (value) {
+                           setState(() {
+                             confirmPassword = value; 
+                           });
+                        },
+                        onSaved: (value) => confirmPassword = value!,
+                        obscureText: confirmvisible,
+                        keyboardType: TextInputType.text,
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 32), // Increased spacing before button
 
                       SizedBox(
 
                         width: double.infinity,
                         height: 56,
                         child: ElevatedButton(
-                          onPressed: isEnable && _formStateKey.currentState?.validate() == true
+                          onPressed: isEnable && (_formStateKey.currentState?.validate() ?? false)
                               ? () => _onSubmit(context: context, fullscreenDialog: false)
                               : null,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.background,
-                            foregroundColor: AppColors.primary,
+                            backgroundColor: AppColors.primary, // Changed to primary color
+                            foregroundColor: Colors.white,        // Changed to white for better contrast
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(12.0), // Consistent rounding
                             ),
                             elevation: 4,
+                            textStyle: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600)
                           ),
                           child: isEnable
-                              ? const Text("Register", style: TextStyle(fontSize: 18.0))
-                              : const Center(child: CircularProgressIndicator()),
+                              ? Text("register".tr()) // Removed style, inherits from button's textStyle
+                              : const Center(child: CircularProgressIndicator(color: Colors.white)),
                         ),
                       ),
 
@@ -474,21 +454,23 @@ String? validatePassword(String value) {
                       SizedBox(
                         width: double.infinity,
                         height: 56,
-                        child: ElevatedButton(
+                        child: ElevatedButton( // This could be an OutlinedButton or TextButton for secondary action
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
                             foregroundColor: AppColors.primary,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(12.0),
+                              side: const BorderSide(color: AppColors.primary, width: 1.5) // Added border
                             ),
                             elevation: 2,
+                            textStyle: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500)
                           ),
                           onPressed: () {
                             Navigator.push(context, MaterialPageRoute(builder: (context) => const Login()));
                           },
-                          child: const Text(
-                            "Do have an account? Login",
-                            style: TextStyle(color: Colors.black),
+                          child: Text(
+                            "do_have_account".tr(),
+                            // style: TextStyle(color: Colors.black), // Removed, inherits from foregroundColor
                           ),
                         ),
                       ),

@@ -9,7 +9,7 @@ import 'package:localnewsapp/otp_screen.dart';
 // import 'package:localnewsapp/reset_password.dart';
 import 'package:localnewsapp/signup.dart';
 import 'package:string_validator/string_validator.dart';
-// import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:localnewsapp/constants/app_colors.dart';
 
 class Login extends StatefulWidget {
@@ -30,6 +30,42 @@ class _LoginState extends State<Login> {
 
   final access = ServerRepo();
 
+  InputDecoration modernInputDecoration({
+    required String labelText,
+    required String hintText,
+    Widget? prefixIcon,
+    Widget? suffixIcon,
+  }) {
+    return InputDecoration(
+      label: Text(labelText),
+      hintText: hintText,
+      prefixIcon: prefixIcon,
+      suffixIcon: suffixIcon,
+      filled: true,
+      fillColor: Colors.white,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12.0),
+        borderSide: BorderSide(color: Colors.grey.shade400, width: 1.5),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12.0),
+        borderSide: const BorderSide(color: AppColors.primary, width: 2.0),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12.0),
+        borderSide: BorderSide(color: Colors.red.shade700, width: 1.5),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12.0),
+        borderSide: BorderSide(color: Colors.red.shade700, width: 2.0),
+      ),
+      labelStyle: TextStyle(color: Colors.grey.shade700),
+      floatingLabelStyle: const TextStyle(color: AppColors.primary),
+      hintStyle: TextStyle(color: Colors.grey.shade400),
+    );
+  }
+
   // List<bool> isEmail=[true,false];
   // final  access= AuthenticationRepo();
 
@@ -48,20 +84,20 @@ class _LoginState extends State<Login> {
   //   return null;
   // }
 
-String? validateitemrequired(String value) {
-  if (value.isEmail) {
-    validateEmail(value);
-    isEmail = true; // Update state without calling setState
-  } else if (value.isNumeric) {
-    isEmail = false; // Update state without calling setState
-    return value.isEmpty ? 'Item is Required' : null;
+  String? validateitemrequired(String value) {
+    if (value.isEmail) {
+      validateEmail(value);
+      isEmail = true; // Update state without calling setState
+    } else if (value.isNumeric) {
+      isEmail = false; // Update state without calling setState
+      return value.isEmpty ? 'item_required'.tr() : null;
+    }
+    return null;
   }
-  return null;
-}
 
   String? validateEmail(String value) {
     if (value.isEmpty) {
-      return 'Item is Required';
+      return 'item_required'.tr();
     }
     // else if(!value.isEmail)
     // {
@@ -70,7 +106,8 @@ String? validateitemrequired(String value) {
     return null;
   }
 
-  void _submitOrder({required BuildContext context, bool fullscreenDialog = false}) async {
+  void _submitOrder(
+      {required BuildContext context, bool fullscreenDialog = false}) async {
     Response result;
 
     setState(() {
@@ -107,19 +144,27 @@ String? validateitemrequired(String value) {
       // }
       */
 
-      result = await access.sendLoginRequest(_logindata.address, _logindata.password);
+      result = await access.sendLoginRequest(
+          _logindata.address, _logindata.password);
 
       if (result.body.contains("failure") || result.body.isEmpty) {
         setState(() {
           isEnable = true;
         });
         // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result.body)));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(result.body)));
       } else {
         // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result.body)));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(result.body)));
         // ignore: use_build_context_synchronously
-        Navigator.push(context, MaterialPageRoute(fullscreenDialog: fullscreenDialog, builder: (context) => OtpScreen(phonenumber: _logindata.address)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                fullscreenDialog: fullscreenDialog,
+                builder: (context) =>
+                    OtpScreen(phonenumber: _logindata.address)));
       }
     }
   }
@@ -127,26 +172,18 @@ String? validateitemrequired(String value) {
   @override
   Widget build(BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 501;
-    final double height=MediaQuery.of(context).size.height;
+    final double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
       backgroundColor: AppColors.background,
-
       body: SafeArea(
-
         child: Center(
-
           child: Container(
-
-           
-
             decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50.0),
-                    color: AppColors.background,
-
-              ),
+              borderRadius: BorderRadius.circular(50.0),
+              color: AppColors.background,
+            ),
             constraints: BoxConstraints(
-            
               maxWidth: 500, // Limit width to a phone size
               maxHeight: height, // Limit height to a phone size
             ),
@@ -161,128 +198,96 @@ String? validateitemrequired(String value) {
                   ),
                 Center(
                   child: SingleChildScrollView(
-
                     child: Padding(
-
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
-
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24.0, vertical: 32.0),
                       child: Form(
-
                         key: _formStateKey,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
-
                         child: Column(
-
                           mainAxisSize: MainAxisSize.min,
-
                           children: [
-
                             Image.asset('assets/logo.png', height: 80),
                             const SizedBox(height: 24),
-
-                           const Text(
-                              "Log in",
-                              style: TextStyle(
+                            Text(
+                              "login".tr(),
+                              style: const TextStyle(
                                 fontSize: 36,
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.primary,
                               ),
                             ),
                             const SizedBox(height: 8),
-                            const Text(
-                              "Sign in to your account",
-                              style: TextStyle(
+                            Text(
+                              "signin".tr(),
+                              style: const TextStyle(
                                 fontSize: 18,
                                 color: AppColors.primary,
                               ),
                             ),
-
+                            IconButton(
+                              onPressed: () {
+                                context.setLocale(
+                                    context.locale.languageCode == 'en'
+                                        ? const Locale('am')
+                                        : const Locale('en'));
+                              },
+                              icon: const Icon(
+                                Icons.language_outlined,
+                                color: AppColors.primary,
+                              ),
+                            ),
                             const SizedBox(height: 32),
+                            TextFormField(
+                              decoration: modernInputDecoration(
+                                labelText: "phone_number".tr(),
+                                hintText: "+251912345678", // Ethiopian phone number hint
+                                prefixIcon: const Icon(Icons.phone),
+                              ),
+                              validator: (value) => validateEmail(value!), // Use the corrected validator
+                              keyboardType: TextInputType.phone, // Correct keyboard type
+                              onSaved: (value) => _logindata.address = value,
+                              // Removed the 'onChanged' that was setting 'isEmail'
+                            ),
+                            const SizedBox(height: 20),
 
                             TextFormField(
-                              decoration: InputDecoration(
-
-                                hintText: "+251947586952",
-                                label: const Text("Phonenumber"),
-                                prefixIcon: const Icon(Icons.phone),
-                                filled: true,
-                                fillColor: Colors.white,
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                  borderSide: const BorderSide(color: Colors.white, width: 2),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                  borderSide: const BorderSide(color: Colors.white, width: 2),
-                                ),
-
-                              ),
-                              validator: (value) => validateEmail(value!),
-                              keyboardType: TextInputType.emailAddress,
-                               onChanged: (value) {
-                                setState(() {
-                                  isEmail = value.isEmail;
-                                });
-                              },
-                              onSaved: (value) => _logindata.address = value,
-                            ),
-                            
-                            const SizedBox(height: 20),
-                            Stack(
-                              alignment: AlignmentDirectional.topEnd,
-                              children: [
-                                TextFormField(
-                                  decoration: InputDecoration(
-                                    hintText: "Password",
-                                    label: const Text("Password"),
-                                    prefixIcon: const Icon(Icons.password),
-                                    filled: true,
-                                    fillColor: Colors.white,
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(16),
-                                      borderSide: const BorderSide(color: Colors.white, width: 2),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(16),
-                                      borderSide: const BorderSide(color: Colors.white, width: 2),
-                                    ),
+                              decoration: modernInputDecoration(
+                                labelText: "password".tr(),
+                                hintText: "enter_your_password".tr(),
+                                prefixIcon: const Icon(Icons.lock_outline), // Consistent icon
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    passwordvisible ? Icons.visibility_off_outlined : Icons.visibility_outlined, // Using outlined icons
+                                    color: Colors.grey.shade600,
                                   ),
-                                  validator: (value) => validateitemrequired(value!),
-                                  keyboardType: TextInputType.text,
-                                  onSaved: (value) => _logindata.password = value!,
-                                  obscureText: passwordvisible,
-                                ),
-                                IconButton(
                                   onPressed: () {
                                     setState(() {
                                       passwordvisible = !passwordvisible;
                                     });
                                   },
-                                  icon: passwordvisible
-                                      ? const Icon(Icons.visibility)
-                                      : const Icon(Icons.visibility_off),
                                 ),
-                              ],
+                              ),
+                              validator: (value) =>
+                                      validateitemrequired(value!), // Use a clear password validator
+                              keyboardType: TextInputType.text,
+                              onSaved: (value) => _logindata.password = value!,
+                              obscureText: passwordvisible,
                             ),
                             const SizedBox(height: 16),
-                            SizedBox(
-                              width: double.infinity,
-                              height: 56,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  foregroundColor: AppColors.primary,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  elevation: 2,
-                                ),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: TextButton(
                                 onPressed: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => ForgetPassword()));
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              ForgetPassword()));
                                 },
-                                child: const Text(
-                                  "Forget password?",
-                                  style: TextStyle(color: Colors.black),
+                                child: Text(
+                                  "forgot_password".tr(),
+                                  style: const TextStyle(color: Colors.black),
                                 ),
                               ),
                             ),
@@ -291,8 +296,13 @@ String? validateitemrequired(String value) {
                               width: double.infinity,
                               height: 56,
                               child: ElevatedButton(
-                                onPressed: isEnable && _formStateKey.currentState?.validate() == true
-                                    ? () => _submitOrder(context: context, fullscreenDialog: false)
+                                onPressed: isEnable &&
+                                        _formStateKey.currentState
+                                                ?.validate() ==
+                                            true
+                                    ? () => _submitOrder(
+                                        context: context,
+                                        fullscreenDialog: false)
                                     : null,
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: AppColors.primary,
@@ -302,7 +312,11 @@ String? validateitemrequired(String value) {
                                   ),
                                   elevation: 4,
                                 ),
-                                child: isEnable ? const Text("Send OTP", style: TextStyle(fontSize: 18.0)) : const Center(child: CircularProgressIndicator()),
+                                child: isEnable
+                                    ? Text("send_otp".tr(),
+                                        style: const TextStyle(fontSize: 18.0))
+                                    : const Center(
+                                        child: CircularProgressIndicator()),
                               ),
                             ),
                             const SizedBox(height: 16),
@@ -319,11 +333,15 @@ String? validateitemrequired(String value) {
                                   elevation: 2,
                                 ),
                                 onPressed: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const Signup()));
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const Signup()));
                                 },
-                                child: const Text(
-                                  "Don't have an account? Sign Up",
-                                  style: TextStyle(color: Colors.white),
+                                child: Text(
+                                  "dont_have_account".tr(),
+                                  style: const TextStyle(color: Colors.white),
                                 ),
                               ),
                             ),

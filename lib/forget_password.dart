@@ -214,7 +214,7 @@ class ForgetPassword extends StatelessWidget {
 
       Response message = await access.sendPasswordResetRequest(email);
 
-      if (message.body.contains("New password was sent to ur email")) {
+      if (message.body.contains("New password was sent to your email")) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message.body)));
 
         Future.delayed(const Duration(seconds: 2));
@@ -318,7 +318,7 @@ class ForgetPassword extends StatelessWidget {
                               elevation: 4,
                             ),
                             child: Text(
-                              "Reset Password".tr(),
+                              "reset_password".tr(),
                             ),
                           ),
                         ),
