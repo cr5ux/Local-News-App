@@ -8,7 +8,7 @@ import 'package:localnewsapp/forget_password.dart';
 import 'package:localnewsapp/otp_screen.dart';
 // import 'package:localnewsapp/reset_password.dart';
 import 'package:localnewsapp/signup.dart';
-import 'package:string_validator/string_validator.dart';
+// import 'package:string_validator/string_validator.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:localnewsapp/constants/app_colors.dart';
 
@@ -84,20 +84,11 @@ class _LoginState extends State<Login> {
   //   return null;
   // }
 
-  String? validateitemrequired(String value) {
-    if (value.isEmail) {
-      validateEmail(value);
-      isEmail = true; // Update state without calling setState
-    } else if (value.isNumeric) {
-      isEmail = false; // Update state without calling setState
-      return value.isEmpty ? 'item_required'.tr() : null;
-    }
-    return null;
-  }
 
-  String? validateEmail(String value) {
+
+  String? validateitemrequired(String value) {
     if (value.isEmpty) {
-      return 'item_required'.tr();
+      return 'Item is Required';
     }
     // else if(!value.isEmail)
     // {
@@ -106,12 +97,11 @@ class _LoginState extends State<Login> {
     return null;
   }
 
-  void _submitOrder(
-      {required BuildContext context, bool fullscreenDialog = false}) async {
+  void _submitOrder({required BuildContext context, bool fullscreenDialog = false}) async {
     Response result;
 
     setState(() {
-      isEnable = true;
+      isEnable = false;
     });
 
     if (_formStateKey.currentState!.validate()) {
@@ -241,10 +231,10 @@ class _LoginState extends State<Login> {
                             TextFormField(
                               decoration: modernInputDecoration(
                                 labelText: "phone_number".tr(),
-                                hintText: "+251912345678", // Ethiopian phone number hint
-                                prefixIcon: const Icon(Icons.phone),
+                                hintText: "+251912345678", 
+                                prefixIcon: const Icon(Icons.phone, color: AppColors.primary,),
                               ),
-                              validator: (value) => validateEmail(value!), // Use the corrected validator
+                              validator: (value) => validateitemrequired(value!), // Use the corrected validator
                               keyboardType: TextInputType.phone, // Correct keyboard type
                               onSaved: (value) => _logindata.address = value,
                               // Removed the 'onChanged' that was setting 'isEmail'
@@ -259,7 +249,7 @@ class _LoginState extends State<Login> {
                                 suffixIcon: IconButton(
                                   icon: Icon(
                                     passwordvisible ? Icons.visibility_off_outlined : Icons.visibility_outlined, // Using outlined icons
-                                    color: Colors.grey.shade600,
+                                    color: AppColors.primary,
                                   ),
                                   onPressed: () {
                                     setState(() {
