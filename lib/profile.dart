@@ -47,7 +47,6 @@ class _ProfileState extends State<Profile> {
 
     final uR=UsersRepo();
 
-    // userInfo= await uR.getAUserByuniqueID(user!.uid);
     userInfo = await uR.getAUserByID(Identification().userID);
     
     

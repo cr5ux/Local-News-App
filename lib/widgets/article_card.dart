@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:localnewsapp/dataAccess/dto/user_basic.dart';
 import 'package:localnewsapp/dataAccess/model/document.dart';
 import 'package:localnewsapp/pages/article_detail_page.dart';
 import 'package:localnewsapp/dataAccess/document_repo.dart'; // Import DocumentRepo
 import 'package:localnewsapp/dataAccess/model/ls.dart'; // Import LS model
 import 'package:localnewsapp/dataAccess/users_repo.dart'; // Import UsersRepo
-import 'package:localnewsapp/dataAccess/model/users.dart'; // Import Users model
+// import 'package:localnewsapp/dataAccess/model/users.dart'; // Import Users model
 import 'package:video_thumbnail/video_thumbnail.dart'; // Import video_thumbnail
 import 'dart:typed_data'; // Import Uint8List
 import 'package:firebase_auth/firebase_auth.dart'; // Import FirebaseAuth
@@ -56,14 +57,12 @@ class ArticleCard extends StatelessWidget {
     }
     final UsersRepo usersRepo = UsersRepo();
     try {
-      // Use getAUserByuniqueID instead of getAUserByID
-      final Users user = await usersRepo.getAUserByuniqueID(authorId);
+      UsersBasic? user = await usersRepo.getAUserByID(authorId);
 
       if (user.fullName.isNotEmpty) {
         return user.fullName;
       } else {
-        return 'unknown_author'
-            .tr(); // Return a default name if user not found or fullName is empty
+        return 'unknown_author'.tr(); 
       }
     } catch (e) {
       return 'unknown_author'.tr(); // Return a default name in case of error
