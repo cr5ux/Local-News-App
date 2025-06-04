@@ -66,7 +66,7 @@ class HomeContainer extends StatelessWidget {
               // color: Theme.of(context).colorScheme.secondary,
               child: TabBar(
                 //unselectedLabelColor: Colors.white,
-                labelColor:  AppColors.background,
+                labelColor:  AppColors.secondary,
                 unselectedLabelColor:  AppColors.primary,
                 tabs: Identification().isAdmin
                     ? const [
