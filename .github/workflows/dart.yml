@@ -25,7 +25,8 @@ jobs:
       - uses: futureware-tech/simulator-action@v3
         with:
           model: 'iPhone 15'
-          platform: ios,'17.2'
+          platform: ios
+          os_version: '17.2'
       - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
       
       - name: Set up Flutter
