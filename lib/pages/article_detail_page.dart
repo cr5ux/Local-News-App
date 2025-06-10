@@ -1,10 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:localnewsapp/dataAccess/model/document.dart';
+import 'package:localnewsapp/singleton/identification.dart';
 import 'package:video_player/video_player.dart';
 import 'package:localnewsapp/pages/comments_page.dart';
 import 'package:localnewsapp/dataAccess/comment_repo.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:localnewsapp/dataAccess/document_repo.dart';
 import 'package:localnewsapp/dataAccess/model/ls.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -26,6 +26,7 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
   int _commentCount = 0;
   bool _isLiked = false;
   int _likeCount = 0;
+  final currentUser = Identification().userID;
 
   @override
   void initState() {
@@ -53,11 +54,10 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
   }
 
   Future<void> _checkLikeStatus() async {
-    final currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser != null && widget.document.documentID != null) {
+    if (widget.document.documentID != null) {
       try {
         final liked = await DocumentRepo()
-            .hasUserLikedDocument(widget.document.documentID!, currentUser.uid);
+            .hasUserLikedDocument(widget.document.documentID!, currentUser);
         setState(() {
           _isLiked = liked;
         });
@@ -295,17 +295,13 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
                   // Like section (Icon and Count)
                   TextButton.icon(
                     onPressed: () async {
-                      final currentUser = FirebaseAuth.instance.currentUser;
-                      if (currentUser == null) {
-                        return;
-                      }
 
                       if (widget.document.documentID != null) {
                         try {
                           if (_isLiked) {
                             // If already liked, unlike it
                             await DocumentRepo().updateDocumentLike(
-                                widget.document.documentID!, currentUser.uid);
+                                widget.document.documentID!, currentUser);
                             setState(() {
                               _isLiked = false;
                               _likeCount--;
@@ -313,7 +309,7 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
                           } else {
                             // If not liked, like it
                             final ls = LS(
-                                userID: currentUser.uid,
+                                userID: currentUser,
                                 date: DateTime.now().toIso8601String());
                             await DocumentRepo()
                                 .addALike(widget.document.documentID!, ls);

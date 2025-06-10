@@ -118,6 +118,14 @@ class CommentRepo {
 
 //add
 
+  Future<void> deleteComment(String commentID) async {
+    try {
+      await db.collection("Comment").doc(commentID).delete();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<String> addAComment(comment) async {
     String message = "";
     try {
@@ -130,6 +138,32 @@ class CommentRepo {
       message = "$m registration sucessfull";
 
       return message;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteReply(String commentID, String replyID) async {
+    try {
+      await db
+          .collection("Comment")
+          .doc(commentID)
+          .collection("Reply")
+          .doc(replyID)
+          .delete();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteLike(String commentID, String likeID) async {
+    try {
+      await db
+          .collection("Comment")
+          .doc(commentID)
+          .collection("Like")
+          .doc(likeID)
+          .delete();
     } catch (e) {
       rethrow;
     }

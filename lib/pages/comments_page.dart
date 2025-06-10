@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:localnewsapp/dataAccess/comment_repo.dart'; // Import CommentRepo
+import 'package:intl/intl.dart';
+import 'package:localnewsapp/dataAccess/comment_repo.dart';
 import 'package:localnewsapp/dataAccess/dto/user_basic.dart';
-import 'package:localnewsapp/dataAccess/model/comment.dart'; // Import Comment model
+import 'package:localnewsapp/dataAccess/model/comment.dart';
+import 'package:localnewsapp/dataAccess/model/ls.dart';
+import 'package:localnewsapp/dataAccess/model/reply.dart';
 import 'package:localnewsapp/dataAccess/users_repo.dart';
-// import 'package:localnewsapp/dataAccess/model/users.dart'; // Import Users model
-import 'package:firebase_auth/firebase_auth.dart'; // Import FirebaseAuth
+import 'package:localnewsapp/singleton/identification.dart';
 
 class CommentsPage extends StatefulWidget {
   final String documentID;
@@ -17,10 +19,14 @@ class CommentsPage extends StatefulWidget {
 
 class _CommentsPageState extends State<CommentsPage> {
   final CommentRepo _commentRepo = CommentRepo();
-  List<Comment> _comments = [];
-  bool _isLoading = true;
   final TextEditingController _commentController = TextEditingController();
-  final currentUser = FirebaseAuth.instance.currentUser; // Get current user
+  final TextEditingController _replyController = TextEditingController();
+  final String currentUser = Identification().userID;
+
+  List<Comment> _comments = [];
+  Map<String, List<Reply>> _replies = {};
+  String? _selectedCommentId;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -31,50 +37,56 @@ class _CommentsPageState extends State<CommentsPage> {
   @override
   void dispose() {
     _commentController.dispose();
+    _replyController.dispose();
     super.dispose();
   }
 
+  // Fetch comments and their replies from Firestore
   Future<void> _fetchComments() async {
     try {
-      final comments =
-          await _commentRepo.getCommentByDocumentID(widget.documentID);
+      final comments = await _commentRepo.getCommentByDocumentID(widget.documentID);
+      final repliesMap = <String, List<Reply>>{};
+
+      for (var comment in comments) {
+        final replies = await _commentRepo.getACommentReply(comment.commentID);
+        repliesMap[comment.commentID!] = replies;
+      }
+
       setState(() {
         _comments = comments;
+        _replies = repliesMap;
         _isLoading = false;
       });
     } catch (e) {
-      // Handle error appropriately, maybe show a message
       setState(() {
         _isLoading = false;
-        // Optionally set an error state or display an error message
       });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to load comments')),
+        );
+      }
     }
   }
 
+  // Get author name by user ID
   Future<String> _getAuthorName(String authorId) async {
     final UsersRepo usersRepo = UsersRepo();
     try {
       final UsersBasic user = await usersRepo.getAUserByID(authorId);
       return user.fullName;
-      // Use fullName field
     } catch (e) {
-      return 'Unknown Author'; // Return a default name in case of error
+      return 'Unknown Author';
     }
   }
 
+  // Add a new comment
   Future<void> _addComment() async {
-    if (_commentController.text.trim().isEmpty){
-      return; // Don't add empty comments
-    }
-
-    if (currentUser == null) {
-      return;
-    }
+    if (_commentController.text.trim().isEmpty) return;
 
     final newComment = Comment(
-      commentID: '', // Firestore will generate this
       documentID: widget.documentID,
-      userID: currentUser!.uid, // Use the logged-in user's ID
+      userID: currentUser,
       message: _commentController.text.trim(),
       registrationDate: DateTime.now().toIso8601String(),
     );
@@ -82,10 +94,45 @@ class _CommentsPageState extends State<CommentsPage> {
     try {
       await _commentRepo.addAComment(newComment);
       _commentController.clear();
-      // Re-fetch comments to update the list
       _fetchComments();
     } catch (e) {
-      // Handle error appropriately
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to add comment')),
+        );
+      }
+    }
+  }
+
+  // Delete a comment
+  Future<void> _deleteComment(String commentID) async {
+    try {
+      await _commentRepo.deleteComment(commentID);
+      _fetchComments();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to delete comment')),
+        );
+      }
+    }
+  }
+
+  // Add a like to a comment
+  Future<void> _handleLike(String commentID) async {
+    try {
+      final like = LS(
+        userID: currentUser,
+        date: DateTime.now().toIso8601String(),
+      );
+      await _commentRepo.addALike(commentID, like);
+      _fetchComments();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to add like')),
+        );
+      }
     }
   }
 
@@ -112,40 +159,181 @@ class _CommentsPageState extends State<CommentsPage> {
                         itemCount: _comments.length,
                         itemBuilder: (context, index) {
                           final comment = _comments[index];
-                          return ListTile(
-                            leading: CircleAvatar(
-                              backgroundImage: currentUser?.photoURL != null
-                                  ? NetworkImage(currentUser!.photoURL!)
-                                  : null,
-                              backgroundColor: Colors.grey[300],
-                              child: currentUser?.photoURL == null
-                                  ? const Icon(Icons.person,
-                                      color: Colors.black54)
-                                  : null,
-                            ),
-                            title: FutureBuilder<String>(
-                              // Use FutureBuilder to get author name asynchronously
-                              future: _getAuthorName(
-                                  comment.userID), // Call the async method
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const Text(
-                                      'Loading...'); // Show loading text
-                                } else if (snapshot.hasError) {
-                                  return const Text('Error'); // Show error text
-                                } else if (snapshot.hasData) {
-                                  return Text(snapshot.data ??
-                                      'Unknown Author'); // Display the author's name, or fallback
-                                } else {
-                                  return const Text(
-                                      'Unknown Author'); // Fallback
-                                }
-                              },
-                            ),
-                            subtitle: Text(comment.message),
-                            trailing: Text(comment
-                                .registrationDate), // Placeholder for time ago
+                          return Column(
+                            children: [
+                              ListTile(
+                                title: FutureBuilder<String>(
+                                  future: _getAuthorName(comment.userID),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return const Text('Loading...');
+                                    } else if (snapshot.hasError) {
+                                      return const Text('Error');
+                                    }
+                                    return Text(snapshot.data ?? 'Unknown Author');
+                                  },
+                                ),
+                                subtitle: Text(comment.message),
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          '${_replies[comment.commentID]?.length ?? 0}',
+                                          style: const TextStyle(fontSize: 12),
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(Icons.reply, size: 20),
+                                          onPressed: () {
+                                            setState(() {
+                                              _selectedCommentId = _selectedCommentId ==
+                                                      comment.commentID
+                                                  ? null
+                                                  : comment.commentID;
+                                              _replyController.clear();
+                                            });
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(Icons.favorite_border, size: 20),
+                                      onPressed: () => _handleLike(comment.commentID!),
+                                    ),
+                                    if (currentUser == comment.userID)
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.delete,
+                                          size: 20,
+                                          color: Colors.red,
+                                        ),
+                                        onPressed: () => _deleteComment(comment.commentID!),
+                                      ),
+                                  ],
+                                ),
+                                leading: Text(
+                                  DateFormat('MMM dd, yyyy').format(
+                                    DateTime.parse(comment.registrationDate),
+                                  ),
+                                ),
+                              ),
+                              if (_selectedCommentId == comment.commentID)
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 56.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      ListView.builder(
+                                        shrinkWrap: true,
+                                        physics: const NeverScrollableScrollPhysics(),
+                                        itemCount:
+                                            _replies[_selectedCommentId]?.length ?? 0,
+                                        itemBuilder: (context, index) {
+                                          final reply =
+                                              _replies[_selectedCommentId]![index];
+                                          return ListTile(
+                                            title: FutureBuilder<String>(
+                                              future: _getAuthorName(reply.userID),
+                                              builder: (context, snapshot) {
+                                                if (snapshot.connectionState ==
+                                                    ConnectionState.waiting) {
+                                                  return const Text('Loading...');
+                                                }
+                                                return Text(
+                                                    snapshot.data ?? 'Unknown Author');
+                                              },
+                                            ),
+                                            subtitle: Text(reply.message),
+                                            trailing: currentUser == reply.userID
+                                                ? IconButton(
+                                                    icon: const Icon(
+                                                      Icons.delete,
+                                                      size: 20,
+                                                      color: Colors.red,
+                                                    ),
+                                                    onPressed: () async {
+                                                      await _commentRepo.deleteReply(
+                                                        _selectedCommentId!,
+                                                        reply.replyID!,
+                                                      );
+                                                      _fetchComments();
+                                                    },
+                                                  )
+                                                : null,
+                                          );
+                                        },
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: TextField(
+                                                controller: _replyController,
+                                                decoration: InputDecoration(
+                                                  hintText: 'Write a reply...',
+                                                  border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(20.0),
+                                                    borderSide: BorderSide.none,
+                                                  ),
+                                                  filled: true,
+                                                  fillColor: Colors.grey[200],
+                                                  contentPadding:
+                                                      const EdgeInsets.symmetric(
+                                                    horizontal: 16.0,
+                                                    vertical: 8.0,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            IconButton(
+                                              icon: const Icon(Icons.send),
+                                              onPressed: () async {
+                                                if (_replyController.text.trim().isEmpty) {
+                                                  return;
+                                                }
+
+                                                final reply = Reply(
+                                                  replyID: '',
+                                                  userID: currentUser,
+                                                  message:
+                                                      _replyController.text.trim(),
+                                                  date:
+                                                      DateTime.now().toIso8601String(),
+                                                );
+
+                                                try {
+                                                  await _commentRepo.addAReply(
+                                                    _selectedCommentId!,
+                                                    reply,
+                                                  );
+                                                  _replyController.clear();
+                                                  _fetchComments();
+                                                } catch (e) {
+                                                  if (mounted) {
+                                                    // ignore: use_build_context_synchronously
+                                                    ScaffoldMessenger.of(context)
+                                                        .showSnackBar(
+                                                      const SnackBar(
+                                                        content: Text(
+                                                            'Failed to add reply'),
+                                                      ),
+                                                    );
+                                                  }
+                                                }
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                            ],
                           );
                         },
                       ),
@@ -155,15 +343,6 @@ class _CommentsPageState extends State<CommentsPage> {
             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
             child: Row(
               children: [
-                CircleAvatar(
-                  backgroundImage: currentUser?.photoURL != null
-                      ? NetworkImage(currentUser!.photoURL!)
-                      : null,
-                  backgroundColor: Colors.grey[400],
-                  child: currentUser?.photoURL == null
-                      ? const Icon(Icons.person, color: Colors.black54)
-                      : null,
-                ),
                 const SizedBox(width: 8.0),
                 Expanded(
                   child: TextField(
@@ -177,7 +356,9 @@ class _CommentsPageState extends State<CommentsPage> {
                       filled: true,
                       fillColor: Colors.grey[200],
                       contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16.0, vertical: 8.0),
+                        horizontal: 16.0,
+                        vertical: 8.0,
+                      ),
                     ),
                   ),
                 ),
