@@ -4,6 +4,7 @@ class UsersBasic {
 
   String? userID;
   String fullName;
+  String? profileImagePath ;
 
   List<dynamic>? preferenceTags;
   List<dynamic>? forbiddenTags;
@@ -18,12 +19,13 @@ class UsersBasic {
 
   UsersBasic({
       this.userID,
+      required this.profileImagePath,
       required this.isAdmin,
       required this.fullName,
       this.preferenceTags,
       this.forbiddenTags, required this.phonenumber,  required this.email});
 
-  factory UsersBasic.fromFirestore(
+    factory UsersBasic.fromFirestore(
 
 
     DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -40,7 +42,8 @@ class UsersBasic {
       
       fullName: data?['fullName'],
 
-
+      profileImagePath: data?['profileImagePath'],
+      
       isAdmin: data?['isAdmin'],
       preferenceTags: data?['preferenceTags'],
       forbiddenTags: data?['forbiddenTags'],
@@ -62,7 +65,8 @@ class UsersBasic {
 
       "fullName": fullName,
 
-
+      "profileImagePath":profileImagePath,
+      
       "isAdmin": isAdmin,
 
       "preferenceTags": preferenceTags,

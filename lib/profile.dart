@@ -20,6 +20,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+
+import 'package:image_picker/image_picker.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 class Profile extends StatefulWidget {
   const Profile({super.key});
 
@@ -30,8 +34,9 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   // final user = FirebaseAuth.instance.currentUser;
  
-  UsersBasic  userInfo=UsersBasic(isAdmin: Identification().isAdmin, fullName: "", phonenumber: "", email: "");
-
+  // UsersBasic  userInfo=UsersBasic(isAdmin: Identification().isAdmin, fullName: "", phonenumber: "", email: "", profileImagePath: '');
+  String imageAddress="";
+  final _uR=UsersRepo();
  // final _firestore = FirebaseFirestore.instance;
   // int reputation = 0;
   // int followings = 0;
@@ -43,12 +48,17 @@ class _ProfileState extends State<Profile> {
     _loadUserData();
   }
 
-  Future<void> _loadUserData() async {
+  Future<UsersBasic> _loadUserData() async {
 
-    final uR=UsersRepo();
+  
 
-    userInfo = await uR.getAUserByID(Identification().userID);
+  UsersBasic userInfo = await _uR.getAUserByID(Identification().userID);
     
+    setState(() {
+       imageAddress=userInfo.profileImagePath!;
+    });
+
+    return userInfo;
     
   }
 
@@ -113,7 +123,9 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: RefreshIndicator(
+
         onRefresh: _loadUserData,
+
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -127,76 +139,162 @@ class _ProfileState extends State<Profile> {
                       children: [
                         Container(
                           
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey.shade300),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child:FutureBuilder(
-                            future: _loadUserData(),
-                            builder: (context, snapshot){
-                              return Text(
-                                      userInfo.email,
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                );
-                        
-                            } ,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        IconButton(
-                          icon: const Icon(Icons.settings),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const SettingsPage()),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        // CircleAvatar(
-                        //   radius: 30,
-                        //   backgroundImage: user?.photoURL != null 
-                        //     ? NetworkImage(user!.photoURL!) 
-                        //     : null,
-                        //   child: user?.photoURL == null 
-                        //     ? const Icon(Icons.person, size: 30)
-                        //     : null,
-                        // ),
-                        // const SizedBox(width: 12),
-                        FutureBuilder(
-                        future: _loadUserData(), 
-                        builder: (context, snapshot)
-                            {
-                              return  Text(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
 
-                                      userInfo.fullName,
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+
+                            decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.grey.shade300),
+                                      borderRadius: BorderRadius.circular(20),
+                            ),
+
+                            child:FutureBuilder(
+                                  future: _loadUserData(),
+                                  builder: (context, snapshot){
+                                    return Text(
+                                            snapshot.data!.email,
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                      );
+                              
+                                  } ,
+                                ),
+                        ),
+
+                        const SizedBox(width: 8),
+
+                        IconButton(
+                              icon: const Icon(Icons.settings),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const SettingsPage()),
                                 );
-                          }
-                        )
-                        
+                              },
+                            ),
                       ],
                     ),
+
+                    const SizedBox(height: 16),
+
+                    FutureBuilder(
+                        future: _loadUserData(),
+                        builder: (context, snapshot){
+                          return  Row(
+                                      children: [
+                                              snapshot.data!.profileImagePath ==""?const Icon(Icons.person):Image.network(imageAddress,scale: 3,),
+                                              const SizedBox(width: 12),
+                                              Text(
+                                                snapshot.data!.fullName,
+                                                style: const TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                      ]
+                                    );
+                    
+                        } ,
+                      ),
+                  
                     const SizedBox(height: 24),
                   ],
                 ),
               ),
+
               const Divider(height: 1),
 
               // Menu items
+              FutureBuilder(
+                    future: _loadUserData(), 
+                    builder: (context, snapshot)
+                        {
+                          return  
+                             _buildMenuItem(Icons.edit, 'Change Profile Picture'.tr(),
+                                  onTap: () async {
+
+                                       ImagePicker picker = ImagePicker();
+                                       XFile? image =
+                                          await picker.pickImage(source: ImageSource.gallery);
+                                      if (image == null) {
+                                        return;
+                                      }
+                                      var imageExtension = image.name.split('.').last.toLowerCase();
+                                      
+                                      var oldExtention= snapshot.data!.profileImagePath!.split('.').last.toLowerCase();
+
+                                      var imageBytes = await image.readAsBytes();
+                                   
+                                      var userID = snapshot.data!.userID;
+                                      
+                                      var imagePath = '$userID.$imageExtension';
+                                      
+                                      try{
+                                       
+                                          if(snapshot.data!.profileImagePath!=null || snapshot.data!.profileImagePath!="")
+                                          {
+                                          
+                                          
+                                            await Supabase.instance.client.storage.from('document').remove(["user_Profile_Image/$userID.$oldExtention"]);
+                                   
+
+                                          }
+                          
+                                      }
+                                      catch(e)
+                                      {
+                                                // ignore: use_build_context_synchronously
+                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("$e removal Error")));
+
+                                      }
+                                      
+                                      try
+                                      {
+                                         
+                                           
+                                          await Supabase.instance.client.storage.from('document/user_Profile_Image').uploadBinary(
+                                              imagePath,
+                                              imageBytes,
+                                              fileOptions: FileOptions(
+                                                upsert: true,
+                                                contentType: 'image/$imageExtension',
+                                              ),
+                                            );
+                                      }
+                                        catch(e)
+                                      {
+                                                // ignore: use_build_context_synchronously
+                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("$e  upload Error")));
+
+                                      }
+                                      try{
+
+                                          
+                                          String imageUrl =
+                                                Supabase.instance.client.storage.from('document/user_Profile_Image').getPublicUrl(imagePath);
+
+
+                                          await _uR.updateUserProfile(userID, imageUrl);
+
+                                          setState(() {
+                                                imageAddress=imageUrl;
+                                          });
+                                  
+                                      }
+                                      catch(e)
+                                      {
+                                                // ignore: use_build_context_synchronously
+                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+
+                                      }
+                                      
+                              });
+                                                            
+                      }
+                ),
+              
               _buildMenuItem(Icons.local_activity, 'activities'.tr(),
                   onTap: () {
                 Navigator.push(

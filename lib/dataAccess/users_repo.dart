@@ -466,6 +466,28 @@ Future<String> addUser(user) async {
     }
   }
 
+  Future<String> updateUserProfile(userID, profileImagePath) async {
+
+    String message = "";
+
+    try {
+
+
+      final userRef = db.collection("Users").doc(userID).withConverter(fromFirestore: Users.fromFirestore,toFirestore: (Users user, _) => user.toFirestore());
+
+          
+
+      await userRef.update({"profileImagePath": profileImagePath});
+
+      message = "registration sucessful";
+
+      return message;
+
+    } catch (e)
+    {
+      rethrow;
+    }
+  }
 
   Future<String> updateUserPasswordInfo(Users user) async {
 

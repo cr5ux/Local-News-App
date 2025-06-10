@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Document {
   final String? documentID;
+  final String? coverImagePath;
   final String documentName;
   final String title;
   final List<String> documentPath;
@@ -17,27 +18,13 @@ class Document {
   final String documentType;
   final bool isDownloaded;
 
-  factory Document.fromMap(Map<String, dynamic> map) {
-    return Document(
-      documentID: map['documentID'],
-      documentName: map['documentName'] ?? '',
-      title: map['title'] ?? '',
-      documentPath: List<String>.from(map['documentPath'] ?? []),
-      content: map['content'],
-      language: map['language'] ?? '',
-      indexTermsAM: List<String>.from(map['indexTermsAM'] ?? []),
-      indexTermsEN: List<String>.from(map['indexTermsEN'] ?? []),
-      registrationDate: map['registrationDate'] ?? '',
-      isActive: map['isActive'] ?? false,
-      authorID: map['authorID'] ?? '',
-      tags: List<String>.from(map['tags'] ?? []),
-      documentType: map['documentType'] ?? '',
-      isDownloaded: map['isDownloaded'] ?? false,
-    );
-  }
+  
+
+  
 
   Document({
     this.documentID,
+    this.coverImagePath,
     required this.documentName,
     required this.title,
     required this.documentPath,
@@ -60,7 +47,9 @@ class Document {
     final data = snapshot.data();
 
     return Document(
+      
       documentID: snapshot.id,
+      coverImagePath: data?['coverImagePath'],
       documentName: data?['documentName'] ?? '',
       title: data?['title'] ?? '',
       documentPath: List<String>.from(data?['documentPath'] ?? []),
@@ -80,6 +69,7 @@ class Document {
   Map<String, dynamic> toFirestore() {
     return {
       if (documentID != null) "id": documentID,
+      "coverImagePath":coverImagePath,
       "documentName": documentName,
       "title": title,
       "documentPath": documentPath,
@@ -93,6 +83,29 @@ class Document {
       "tags": tags,
       "documentType": documentType,
     };
+  }
+
+
+
+
+factory Document.fromMap(Map<String, dynamic> map) {
+    return Document(
+      documentID: map['documentID'],
+      documentName: map['documentName'] ?? '',
+      title: map['title'] ?? '',
+      coverImagePath:  map['coverImagePath']??'',
+      documentPath: List<String>.from(map['documentPath'] ?? []),
+      content: map['content'],
+      language: map['language'] ?? '',
+      indexTermsAM: List<String>.from(map['indexTermsAM'] ?? []),
+      indexTermsEN: List<String>.from(map['indexTermsEN'] ?? []),
+      registrationDate: map['registrationDate'] ?? '',
+      isActive: map['isActive'] ?? false,
+      authorID: map['authorID'] ?? '',
+      tags: List<String>.from(map['tags'] ?? []),
+      documentType: map['documentType'] ?? '',
+      isDownloaded: map['isDownloaded'] ?? false,
+    );
   }
 
   Map<String, dynamic> toMap() {
@@ -120,6 +133,7 @@ class Document {
     final Map<String, dynamic> data = jsonDecode(source);
     return Document(
       documentID: data['documentID'],
+      coverImagePath: data['coverImagePath'],
       documentName: data['documentName'] ?? '',
       title: data['title'] ?? '',
       documentPath: List<String>.from(data['documentPath'] ?? []),
@@ -166,7 +180,7 @@ class Document {
       authorID: authorID ?? this.authorID,
       tags: tags ?? List<String>.from(this.tags),
       documentType: documentType ?? this.documentType,
-      isDownloaded: isDownloaded ?? this.isDownloaded,
+      isDownloaded: isDownloaded ?? this.isDownloaded, coverImagePath: '',
     );
   }
 }

@@ -5,7 +5,9 @@ class Users {
   String? userID;
   String fullName;
 
-  String? uniqueID;
+  // String? uniqueID;
+
+  String? profileImagePath;
 
   List<dynamic>? preferenceTags;
   List<dynamic>? forbiddenTags;
@@ -22,7 +24,7 @@ class Users {
 
   Users({
       this.userID,
-       this.uniqueID,
+      this.profileImagePath,
       required this.isAdmin,
       required this.fullName,
       this.preferenceTags,
@@ -45,7 +47,7 @@ class Users {
       
       fullName: data?['fullName'],
 
-      uniqueID: data?['uniqueID'],
+      profileImagePath: data?['profileImagePath'],
 
       isAdmin: data?['isAdmin'],
       preferenceTags: data?['preferenceTags'],
@@ -53,7 +55,6 @@ class Users {
 
       phonenumber: data?['phonenumber'],
 
-      // otp: data?['otp'],
       sceretKey: data?['sceretKey'],
 
       email: data?['email'],
@@ -70,7 +71,7 @@ class Users {
 
       "fullName": fullName,
 
-      "uniqueID": uniqueID,
+      "profileImagePath":profileImagePath,
 
       "isAdmin": isAdmin,
 
@@ -78,8 +79,7 @@ class Users {
       "forbiddenTags": forbiddenTags,
 
       "phonenumber": phonenumber,
-       
-      // "otp":otp,
+
       "sceretKey":sceretKey,
 
       "email": email,

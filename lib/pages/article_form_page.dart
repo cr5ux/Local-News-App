@@ -89,6 +89,7 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
       // Form is valid, process the submission
       // Create a Document object from form data
       final newDocument = Document(
+        
         documentID: null, // Firestore will generate this
         documentName: _titleController.text, // Using title as document name
         title: _titleController.text,

@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:localnewsapp/login.dart';
 import 'package:localnewsapp/providers/theme_provider.dart';
 import 'package:localnewsapp/providers/offline_reading_provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -15,6 +16,12 @@ void main() async {
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  
+  await Supabase.initialize(
+    url: 'https://wrjezauosaqittnvpzsf.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndyamV6YXVvc2FxaXR0bnZwenNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc3Mjg3MDMsImV4cCI6MjA2MzMwNDcwM30.zjGIB2PwYZpI_oqPACQYV0Bp4pujAdoKs0WtI1aM_w4',
   );
 
   final prefs = await SharedPreferences.getInstance();
