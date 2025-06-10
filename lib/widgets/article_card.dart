@@ -5,10 +5,10 @@ import 'package:localnewsapp/pages/article_detail_page.dart';
 import 'package:localnewsapp/dataAccess/document_repo.dart'; // Import DocumentRepo
 import 'package:localnewsapp/dataAccess/model/ls.dart'; // Import LS model
 import 'package:localnewsapp/dataAccess/users_repo.dart'; // Import UsersRepo
+import 'package:localnewsapp/singleton/identification.dart';
 // import 'package:localnewsapp/dataAccess/model/users.dart'; // Import Users model
 import 'package:video_thumbnail/video_thumbnail.dart'; // Import video_thumbnail
 import 'dart:typed_data'; // Import Uint8List
-import 'package:firebase_auth/firebase_auth.dart'; // Import FirebaseAuth
 import 'package:localnewsapp/constants/categories.dart';
 import 'package:easy_localization/easy_localization.dart'; // Import EasyLocalization for translations
 
@@ -123,21 +123,12 @@ class ArticleCard extends StatelessWidget {
         if (document.documentID != null) {
           try {
             // Get current user ID
-            final currentUser = FirebaseAuth.instance.currentUser;
-            if (currentUser != null) {
-              final String currentUserId = currentUser.uid;
+            final currentUser = Identification().userID;
+              final String currentUserId = currentUser;
               final LS view = LS(
                   userID: currentUserId,
                   date: DateTime.now().toIso8601String());
-              // No await here, so it doesn't block navigation
               documentRepo.addAView(document.documentID!, view);
-              // Optional: Log success within the async operation if needed
-            } else {
-              // User is not logged in, perhaps show a message or just don't record the view
-              // ScaffoldMessenger.of(context).showSnackBar(
-              //   const SnackBar(content: Text('Log in to record your view')),
-              // );
-            }
           } catch (e) {
             // Handle error appropriately, but don't block navigation// Log the error
           }
@@ -421,12 +412,13 @@ class ArticleCard extends StatelessWidget {
                         FutureBuilder<int>(
                           future: _getViewCount(
                               document.documentID!), // Call async method
+                          
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
                               return const SizedBox(
-                                  width: 20,
-                                  height: 20,
+                                  width: 10,
+                                  height: 10,
                                   child: CircularProgressIndicator(
                                       strokeWidth:
                                           2)); // Show loading indicator
