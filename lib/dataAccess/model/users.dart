@@ -22,13 +22,23 @@ class Users {
   String email;
   String password;
 
+  String? countryCode;
+  String? languageCode;
+
   Users({
       this.userID,
       this.profileImagePath,
       required this.isAdmin,
       required this.fullName,
       this.preferenceTags,
-      this.forbiddenTags, this.sceretKey, required this.phonenumber,  required this.email, required this.password,this.otpExpirationTime });//, required this.birthday,
+      this.forbiddenTags, 
+      this.sceretKey, 
+      required this.phonenumber,  
+      required this.email, 
+      required this.password,
+      this.otpExpirationTime,
+      this.countryCode,
+      this.languageCode });//, required this.birthday,
 
   factory Users.fromFirestore(
 
@@ -42,29 +52,22 @@ class Users {
     final data = snapshot.data();
 
     return Users(
-      
       userID: snapshot.id,
-      
       fullName: data?['fullName'],
-
       profileImagePath: data?['profileImagePath'],
-
       isAdmin: data?['isAdmin'],
       preferenceTags: data?['preferenceTags'],
       forbiddenTags: data?['forbiddenTags'],
-
       phonenumber: data?['phonenumber'],
-
       sceretKey: data?['sceretKey'],
-
       email: data?['email'],
-      password: data?['password'] ,
-
+      password: data?['password'],
+      countryCode: data?['countryCode'],
+      languageCode: data?['languageCode']
     );
   }
 
   Map<String, dynamic> toFirestore() {
-
     return {
 
       if (userID != null) "id": userID,
@@ -84,7 +87,9 @@ class Users {
 
       "email": email,
       "password": password,
-
+      
+      if (countryCode != null) "countryCode": countryCode,
+      if (languageCode != null) "languageCode": languageCode
     };
   }
 }

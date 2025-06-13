@@ -570,10 +570,43 @@ Future<String> addUser(user) async {
 
       return message;
 
-
-
     } catch (e) {
 
+      rethrow;
+    }
+  }
+
+  // Blocked users methods
+  Future<List<Users>> getBlockedUsers() async {
+    List<Users> blockedUsers = [];
+    try {
+      final userRef = db.collection("Users").where("isBlocked", isEqualTo: true).withConverter(
+        fromFirestore: Users.fromFirestore,
+        toFirestore: (Users user, _) => user.toFirestore(),
+      );
+
+      await userRef.get().then((userSnap) {
+        for (var snap in userSnap.docs) {
+          blockedUsers.add(snap.data());
+        }
+      });
+    } catch (e) {
+      rethrow;
+    }
+    return blockedUsers;
+  }
+
+  Future<String> unblockUser(String userID) async {
+    String message = "";
+    try {
+      final userRef = db.collection("Users").doc(userID).withConverter(
+        fromFirestore: Users.fromFirestore,
+        toFirestore: (Users user, _) => user.toFirestore(),
+      );
+      await userRef.update({"isBlocked": false});
+      message = "User unblocked successfully";
+      return message;
+    } catch (e) {
       rethrow;
     }
   }

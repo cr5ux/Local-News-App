@@ -16,6 +16,8 @@ class UsersBasic {
 
   String email;
 
+  String? countryCode;
+  String? languageCode;
 
   UsersBasic({
       this.userID,
@@ -23,11 +25,11 @@ class UsersBasic {
       required this.isAdmin,
       required this.fullName,
       this.preferenceTags,
-      this.forbiddenTags, required this.phonenumber,  required this.email});
+      this.forbiddenTags, required this.phonenumber,  required this.email,
+      this.countryCode,
+      this.languageCode});
 
     factory UsersBasic.fromFirestore(
-
-
     DocumentSnapshot<Map<String, dynamic>> snapshot,
     SnapshotOptions? options,
 
@@ -52,8 +54,10 @@ class UsersBasic {
 
  
 
-      email: data?['email']
-
+      email: data?['email'],
+      
+      countryCode: data?['countryCode'],
+      languageCode: data?['languageCode']
     );
   }
 
@@ -76,17 +80,10 @@ class UsersBasic {
        
   
 
-      "email": email
-
+      "email": email,
+      
+      if (countryCode != null) "countryCode": countryCode,
+      if (languageCode != null) "languageCode": languageCode
     };
   }
 }
-
-
-
-  
-    
-    
-    
-
- 
