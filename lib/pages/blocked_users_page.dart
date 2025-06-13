@@ -31,6 +31,7 @@ class _BlockedUsersPageState extends State<BlockedUsersPage> {
       _blockedUsers = await usersRepo.getBlockedUsers();
       _filteredUsers = List.from(_blockedUsers);
     } catch (e) {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error loading blocked users: $e')),
       );
@@ -41,14 +42,14 @@ class _BlockedUsersPageState extends State<BlockedUsersPage> {
     }
   }
 
-  void _filterUsers(String query) {
-    setState(() {
-      _filteredUsers = _blockedUsers.where((user) {
-        return user.fullName.toLowerCase().contains(query.toLowerCase()) ||
-               user.phonenumber.toLowerCase().contains(query.toLowerCase());
-      }).toList();
-    });
-  }
+  // void _filterUsers(String query) {
+  //   setState(() {
+  //     _filteredUsers = _blockedUsers.where((user) {
+  //       return user.fullName.toLowerCase().contains(query.toLowerCase()) ||
+  //              user.phonenumber.toLowerCase().contains(query.toLowerCase());
+  //     }).toList();
+  //   });
+  // }
 
   Future<void> _unblockUser(Users user) async {
     try {
@@ -60,10 +61,12 @@ class _BlockedUsersPageState extends State<BlockedUsersPage> {
         _filteredUsers.remove(user);
       });
 
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('User unblocked successfully')),
       );
     } catch (e) {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error unblocking user: $e')),
       );

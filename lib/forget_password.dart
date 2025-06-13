@@ -269,7 +269,7 @@ class ForgetPassword extends StatelessWidget {
                 child: SingleChildScrollView(
                   child: Form(
                     key: _formStateKey,
-                    autovalidateMode: AutovalidateMode.onUnfocus,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -278,32 +278,36 @@ class ForgetPassword extends StatelessWidget {
                           "reset_password".tr(),
                           style: const TextStyle(fontSize: 36),
                         ),
-                        const SizedBox(height: 20),
+
+                       const SizedBox(height: 20),
+
                        Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-  child: TextFormField(
-    decoration: InputDecoration(
-      hintText: "email".tr(),
-      label: Text("email".tr()),
-      prefixIcon: const Icon(Icons.email),
-      filled: true,
-      fillColor: Colors.white,
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: Colors.white, width: 2),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: Colors.white, width: 2),
-      ),
-    ),
-    validator: (value) => validateEmail(value!),
-    keyboardType: TextInputType.emailAddress,
-    onSaved: (value) => email = value!,
-  
-  ),
-),
-                        const SizedBox(height: 20),
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+
+                              child: TextFormField(
+                                
+                                decoration: InputDecoration(
+                                  hintText: "email".tr(),
+                                  label: Text("email".tr()),
+                                  prefixIcon: const Icon(Icons.email),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                    borderSide: const BorderSide(color: Colors.white, width: 2),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                    borderSide: const BorderSide(color: Colors.white, width: 2),
+                                  ),
+                                ),
+                                validator: (value) => validateEmail(value!),
+                                keyboardType: TextInputType.emailAddress,
+                                onSaved: (value) => email = value!,
+                              
+                              ),
+                        ),
+                                                    const SizedBox(height: 20),
                         SizedBox(
                           width: 250.0,
                           height: 56,

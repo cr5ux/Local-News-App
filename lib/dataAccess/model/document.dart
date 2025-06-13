@@ -2,21 +2,22 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Document {
-  final String? documentID;
-  final String? coverImagePath;
-  final String documentName;
-  final String title;
-  final List<String> documentPath;
-  final String? content;
-  final String language;
-  final List<String> indexTermsAM;
-  final List<String> indexTermsEN;
-  final String registrationDate;
-  final bool isActive;
-  final String authorID;
-  final List<String> tags;
-  final String documentType;
-  final bool isDownloaded;
+
+  String? documentID;
+  String? coverImagePath;
+  String documentName;
+  String title;
+  List<String> documentPath;
+  String? content;
+  String language;
+  List<String> indexTermsAM;
+  List<String> indexTermsEN;
+  String registrationDate;
+  bool isActive;
+  String authorID;
+  List<String> tags;
+  String documentType;
+  bool isDownloaded;
 
   
 

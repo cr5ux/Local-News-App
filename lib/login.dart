@@ -193,7 +193,7 @@ class _LoginState extends State<Login> {
                           horizontal: 24.0, vertical: 32.0),
                       child: Form(
                         key: _formStateKey,
-                        autovalidateMode: AutovalidateMode.onUnfocus,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [

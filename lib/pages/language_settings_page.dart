@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+// import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:localnewsapp/dataAccess/model/users.dart';
 import 'package:localnewsapp/dataAccess/users_repo.dart';
 
@@ -59,10 +59,11 @@ class _LanguageSettingsPageState extends State<LanguageSettingsPage> {
       final usersRepo = UsersRepo();
       final user = await usersRepo.getAUserByID('current_user_id'); // Replace with actual user ID
       setState(() {
-        _selectedCountry = user?.countryCode;
-        _selectedLanguage = user?.languageCode;
+        _selectedCountry = user.countryCode;
+        _selectedLanguage = user.languageCode;
       });
     } catch (e) {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error loading preferences: $e')),
       );
@@ -93,10 +94,12 @@ class _LanguageSettingsPageState extends State<LanguageSettingsPage> {
         sceretKey: null
       ));
 
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Preferences saved successfully')),
       );
     } catch (e) {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error saving preferences: $e')),
       );

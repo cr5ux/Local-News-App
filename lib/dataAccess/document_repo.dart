@@ -3,12 +3,14 @@ import 'dart:core';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:localnewsapp/dataAccess/model/document.dart';
 import 'package:localnewsapp/dataAccess/model/ls.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DocumentRepo {
   final db = FirebaseFirestore.instance;
 
 //read
-  Future<List<Document>> getAllDocuments() async {
+Future<List<Document>> getAllDocuments() async {
+
     List<Document> docs = [];
     try {
       // Define the query with a converter
@@ -36,7 +38,7 @@ class DocumentRepo {
     return docs;
   }
 
-  Future<Document> getADocumentByID(documentID) async {
+Future<Document> getADocumentByID(documentID) async {
     // ignore: prefer_typing_uninitialized_variables
     var doc;
     try {
@@ -76,7 +78,7 @@ class DocumentRepo {
     return docs;
   }
 
-  Future<List<Document>> getDocumentByTags(String tag) async {
+Future<List<Document>> getDocumentByTags(String tag) async {
     List<Document> docs = [];
     try {
       final docRef = db
@@ -98,7 +100,7 @@ class DocumentRepo {
     return docs;
   }
 
-  Future<List<LS>> getDocumentLikes(documentID) async {
+Future<List<LS>> getDocumentLikes(documentID) async {
     List<LS> docLikes = [];
     try {
       final docLikeRef = db
@@ -121,7 +123,7 @@ class DocumentRepo {
     return docLikes;
   }
 
-  Future<List<LS>> getDocumentShare(documentID) async {
+Future<List<LS>> getDocumentShare(documentID) async {
     List<LS> docShare = [];
     try {
       final docShareRef = db
@@ -201,7 +203,7 @@ class DocumentRepo {
     return docLikes;
   }
 
-  Future<List<Document>> getDocumentShareByAUser(userID) async {
+Future<List<Document>> getDocumentShareByAUser(userID) async {
     List<Document> allDocs = await getAllDocuments();
 
     List<Document> docShare = [];
@@ -233,7 +235,7 @@ class DocumentRepo {
     return docShare;
   }
 
-  Future<List<Document>> getDocumentViewByAUser(userID) async {
+Future<List<Document>> getDocumentViewByAUser(userID) async {
     List<Document> allDocs = await getAllDocuments();
 
     List<Document> docView = [];
@@ -266,7 +268,7 @@ class DocumentRepo {
     return docView;
   }
 
-  Future<List<Document>> getDocumentByAuthorID(userID) async {
+Future<List<Document>> getDocumentByAuthorID(userID) async {
     List<Document> docs = [];
     try {
       final docRef = db
@@ -289,7 +291,7 @@ class DocumentRepo {
     return docs;
   }
 
-  Future<List<Document>> getDocumentByRegistrationDate(date) async {
+Future<List<Document>> getDocumentByRegistrationDate(date) async {
     List<Document> docs = [];
     try {
       final docRef = db
@@ -312,26 +314,82 @@ class DocumentRepo {
     return docs;
   }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //add
 
-  Future<String> addDocument(document) async {
+Future<String> addDocument(document,imageBytes,imageExtension) async {
+
     String message = "";
     try {
-      final docRef = db.collection("Document").withConverter(
-          fromFirestore: Document.fromFirestore,
-          toFirestore: (Document doc, _) => doc.toFirestore());
+      final docRef = db.collection("Document").withConverter( fromFirestore: Document.fromFirestore,toFirestore: (Document doc, _) => doc.toFirestore());
 
       var m = await docRef.add(document);
 
-      message = "$m registration sucessfull";
+      final imagePath='${m.id}.$imageExtension';
+      final result=await addImageToSupabase(imagePath, imageBytes);
+
+       if(result.contains('failure'))
+       {
+           await docRef.doc(m.id).delete();
+
+           
+
+            return "$result, upload failed";
+       }
+
+
+      message = result;
 
       return message;
     } catch (e) {
-      rethrow;
+      return e.toString();
     }
   }
 
-  Future<String> addAShare(documentID, ls) async {
+
+
+Future<dynamic> addImageToSupabase(imagePath,imageBytes) async
+{
+   
+    String imageUrl;
+    try {
+          await Supabase.instance.client.storage.from('document/document_Cover_Image').uploadBinary(imagePath,imageBytes,
+                  fileOptions: const FileOptions(
+                    upsert: true, // Overwrite if file with same name exists
+                    contentType: 'image/*', // Accepts various image types
+                  ),
+                );
+
+          imageUrl = Supabase.instance.client.storage.from('document/document_Cover_Image').getPublicUrl(imagePath);
+      } catch (e) {
+        
+        return "failure ${e.toString()}";
+        
+      }
+
+        
+    
+      
+    return imageUrl;
+
+}
+
+
+
+Future<String> addAShare(documentID, ls) async {
     String message = "";
     try {
       final docRef = db
@@ -352,7 +410,7 @@ class DocumentRepo {
     }
   }
 
-  Future<String> addALike(documentID, ls) async {
+Future<String> addALike(documentID, ls) async {
     String message = "";
     try {
       final docRef = db
@@ -373,7 +431,7 @@ class DocumentRepo {
     }
   }
 
-  Future<String> addAView(documentID, ls) async {
+Future<String> addAView(documentID, ls) async {
     String message = "";
     try {
       final docRef = db
@@ -394,9 +452,24 @@ class DocumentRepo {
     }
   }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //update
 
-  Future<String> updateDocumentActive(documentID, isActive) async {
+Future<String> updateDocumentActive(documentID, isActive) async {
     String message = "";
     try {
       final docRef = db.collection("Document").doc(documentID).withConverter(
@@ -413,7 +486,7 @@ class DocumentRepo {
     }
   }
 
-  Future<String> updateDocumentLike(documentID, userID) async {
+Future<String> updateDocumentLike(documentID, userID) async {
     String message = "";
     String? lsid = "";
     try {
@@ -448,7 +521,7 @@ class DocumentRepo {
   }
 
   // Check if a specific user has liked a document
-  Future<bool> hasUserLikedDocument(String documentID, String userID) async {
+Future<bool> hasUserLikedDocument(String documentID, String userID) async {
     try {
       final docLikeRef = db
           .collection("Document")
@@ -467,8 +540,32 @@ class DocumentRepo {
     }
   }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   // Add bookmark methods
-  Future<List<Document>> getDocumentBookmarksByAUser(userID) async {
+Future<List<Document>> getDocumentBookmarksByAUser(userID) async {
     List<Document> allDocs = await getAllDocuments();
     List<Document> bookmarkedDocs = [];
 
@@ -499,6 +596,19 @@ class DocumentRepo {
 
     return bookmarkedDocs;
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   Future<void> addABookmark(String documentID, LS bookmark) async {
     try {

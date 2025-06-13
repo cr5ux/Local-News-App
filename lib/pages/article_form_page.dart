@@ -1,9 +1,13 @@
+
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:localnewsapp/constants/app_colors.dart';
 import 'package:localnewsapp/singleton/identification.dart';
 import '../constants/categories.dart';
 import '../dataAccess/model/document.dart'; // Import Document model
 import '../dataAccess/document_repo.dart'; // Import DocumentRepo
-import 'package:firebase_auth/firebase_auth.dart'; // Add FirebaseAuth import
+
 import 'package:easy_localization/easy_localization.dart'; // Add easy_localization import
 
 class ArticleFormPage extends StatefulWidget {
@@ -23,6 +27,19 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
 
   final DocumentRepo _documentRepo = DocumentRepo(); // Instantiate DocumentRepo
 
+
+  
+
+
+  // ignore: prefer_typing_uninitialized_variables
+  var imageBytes ;
+
+ // ignore: prefer_typing_uninitialized_variables
+  var imageExtension; 
+
+
+
+
   // Language and Document Type state variables
   final List<String> _languages = ['en', 'am'];
   String? _selectedLanguage;
@@ -32,38 +49,54 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
 
   @override
   void initState() {
+
     super.initState();
     _selectedLanguage = _languages.first; // Set default language
     _selectedDocumentType = _documentTypes.first; // Set default document type
+
+
   }
 
   void _toggleTag(String tag) {
+
     setState(() {
+
       if (_selectedTags.contains(tag)) {
+
         _selectedTags.remove(tag);
+
       } else {
+
         _selectedTags.add(tag);
+
       }
     });
   }
 
   Future<void> _submitForm() async {
+
     if (_formKey.currentState!.validate()) {
-      if (_linkController.text.isEmpty) {
+
+      if (_selectedDocumentType!=_documentTypes.first && _linkController.text.isEmpty) {
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('please_enter_valid_url'.tr())),
         );
         return;
+
       }
 
       if (_selectedTags.isEmpty) {
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('please_select_at_least_one_tag'.tr())),
+
         );
         return;
       }
 
       if (_selectedLanguage == null) {
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('please_select_language'.tr())),
         );
@@ -71,20 +104,13 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
       }
 
       if (_selectedDocumentType == null) {
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('please_select_document_type'.tr())),
         );
         return;
       }
 
-      // Get current user ID
-      final currentUser = FirebaseAuth.instance.currentUser;
-      if (currentUser == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('you_must_be_logged_in'.tr())),
-        );
-        return;
-      }
 
       // Form is valid, process the submission
       // Create a Document object from form data
@@ -108,15 +134,31 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
       );
 
       try {
+
+       
         // Call addDocument to submit the article
-        await _documentRepo.addDocument(newDocument);
+       final result= await _documentRepo.addDocument(newDocument,imageBytes,imageExtension);
 
-        // Provide user feedback
-        // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('article_submitted_successfully'.tr())),
-        );
+      
 
+       if(result.contains('failure'))
+       {
+                 // ignore: use_build_context_synchronously
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(result)),
+          );
+       }
+       else
+       {
+          // Provide user feedback
+          // ignore: use_build_context_synchronously
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('article_submitted_successfully'.tr())),
+          );
+
+       }
+
+        
         // Clear the form
         _formKey.currentState!.reset();
         _titleController.clear();
@@ -125,7 +167,8 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
         setState(() {
           _selectedTags.clear();
           _selectedLanguage = _languages.first; // Reset language
-          _selectedDocumentType = _documentTypes.first; // Reset document type
+          _selectedDocumentType = _documentTypes.first;  // Reset document type
+          imageBytes=null;
         });
       } catch (e) {
         // Handle submission errors
@@ -145,6 +188,18 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
     super.dispose();
   }
 
+  imageGetter(XFile image) async {
+
+        final bytes =await image.readAsBytes();
+      setState(() {
+                  imageBytes = bytes;
+                  imageExtension= image.name.split('.').last.toLowerCase();
+                              
+      });
+       
+      return imageBytes;
+                                  
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -166,6 +221,51 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
                     ),
                   ),
                   const SizedBox(height: 20),
+                 
+                  Row(
+                    children: [
+
+                       imageBytes==null? const Icon(Icons.image, size: 100)
+                              : Image.memory(imageBytes,
+                                            height:100 ,
+                                            width:100,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (context, error, stackTrace) {
+                                              // Fallback if the image fails to load (e.g., network error, invalid URL)
+                                              return const Icon(Icons.image, size: 80);
+                                            }),   
+                       ElevatedButton(
+                            onPressed: () async {
+
+                                ImagePicker picker = ImagePicker();
+                                XFile? image = await picker.pickImage(source: ImageSource.gallery);
+                                if (image == null) {
+                                  return; // User cancelled image selection
+                                }
+
+                                await imageGetter(image);
+
+                           
+                                    
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              elevation: 4,
+                            ),
+                            child: const Text(
+                              "upload Image",
+                            ),
+                          ),
+                    ],
+                  ),
+
+
+                  const SizedBox(height: 20),
+
 
                   // Title Field
                   TextFormField(
@@ -271,7 +371,7 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
                             });
                           },
                           validator: (value) {
-                            if (value == null) {
+                            if (value == null ) {
                               return 'please_select_document_type'.tr();
                             }
                             return null;
@@ -347,7 +447,7 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
                             fillColor: Colors.white,
                           ),
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
+                            if (value == null && _selectedDocumentType!=_documentTypes.first) {
                               return 'please_enter_valid_url'.tr();
                             }
                             return null;
@@ -443,4 +543,6 @@ class _ArticleFormPageState extends State<ArticleFormPage> {
       ),
     );
   }
+  
+ 
 }
