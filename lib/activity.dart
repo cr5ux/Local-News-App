@@ -40,7 +40,6 @@ class Activity extends StatelessWidget {
   Future<List<Document>> getShares() async {
 
     var sharess=await dR.getDocumentShareByAUser(userID);
-
     
     
     return sharess;

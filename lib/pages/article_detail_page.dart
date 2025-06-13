@@ -9,8 +9,8 @@ import 'package:localnewsapp/dataAccess/comment_repo.dart';
 import 'package:localnewsapp/dataAccess/document_repo.dart';
 import 'package:localnewsapp/dataAccess/model/ls.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:localnewsapp/constants/categories.dart'; // Import NewsCategories for categoryImages
-// import 'package:intl/intl.dart'; // Import DateFormat
+import 'package:localnewsapp/constants/categories.dart';
+import 'package:share_plus/share_plus.dart'; 
 
 class ArticleDetailPage extends StatefulWidget {
   final Document document;
@@ -37,7 +37,6 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
       _controller = VideoPlayerController.networkUrl(
         Uri.parse(widget.document.documentPath[0]),
       )..initialize().then((_) {
-          // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
           setState(() {});
         });
     }
@@ -110,8 +109,52 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
     return null; // Return null if no tags or tag not found in map
   }
 
-  // Helper to format time ago (reused from ArticleCard)
-  // Keeping this method for now, but the display will use DateFormat
+  // New method for sharing the article
+  Future<void> _shareArticle(BuildContext context) async {
+    String shareText = widget.document.title;
+    if (widget.document.content != null && widget.document.content!.isNotEmpty) {
+      shareText += '\n\n${widget.document.content!}';
+    }
+
+    String? articleUrl;
+    if (widget.document.documentPath.isNotEmpty && Uri.tryParse(widget.document.documentPath[0])?.isAbsolute == true) {
+      articleUrl = widget.document.documentPath[0];
+      shareText += '\n\nRead more at: $articleUrl';
+    }
+
+    final box = context.findRenderObject() as RenderBox?;
+
+    // Perform the share operation
+    final result = await SharePlus.instance.share(
+      ShareParams(
+        text: shareText,
+        subject: widget.document.title,
+        sharePositionOrigin: box != null ? box.localToGlobal(Offset.zero) & box.size : null,
+      ),
+    );
+
+    // Check the share status
+    if (result.status == ShareResultStatus.success) {
+      if (widget.document.documentID != null) {
+        try {
+          final ls = LS(
+            userID: currentUser,
+            date: DateTime.now().toIso8601String(),
+          );
+          await DocumentRepo().addAShare(widget.document.documentID!, ls);
+          // ignore: use_build_context_synchronously
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('share_success_message'.tr())),
+          );
+        } catch (e) {
+          // ignore: use_build_context_synchronously
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('share_db_error'.tr())),
+          );
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +185,7 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
           IconButton(
             icon: const Icon(Icons.share, color: Colors.white),
             onPressed: () {
-              // Implement share functionality here
+              _shareArticle(context); 
             },
           ),
         ],
@@ -303,7 +346,6 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
                   // Like section (Icon and Count)
                   TextButton.icon(
                     onPressed: () async {
-
                       if (widget.document.documentID != null) {
                         try {
                           if (_isLiked) {
