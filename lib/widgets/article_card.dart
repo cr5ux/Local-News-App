@@ -12,38 +12,96 @@ import 'dart:typed_data'; // Import Uint8List
 import 'package:localnewsapp/constants/categories.dart';
 import 'package:easy_localization/easy_localization.dart'; // Import EasyLocalization for translations
 
-class ArticleCard extends StatelessWidget {
+class ArticleCard extends StatefulWidget {
   final Document document;
 
   const ArticleCard({super.key, required this.document});
 
+  @override
+  State<ArticleCard> createState() => _ArticleCardState();
+}
+
+class _ArticleCardState extends State<ArticleCard> {
+  bool _isBookmarked = false;
+  final DocumentRepo _documentRepo = DocumentRepo();
+  final String _currentUser = Identification().userID;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkBookmarkStatus();
+  }
+
+  Future<void> _checkBookmarkStatus() async {
+    if (widget.document.documentID != null) {
+      try {
+        final bookmarks =
+            await _documentRepo.getDocumentBookmarksByAUser(_currentUser);
+        setState(() {
+          _isBookmarked = bookmarks
+              .any((doc) => doc.documentID == widget.document.documentID);
+        });
+      } catch (e) {
+        // Handle error silently
+      }
+    }
+  }
+
+  Future<void> _toggleBookmark() async {
+    if (widget.document.documentID != null) {
+      try {
+        if (_isBookmarked) {
+          await _documentRepo.removeBookmark(
+              widget.document.documentID!, _currentUser);
+        } else {
+          final ls = LS(
+            userID: _currentUser,
+            date: DateTime.now().toIso8601String(),
+          );
+          await _documentRepo.addABookmark(widget.document.documentID!, ls);
+        }
+        setState(() {
+          _isBookmarked = !_isBookmarked;
+        });
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Failed to update bookmark status'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      }
+    }
+  }
+
   String _getContentPreview() {
-    if (document.content == null || document.content!.isEmpty) {
+    if (widget.document.content == null || widget.document.content!.isEmpty) {
       return 'no_content'.tr();
     }
     // Get first 150 characters and add ellipsis
-    return document.content!.length > 150
-        ? '${document.content!.substring(0, 150)}...'
-        : document.content!;
+    return widget.document.content!.length > 150
+        ? '${widget.document.content!.substring(0, 150)}...'
+        : widget.document.content!;
   }
 
   // Placeholder for estimating read time (e.g., 200 words per minute)
   String _estimateReadTime() {
-    // print(document.content); // Keep this for debugging content
-    if (document.content == null || document.content!.isEmpty) {
+    // print(widget.document.content); // Keep this for debugging content
+    if (widget.document.content == null || widget.document.content!.isEmpty) {
       return '';
     }
     const wordsPerMinute = 200;
-    final wordCount = document.content!.split(RegExp(r'\s+')).length;
+    final wordCount = widget.document.content!.split(RegExp(r'\s+')).length;
     final minutes = (wordCount / wordsPerMinute).ceil();
     return '$minutes min read';
   }
 
   // Actual logic to get view count from DocumentRepo
   Future<int> _getViewCount(String documentId) async {
-    final DocumentRepo documentRepo = DocumentRepo();
     try {
-      final views = await documentRepo.getDocumentView(documentId);
+      final views = await _documentRepo.getDocumentView(documentId);
       return views.length;
     } catch (e) {
       return 0; // Return 0 or handle error appropriately
@@ -62,7 +120,7 @@ class ArticleCard extends StatelessWidget {
       if (user.fullName.isNotEmpty) {
         return user.fullName;
       } else {
-        return 'unknown_author'.tr(); 
+        return 'unknown_author'.tr();
       }
     } catch (e) {
       return 'unknown_author'.tr(); // Return a default name in case of error
@@ -72,7 +130,7 @@ class ArticleCard extends StatelessWidget {
   // Placeholder for time ago (using registrationDate for now)
   String _getTimeAgo() {
     try {
-      final DateTime date = DateTime.parse(document.registrationDate);
+      final DateTime date = DateTime.parse(widget.document.registrationDate);
       final Duration diff = DateTime.now().difference(date);
 
       if (diff.inDays > 365) {
@@ -91,14 +149,15 @@ class ArticleCard extends StatelessWidget {
         return 'just_now'.tr();
       }
     } catch (e) {
-      return document.registrationDate; // Fallback to raw date if parsing fails
+      return widget
+          .document.registrationDate; // Fallback to raw date if parsing fails
     }
   }
 
   // Helper to get the category image URL based on the first tag
   String? _getCategoryImageUrl() {
-    if (document.tags.isNotEmpty) {
-      final firstTag = document.tags[0];
+    if (widget.document.tags.isNotEmpty) {
+      final firstTag = widget.document.tags[0];
       return NewsCategories.categoryImages[firstTag];
     }
     return null; // Return null if no tags or tag not found in map
@@ -106,9 +165,6 @@ class ArticleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final DocumentRepo documentRepo =
-        DocumentRepo(); // Instantiate DocumentRepo
-
     return GestureDetector(
       onTap: () async {
         // Navigate to article detail page
@@ -116,21 +172,20 @@ class ArticleCard extends StatelessWidget {
           // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(
-            builder: (context) => ArticleDetailPage(document: document),
+            builder: (context) => ArticleDetailPage(document: widget.document),
           ),
         );
         // Add view after navigating (fire and forget)
-        if (document.documentID != null) {
+        if (widget.document.documentID != null) {
           try {
             // Get current user ID
-            final currentUser = Identification().userID;
-              final String currentUserId = currentUser;
-              final LS view = LS(
-                  userID: currentUserId,
-                  date: DateTime.now().toIso8601String());
-              documentRepo.addAView(document.documentID!, view);
+            final LS view = LS(
+              userID: _currentUser,
+              date: DateTime.now().toIso8601String(),
+            );
+            _documentRepo.addAView(widget.document.documentID!, view);
           } catch (e) {
-            // Handle error appropriately, but don't block navigation// Log the error
+            // Handle error silently
           }
         }
       },
@@ -145,21 +200,18 @@ class ArticleCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Image/Video Preview Section with Category Overlay
-            if (document.documentPath.isNotEmpty ||
-                (document.documentType.toLowerCase() == 'text' &&
-                    document.tags.isNotEmpty &&
-                    _getCategoryImageUrl() !=
-                        null)) // Check for text type with category image
+            if (widget.document.documentPath.isNotEmpty ||
+                (widget.document.documentType.toLowerCase() == 'text' &&
+                    widget.document.tags.isNotEmpty &&
+                    _getCategoryImageUrl() != null))
               Stack(
                 children: [
-                  if (document.documentType.toLowerCase() == 'video')
-                    // Video thumbnail preview
+                  if (widget.document.documentType.toLowerCase() == 'video')
                     FutureBuilder<Uint8List?>(
-                      // Use FutureBuilder for async thumbnail generation
                       future: VideoThumbnail.thumbnailData(
-                        video: document.documentPath[0], // Video URL
+                        video: widget.document.documentPath[0],
                         imageFormat: ImageFormat.JPEG,
-                        quality: 50, // Adjust quality as needed
+                        quality: 50,
                       ),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.done &&
@@ -181,22 +233,21 @@ class ArticleCard extends StatelessWidget {
                                 color: Colors.black54,
                               ),
                             ),
-                          ); // Show error icon
+                          );
                         } else {
                           return Container(
                             height: 200,
                             color: Colors.grey[200],
                             child: const Center(
-                              child:
-                                  CircularProgressIndicator(), // Show loading indicator
+                              child: CircularProgressIndicator(),
                             ),
                           );
                         }
                       },
                     )
-                  else if (document.documentType.toLowerCase() == 'text' &&
-                      document.tags
-                          .isNotEmpty) // Handle text type with category image
+                  else if (widget.document.documentType.toLowerCase() ==
+                          'text' &&
+                      widget.document.tags.isNotEmpty)
                     Builder(
                       builder: (context) {
                         final imageUrl = _getCategoryImageUrl();
@@ -221,7 +272,6 @@ class ArticleCard extends StatelessWidget {
                             },
                           );
                         }
-                        // Fallback if image URL is null (tag not found in map)
                         return Container(
                           height: 200,
                           color: Colors.grey[200],
@@ -235,12 +285,9 @@ class ArticleCard extends StatelessWidget {
                         );
                       },
                     )
-                  else
-                    // Document or other type image fallback
+                  else if (widget.document.documentPath.isNotEmpty)
                     Image.network(
-                      document.documentPath.isNotEmpty
-                          ? document.documentPath[0]
-                          : 'https://source.unsplash.com/random/800x400', // Use documentPath if available, otherwise fallback
+                      widget.document.documentPath[0],
                       height: 200,
                       width: double.infinity,
                       fit: BoxFit.cover,
@@ -248,13 +295,8 @@ class ArticleCard extends StatelessWidget {
                         return Container(
                           height: 200,
                           color: Colors.grey[200],
-                          child: const Center(
-                            child: Icon(
-                              Icons.article_outlined,
-                              size: 48,
-                              color: Colors.black54,
-                            ),
-                          ),
+                          child:
+                              const Center(child: Text('Image not available')),
                         );
                       },
                     ),
@@ -269,9 +311,9 @@ class ArticleCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        document.tags.isNotEmpty
-                            ? document.tags[0]
-                            : document.documentType,
+                        widget.document.tags.isNotEmpty
+                            ? widget.document.tags[0]
+                            : widget.document.documentType,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 12,
@@ -281,7 +323,7 @@ class ArticleCard extends StatelessWidget {
                     ),
                   ),
                   // Add play button overlay for video type
-                  if (document.documentType.toLowerCase() == 'video')
+                  if (widget.document.documentType.toLowerCase() == 'video')
                     Positioned.fill(
                       child: Center(
                         child: Container(
@@ -313,7 +355,7 @@ class ArticleCard extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          document.title,
+                          widget.document.title,
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -323,10 +365,16 @@ class ArticleCard extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      const SizedBox(
-                          width: 8), // Spacing between title and icon
-                      const Icon(Icons.bookmark_border,
-                          color: Colors.grey), // Bookmark icon
+                      const SizedBox(width: 8),
+                      IconButton(
+                        icon: Icon(
+                          _isBookmarked
+                              ? Icons.bookmark
+                              : Icons.bookmark_border,
+                          color: _isBookmarked ? Colors.blue : Colors.grey,
+                        ),
+                        onPressed: _toggleBookmark,
+                      ),
                     ],
                   ),
                   const SizedBox(height: 8), // Spacing below title
@@ -348,10 +396,10 @@ class ArticleCard extends StatelessWidget {
                   Row(
                     children: [
                       // Source/Author (using authorID as placeholder for now)
-                      if (document.authorID.isNotEmpty)
+                      if (widget.document.authorID.isNotEmpty)
                         FutureBuilder<String>(
                           future: _getAuthorName(
-                              document.authorID), // Call async method
+                              widget.document.authorID), // Call async method
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
@@ -408,11 +456,11 @@ class ArticleCard extends StatelessWidget {
                           size: 14, color: Colors.black54), // Visibility icon
                       const SizedBox(width: 4), // Spacing
                       // Use FutureBuilder to display view count asynchronously
-                      if (document.documentID != null)
+                      if (widget.document.documentID != null)
                         FutureBuilder<int>(
                           future: _getViewCount(
-                              document.documentID!), // Call async method
-                          
+                              widget.document.documentID!), // Call async method
+
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {

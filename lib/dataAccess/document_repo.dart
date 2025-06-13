@@ -187,8 +187,7 @@ class DocumentRepo {
           if (docSnap.docs.isNotEmpty) {
             for (var snap in docSnap.docs) {
               final data = snap.data();
-                i = i.copyWith(registrationDate: data.date);
-              
+              i = i.copyWith(registrationDate: data.date);
             }
 
             docLikes.add(i);
@@ -221,7 +220,7 @@ class DocumentRepo {
           if (docSnap.docs.isNotEmpty) {
             for (var snap in docSnap.docs) {
               final data = snap.data();
-                i = i.copyWith(registrationDate: data.date);
+              i = i.copyWith(registrationDate: data.date);
             }
             docShare.add(i);
           }
@@ -254,7 +253,7 @@ class DocumentRepo {
           if (docSnap.docs.isNotEmpty) {
             for (var snap in docSnap.docs) {
               final data = snap.data();
-                i = i.copyWith(registrationDate: data.date);
+              i = i.copyWith(registrationDate: data.date);
             }
             docView.add(i);
           }
@@ -465,6 +464,68 @@ class DocumentRepo {
           .docs.isNotEmpty; // If any document exists, the user has liked it
     } catch (e) {
       return false; // Assume not liked in case of error
+    }
+  }
+
+  // Add bookmark methods
+  Future<List<Document>> getDocumentBookmarksByAUser(userID) async {
+    List<Document> allDocs = await getAllDocuments();
+    List<Document> bookmarkedDocs = [];
+
+    try {
+      for (Document doc in allDocs) {
+        final bookmarkRef = db
+            .collection("Document")
+            .doc(doc.documentID)
+            .collection("Bookmark")
+            .where("userID", isEqualTo: userID)
+            .withConverter(
+                fromFirestore: LS.fromFirestore,
+                toFirestore: (LS ls, _) => ls.toFirestore());
+
+        await bookmarkRef.get().then((docSnap) {
+          if (docSnap.docs.isNotEmpty) {
+            for (var snap in docSnap.docs) {
+              final data = snap.data();
+              doc = doc.copyWith(registrationDate: data.date);
+            }
+            bookmarkedDocs.add(doc);
+          }
+        });
+      }
+    } catch (e) {
+      rethrow;
+    }
+
+    return bookmarkedDocs;
+  }
+
+  Future<void> addABookmark(String documentID, LS bookmark) async {
+    try {
+      await db
+          .collection("Document")
+          .doc(documentID)
+          .collection("Bookmark")
+          .add(bookmark.toFirestore());
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> removeBookmark(String documentID, String userID) async {
+    try {
+      final bookmarkRef = db
+          .collection("Document")
+          .doc(documentID)
+          .collection("Bookmark")
+          .where("userID", isEqualTo: userID);
+
+      final querySnapshot = await bookmarkRef.get();
+      for (var doc in querySnapshot.docs) {
+        await doc.reference.delete();
+      }
+    } catch (e) {
+      rethrow;
     }
   }
 }

@@ -10,7 +10,7 @@ import 'package:localnewsapp/dataAccess/document_repo.dart';
 import 'package:localnewsapp/dataAccess/model/ls.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:localnewsapp/constants/categories.dart';
-import 'package:share_plus/share_plus.dart'; 
+import 'package:share_plus/share_plus.dart';
 
 class ArticleDetailPage extends StatefulWidget {
   final Document document;
@@ -26,6 +26,7 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
   bool _isVideo = false;
   int _commentCount = 0;
   bool _isLiked = false;
+  bool _isBookmarked = false;
   int _likeCount = 0;
   final currentUser = Identification().userID;
 
@@ -42,6 +43,7 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
     }
     _fetchCommentCount();
     _checkLikeStatus();
+    _checkBookmarkStatus();
     _fetchLikeCount();
   }
 
@@ -63,6 +65,28 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
         });
       } catch (e) {
         // Optionally handle error display
+      }
+    }
+  }
+
+  Future<void> _checkBookmarkStatus() async {
+    if (widget.document.documentID != null) {
+      try {
+        final bookmarks =
+            await DocumentRepo().getDocumentBookmarksByAUser(currentUser);
+        setState(() {
+          _isBookmarked = bookmarks
+              .any((doc) => doc.documentID == widget.document.documentID);
+        });
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Failed to check bookmark status'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
       }
     }
   }
@@ -112,12 +136,14 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
   // New method for sharing the article
   Future<void> _shareArticle(BuildContext context) async {
     String shareText = widget.document.title;
-    if (widget.document.content != null && widget.document.content!.isNotEmpty) {
+    if (widget.document.content != null &&
+        widget.document.content!.isNotEmpty) {
       shareText += '\n\n${widget.document.content!}';
     }
 
     String? articleUrl;
-    if (widget.document.documentPath.isNotEmpty && Uri.tryParse(widget.document.documentPath[0])?.isAbsolute == true) {
+    if (widget.document.documentPath.isNotEmpty &&
+        Uri.tryParse(widget.document.documentPath[0])?.isAbsolute == true) {
       articleUrl = widget.document.documentPath[0];
       shareText += '\n\nRead more at: $articleUrl';
     }
@@ -129,7 +155,8 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
       ShareParams(
         text: shareText,
         subject: widget.document.title,
-        sharePositionOrigin: box != null ? box.localToGlobal(Offset.zero) & box.size : null,
+        sharePositionOrigin:
+            box != null ? box.localToGlobal(Offset.zero) & box.size : null,
       ),
     );
 
@@ -150,6 +177,40 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
           // ignore: use_build_context_synchronously
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('share_db_error'.tr())),
+          );
+        }
+      }
+    }
+  }
+
+  Future<void> _toggleBookmark() async {
+    if (widget.document.documentID != null) {
+      try {
+        if (_isBookmarked) {
+          // If already bookmarked, remove bookmark
+          await DocumentRepo()
+              .removeBookmark(widget.document.documentID!, currentUser);
+          setState(() {
+            _isBookmarked = false;
+          });
+        } else {
+          // If not bookmarked, add bookmark
+          final ls = LS(
+            userID: currentUser,
+            date: DateTime.now().toIso8601String(),
+          );
+          await DocumentRepo().addABookmark(widget.document.documentID!, ls);
+          setState(() {
+            _isBookmarked = true;
+          });
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Failed to update bookmark status'),
+              duration: Duration(seconds: 2),
+            ),
           );
         }
       }
@@ -177,15 +238,16 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.bookmark_border, color: Colors.white),
-            onPressed: () {
-              // Implement bookmark functionality here
-            },
+            icon: Icon(
+              _isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+              color: Colors.white,
+            ),
+            onPressed: _toggleBookmark,
           ),
           IconButton(
             icon: const Icon(Icons.share, color: Colors.white),
             onPressed: () {
-              _shareArticle(context); 
+              _shareArticle(context);
             },
           ),
         ],
