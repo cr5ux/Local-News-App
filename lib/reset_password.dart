@@ -184,7 +184,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                       child: Form(
 
                         key: _formStateKey,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        autovalidateMode: AutovalidateMode.onUnfocus,
                         child:  Column(
                               children: [
                                     const Text(

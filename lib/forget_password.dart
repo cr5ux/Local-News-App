@@ -269,7 +269,7 @@ class ForgetPassword extends StatelessWidget {
                 child: SingleChildScrollView(
                   child: Form(
                     key: _formStateKey,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    autovalidateMode: AutovalidateMode.onUnfocus,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.center,

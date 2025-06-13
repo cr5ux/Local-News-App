@@ -101,7 +101,7 @@ void _submitOrder({required BuildContext context, required bool fullscreenDialog
                     padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
                     child: Form(
                       key: _formStateKey,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      autovalidateMode: AutovalidateMode.onUnfocus,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
