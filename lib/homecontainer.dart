@@ -14,7 +14,6 @@ import 'package:easy_localization/easy_localization.dart';
 class HomeContainer extends StatelessWidget {
   final String title;
   const HomeContainer({super.key, required this.title});
-  
 
   @override
   Widget build(BuildContext context) {
@@ -22,12 +21,11 @@ class HomeContainer extends StatelessWidget {
         length: Identification().isAdmin ? 4 : 3,
         child: Scaffold(
             appBar: AppBar(
-              leading: Image.asset('assets/logow.png',height: 20,width: 20),
+              leading: Image.asset('assets/logow.png', height: 20, width: 20),
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
               title: Text("name".tr()),
               actions: <Widget>[
-                
                 IconButton(
                     onPressed: () {
                       Navigator.push(
@@ -38,21 +36,20 @@ class HomeContainer extends StatelessWidget {
                       );
                     },
                     icon: const Icon(Icons.search)),
-                
-                    TextButton(
-                      onPressed: () {
-                        context.setLocale(context.locale.languageCode == 'en'
-                            ? const Locale('am')
-                            : const Locale('en'));
-                      },
-                      child: Text(
-                        context.locale.languageCode == 'en' ? 'አማ' : 'En',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
-                      ),
+                TextButton(
+                  onPressed: () {
+                    context.setLocale(context.locale.languageCode == 'en'
+                        ? const Locale('am')
+                        : const Locale('en'));
+                  },
+                  child: Text(
+                    context.locale.languageCode == 'en' ? 'አማ' : 'En',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
                     ),
+                  ),
+                ),
               ],
             ),
             bottomNavigationBar: BottomAppBar(
@@ -60,8 +57,8 @@ class HomeContainer extends StatelessWidget {
               color: Colors.white,
               child: TabBar(
                 //unselectedLabelColor: Colors.white,
-                labelColor:  AppColors.secondary,
-                unselectedLabelColor:  AppColors.primary,
+                labelColor: AppColors.secondary,
+                unselectedLabelColor: AppColors.primary,
                 tabs: Identification().isAdmin
                     ? const [
                         Tab(
@@ -102,8 +99,6 @@ class HomeContainer extends StatelessWidget {
                         const Home(),
                         const Explore(),
                         const Profile(),
-                      ])
-                      )
-                      );
+                      ])));
   }
 }
