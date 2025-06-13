@@ -3,6 +3,7 @@ import 'package:localnewsapp/admin_account_configuration.dart';
 import 'package:localnewsapp/constants/app_colors.dart';
 import 'package:localnewsapp/reset_password.dart';
 import 'package:localnewsapp/singleton/identification.dart';
+import 'package:localnewsapp/login.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -76,16 +77,27 @@ class _SettingsState extends State<SettingsPage> {
           _buildSectionHeader('Account Setting'),
           _buildSettingItem(
             title: 'Reset Password',
-             onTap: () { Navigator.push(context, MaterialPageRoute(fullscreenDialog: false,builder: (context)=>const ResetPassword())); },
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      fullscreenDialog: false,
+                      builder: (context) => const ResetPassword()));
+            },
           ),
-          Identification().email=='armatemsamuel@gmail.com'?
-            _buildSettingItem(
-            title: 'Admin Account Configuration',
-             onTap: () { Navigator.push(context, MaterialPageRoute(fullscreenDialog: false,builder: (context)=>const AdminAccountConfiguration())); },
-          ):const Padding(padding: EdgeInsets.all(0)),
-
-
-
+          Identification().email == 'armatemsamuel@gmail.com'
+              ? _buildSettingItem(
+                  title: 'Admin Account Configuration',
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            fullscreenDialog: false,
+                            builder: (context) =>
+                                const AdminAccountConfiguration()));
+                  },
+                )
+              : const Padding(padding: EdgeInsets.all(0)),
           _buildSectionHeader('Features'),
           _buildSettingItem(
             title: 'News notification',
@@ -133,8 +145,6 @@ class _SettingsState extends State<SettingsPage> {
             title: 'Clear cache',
             onTap: () {},
           ),
-
-
           _buildSectionHeader('Data'),
           _buildSettingItem(
             title: 'Data Saving',
@@ -180,9 +190,6 @@ class _SettingsState extends State<SettingsPage> {
               (value) => setState(() => allowDataDownload = value),
             ),
           ),
-
-
-
           _buildSectionHeader('Terms'),
           _buildSettingItem(
             title: 'End-user license agreement',
@@ -208,9 +215,6 @@ class _SettingsState extends State<SettingsPage> {
             title: 'Contact us',
             onTap: () {},
           ),
-
-
-
           _buildSectionHeader('Version Info'),
           _buildSettingItem(
             title: 'Installation ID',
@@ -233,11 +237,17 @@ class _SettingsState extends State<SettingsPage> {
               style: TextStyle(color: Colors.grey[600]),
             ),
           ),
-
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: TextButton(
-              onPressed: () {},
+              onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Login(),
+                        ),
+                      );
+                    },
               child: const Text(
                 'Sign out',
                 style: TextStyle(color: Colors.red),

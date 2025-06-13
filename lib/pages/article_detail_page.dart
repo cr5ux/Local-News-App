@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:localnewsapp/constants/app_colors.dart';
 import 'package:localnewsapp/dataAccess/model/document.dart';
 import 'package:localnewsapp/singleton/identification.dart';
 import 'package:video_player/video_player.dart';
@@ -116,23 +117,30 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.primary,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/logow.png', // Replace with your logo asset
+              height: 40,
+            ),
+          ],
+        ),
         actions: [
-          // Bookmark icon
           IconButton(
-            icon: const Icon(Icons.bookmark_border, color: Colors.black),
+            icon: const Icon(Icons.bookmark_border, color: Colors.white),
             onPressed: () {
               // Implement bookmark functionality here
             },
           ),
-          // Share icon
           IconButton(
-            icon: const Icon(Icons.share, color: Colors.black),
+            icon: const Icon(Icons.share, color: Colors.white),
             onPressed: () {
               // Implement share functionality here
             },

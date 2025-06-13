@@ -215,16 +215,18 @@ class _LoginState extends State<Login> {
                                 color: AppColors.primary,
                               ),
                             ),
-                            IconButton(
+                            TextButton(
                               onPressed: () {
-                                context.setLocale(
-                                    context.locale.languageCode == 'en'
-                                        ? const Locale('am')
-                                        : const Locale('en'));
+                                context.setLocale(context.locale.languageCode == 'en'
+                                    ? const Locale('am')
+                                    : const Locale('en'));
                               },
-                              icon: const Icon(
-                                Icons.language_outlined,
-                                color: AppColors.primary,
+                              child: Text(
+                                context.locale.languageCode == 'en' ? 'አማ' : 'En',
+                                style: const TextStyle(
+                                  color: AppColors.primary,
+                                  fontSize: 16,
+                                ),
                               ),
                             ),
                             const SizedBox(height: 32),
