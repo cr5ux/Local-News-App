@@ -57,8 +57,7 @@ class HomeContainer extends StatelessWidget {
             ),
             bottomNavigationBar: BottomAppBar(
               height: 60.0,
-              
-              // color: Theme.of(context).colorScheme.secondary,
+              color: Colors.white,
               child: TabBar(
                 //unselectedLabelColor: Colors.white,
                 labelColor:  AppColors.secondary,
@@ -103,6 +102,8 @@ class HomeContainer extends StatelessWidget {
                         const Home(),
                         const Explore(),
                         const Profile(),
-                      ])));
+                      ])
+                      )
+                      );
   }
 }

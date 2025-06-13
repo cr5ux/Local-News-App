@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localnewsapp/constants/app_colors.dart';
 import 'package:localnewsapp/dataAccess/document_repo.dart';
 import 'package:localnewsapp/dataAccess/model/document.dart';
 import 'package:localnewsapp/widgets/article_card.dart';
@@ -66,13 +67,13 @@ class _HomeState extends State<Home> {
                       label: Text('filters.${filter.toLowerCase()}'.tr()),
                       selected: isSelected,
                       onSelected: (_) => _onFilterSelected(filter),
-                      selectedColor: Colors.black,
+                      selectedColor: AppColors.primary,
                       labelStyle: TextStyle(
-                        color: isSelected ? Colors.white : Colors.black87,
+                        color: isSelected ? Colors.white : AppColors.primary,
                         fontWeight:
                             isSelected ? FontWeight.bold : FontWeight.normal,
                       ),
-                      backgroundColor: Colors.grey.shade200,
+                      backgroundColor: AppColors.background,
                     );
                   },
                 ),

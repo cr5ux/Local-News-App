@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localnewsapp/constants/app_colors.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -51,7 +52,20 @@ class MainApp extends StatelessWidget {
           return Builder(
             builder: (context) => MaterialApp(
               debugShowCheckedModeBanner: false,
-              theme: themeProvider.currentTheme,
+              theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(
+                  seedColor: AppColors.primary,
+                  primary: AppColors.primary,
+                ),
+                progressIndicatorTheme: const ProgressIndicatorThemeData(
+                  color: AppColors.primary, 
+                ),
+                useMaterial3: true, 
+                tabBarTheme: const TabBarTheme(
+                  dividerColor: Colors.transparent, 
+                )
+              ),
+              
               home: const Login(),
               localizationsDelegates: context.localizationDelegates,
               supportedLocales: context.supportedLocales,
