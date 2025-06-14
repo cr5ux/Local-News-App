@@ -75,13 +75,6 @@
   - Media files
 - Shared Preferences for local storage
 
-## Getting Started
-
-### Prerequisites
-- Flutter SDK
-- Android Studio / VS Code
-- Firebase account
-- Supabase account
 
 ### Installation
 1. Clone the repository
