@@ -65,13 +65,14 @@
 
 ## Technology Stack
 - Flutter for cross-platform development
-- Supabase for:
-  - Authentication
+- Firebase for:
+  - Authentication (Firestore)
   - User management
   - Database
-- Firebase for:
-  - Cloud Firestore (real-time data)
-  - Storage (media files)
+  - Real-time data
+- Supabase for:
+  - Data storage
+  - Media files
 - Shared Preferences for local storage
 
 ## Getting Started
@@ -79,13 +80,13 @@
 ### Prerequisites
 - Flutter SDK
 - Android Studio / VS Code
-- Supabase account
 - Firebase account
+- Supabase account
 
 ### Installation
 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/tobya.git
+git clone https://github.com/cr5ux/Local-News-App.git
 ```
 
 2. Install dependencies
@@ -93,22 +94,8 @@ git clone https://github.com/yourusername/tobya.git
 flutter pub get
 ```
 
-3. Configure Supabase and Firebase
-- Add your Supabase configuration (URL and anon key)
-- Add your Firebase configuration
-
-4. Run the application
+3. Run the application
 ```bash
 flutter run
 ```
 
-## Contributing
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgments
-- Thanks to all contributors
-- Special thanks to the Ethiopian news community
-- Inspired by the need for accessible local news 
