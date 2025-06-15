@@ -66,10 +66,8 @@
 ## Technology Stack
 - Flutter for cross-platform development
 - Firebase for:
-  - Authentication (Firestore)
   - User management
   - Database
-  - Real-time data
 - Supabase for:
   - Data storage
   - Media files
