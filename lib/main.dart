@@ -61,9 +61,9 @@ class MainApp extends StatelessWidget {
                   color: AppColors.primary, 
                 ),
                 useMaterial3: true, 
-                tabBarTheme: const TabBarThemeData(
-                   dividerColor: Colors.transparent, 
-                 )
+                // tabBarTheme: const TabBarThemeData(
+                //    dividerColor: Colors.transparent, 
+                //  )
               ),
 
               home: const Login(),

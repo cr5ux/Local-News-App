@@ -9,7 +9,7 @@ import 'package:localnewsapp/dataAccess/comment_repo.dart';
 import 'package:localnewsapp/dataAccess/document_repo.dart';
 import 'package:localnewsapp/dataAccess/model/ls.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:localnewsapp/constants/categories.dart';
+// import 'package:localnewsapp/constants/categories.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ArticleDetailPage extends StatefulWidget {
@@ -125,13 +125,13 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
   }
 
   // Helper to get the category image URL based on the first tag
-  String? _getCategoryImageUrl() {
-    if (widget.document.tags.isNotEmpty) {
-      final firstTag = widget.document.tags[0];
-      return NewsCategories.categoryImages[firstTag];
-    }
-    return null; // Return null if no tags or tag not found in map
-  }
+  // String? _getCategoryImageUrl() {
+  //   if (widget.document.tags.isNotEmpty) {
+  //     final firstTag = widget.document.tags[0];
+  //     return NewsCategories.categoryImages[firstTag];
+  //   }
+  //   return null; // Return null if no tags or tag not found in map
+  // }
 
   // New method for sharing the article
   Future<void> _shareArticle(BuildContext context) async {
@@ -275,26 +275,26 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
                     .isNotEmpty) // Handle text type with category image
               Builder(
                 builder: (context) {
-                  final imageUrl = _getCategoryImageUrl();
-                  if (imageUrl != null) {
+                  // final imageUrl = _getCategoryImageUrl();
+                  if (widget.document.coverImagePath != null) {
                     return Image.network(
-                      imageUrl,
-                      height: 250,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          height: 250,
-                          color: Colors.grey[200],
-                          child: const Center(
-                            child: Icon(
-                              Icons.article_outlined,
-                              size: 48,
-                              color: Colors.black54,
-                            ),
-                          ),
-                        );
-                      },
+                              widget.document.coverImagePath!,
+                              height: 250,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  height: 250,
+                                  color: Colors.grey[200],
+                                  child: const Center(
+                                    child: Icon(
+                                      Icons.article_outlined,
+                                      size: 48,
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                );
+                              },
                     );
                   }
                   // Fallback if image URL is null (tag not found in map)

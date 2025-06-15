@@ -349,6 +349,11 @@ Future<String> addDocument(document,imageBytes,imageExtension) async {
 
             return "$result, upload failed";
        }
+       else
+       {
+          await docRef.doc(m.id).update({'coverImagePath':result});
+
+       }
 
 
       message = result;
@@ -411,8 +416,11 @@ Future<String> addAShare(documentID, ls) async {
   }
 
 Future<String> addALike(documentID, ls) async {
+
     String message = "";
+
     try {
+
       final docRef = db
           .collection("Document")
           .doc(documentID)
@@ -426,7 +434,9 @@ Future<String> addALike(documentID, ls) async {
       message = "$m registration sucessful";
 
       return message;
+
     } catch (e) {
+
       rethrow;
     }
   }

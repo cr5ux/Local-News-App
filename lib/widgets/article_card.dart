@@ -9,7 +9,7 @@ import 'package:localnewsapp/singleton/identification.dart';
 // import 'package:localnewsapp/dataAccess/model/users.dart'; // Import Users model
 import 'package:video_thumbnail/video_thumbnail.dart'; // Import video_thumbnail
 import 'dart:typed_data'; // Import Uint8List
-import 'package:localnewsapp/constants/categories.dart';
+// import 'package:localnewsapp/constants/categories.dart';
 import 'package:easy_localization/easy_localization.dart'; // Import EasyLocalization for translations
 
 class ArticleCard extends StatefulWidget {
@@ -155,13 +155,13 @@ class _ArticleCardState extends State<ArticleCard> {
   }
 
   // Helper to get the category image URL based on the first tag
-  String? _getCategoryImageUrl() {
-    if (widget.document.tags.isNotEmpty) {
-      final firstTag = widget.document.tags[0];
-      return NewsCategories.categoryImages[firstTag];
-    }
-    return null; // Return null if no tags or tag not found in map
-  }
+  // String? _getCategoryImageUrl() {
+  //   if (widget.document.tags.isNotEmpty) {
+  //     final firstTag = widget.document.tags[0];
+  //     return NewsCategories.categoryImages[firstTag];
+  //   }
+  //   return null; // Return null if no tags or tag not found in map
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -203,7 +203,7 @@ class _ArticleCardState extends State<ArticleCard> {
             if (widget.document.documentPath.isNotEmpty ||
                 (widget.document.documentType.toLowerCase() == 'text' &&
                     widget.document.tags.isNotEmpty &&
-                    _getCategoryImageUrl() != null))
+                     widget.document.coverImagePath != null)) //_getCategoryImageUrl()
               Stack(
                 children: [
                   if (widget.document.documentType.toLowerCase() == 'video')
@@ -250,27 +250,27 @@ class _ArticleCardState extends State<ArticleCard> {
                       widget.document.tags.isNotEmpty)
                     Builder(
                       builder: (context) {
-                        final imageUrl = _getCategoryImageUrl();
-                        if (imageUrl != null) {
+                        // final imageUrl = _getCategoryImageUrl();
+                        if (widget.document.coverImagePath != null) {
                           return Image.network(
-                            imageUrl,
-                            height: 200,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                height: 200,
-                                color: Colors.grey[200],
-                                child: const Center(
-                                  child: Icon(
-                                    Icons.article_outlined,
-                                    size: 48,
-                                    color: Colors.black54,
-                                  ),
-                                ),
+                                widget.document.coverImagePath!,
+                                height: 250,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    height: 250,
+                                    color: Colors.grey[200],
+                                    child: const Center(
+                                      child: Icon(
+                                        Icons.article_outlined,
+                                        size: 48,
+                                        color: Colors.black54,
+                                      ),
+                                    ),
+                                  );
+                                },
                               );
-                            },
-                          );
                         }
                         return Container(
                           height: 200,
