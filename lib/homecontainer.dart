@@ -12,9 +12,15 @@ import 'package:localnewsapp/profile.dart';
 import 'package:localnewsapp/pages/search_page.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-class HomeContainer extends StatelessWidget {
+class HomeContainer extends StatefulWidget {
   final String title;
   const HomeContainer({super.key, required this.title});
+
+  @override
+  State<HomeContainer> createState() => _HomeContainerState();
+}
+
+class _HomeContainerState extends State<HomeContainer> {
 
   @override
   Widget build(BuildContext context) {
@@ -22,51 +28,48 @@ class HomeContainer extends StatelessWidget {
         length: Identification().isAdmin ? 4 : 3,
         child: Scaffold(
             appBar: AppBar(
-                  leading: Image.asset('assets/logow.png', height: 20, width: 20),
-                  
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
-                  title: Text("name".tr()),
-                  actions: <Widget>[
-                    IconButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const SearchPage(),
-                            ),
-                          );
-                        },
-                        icon: const Icon(Icons.search)
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        context.setLocale(context.locale.languageCode == 'en'
-                            ? const Locale('am')
-                            : const Locale('en'));
-                      },
-                      child: Text(
-                        context.locale.languageCode == 'en' ? 'አማ' : 'En',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
+              leading: Image.asset('assets/logow.png', height: 20, width: 20),
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
+              title: Text("name".tr()),
+              actions: <Widget>[
+                IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SearchPage(),
                         ),
-                      ),
+                      );
+                    },
+                    icon: const Icon(Icons.search)),
+                TextButton(
+                  onPressed: () {
+                    context.setLocale(context.locale.languageCode == 'en'
+                        ? const Locale('am')
+                        : const Locale('en'));
+                  },
+                  child: Text(
+                    context.locale.languageCode == 'en' ? 'አማ' : 'En',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
                     ),
-                    IconButton(
-                        onPressed: () {
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const Login(),
-                            ),
-                            (route) => false,
-                          );
-                        },
-                        icon: const Icon(Icons.exit_to_app)
-                    ),
-                  ],
+                  ),
                 ),
+                IconButton(
+                    onPressed: () {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Login(),
+                        ),
+                        (route) => false,
+                      );
+                    },
+                    icon: const Icon(Icons.exit_to_app)),
+              ],
+            ),
             bottomNavigationBar: BottomAppBar(
               height: 60.0,
               color: Colors.white,

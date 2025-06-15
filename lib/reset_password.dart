@@ -283,7 +283,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                                           ),
                                                           elevation: 4,
                                                       ),
-                                                  child:isEnable?const Text("Register",style:TextStyle(fontSize: 16.0),): const Center(child: CircularProgressIndicator())
+                                                  child:isEnable?const Text("Reset",style:TextStyle(fontSize: 16.0),): const Center(child: CircularProgressIndicator())
                                                 ),
                                     ),
                                     const Padding(padding: EdgeInsets.all(10.0)),

@@ -21,18 +21,41 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    _articlesFuture = _documentRepo.getAllDocuments();
+    _articlesFuture = _getFilteredArticles();
+  }
+
+  Future<List<Document>> _getFilteredArticles() async {
+    final articles = await _documentRepo.getAllDocuments();
+    //ignore: use_build_context_synchronously
+    final currentLanguage = context.locale.languageCode;
+
+    // Filter articles by language
+    final languageFilteredArticles = articles
+        .where((article) => article.language.toLowerCase() == currentLanguage)
+        .toList();
+
+    // Apply additional filters
+    if (selectedFilter == 'Recent') {
+      return languageFilteredArticles;
+    } else {
+      return languageFilteredArticles
+          .where((article) => article.tags.contains(selectedFilter))
+          .toList();
+    }
   }
 
   void _onFilterSelected(String filter) {
     setState(() {
       selectedFilter = filter;
-      if (filter == 'Recent') {
-        _articlesFuture = _documentRepo.getAllDocuments();
-      } else {
-        _articlesFuture = _documentRepo.getDocumentByTags(filter);
-      }
+      _articlesFuture = _getFilteredArticles();
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Refresh articles when language changes
+    _articlesFuture = _getFilteredArticles();
   }
 
   @override
@@ -91,7 +114,7 @@ class _HomeState extends State<Home> {
               }
 
               if (snapshot.hasError) {
-                return Center(child: Text('Error: [31m${snapshot.error}[0m'));
+                return Center(child: Text('Error: ${snapshot.error}'));
               }
 
               if (!snapshot.hasData || snapshot.data!.isEmpty) {

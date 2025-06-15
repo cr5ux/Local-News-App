@@ -11,6 +11,7 @@ import 'package:localnewsapp/dataAccess/model/ls.dart';
 import 'package:url_launcher/url_launcher.dart';
 // import 'package:localnewsapp/constants/categories.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:localnewsapp/dataAccess/users_repo.dart';
 
 class ArticleDetailPage extends StatefulWidget {
   final Document document;
@@ -29,6 +30,9 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
   bool _isBookmarked = false;
   int _likeCount = 0;
   final currentUser = Identification().userID;
+  List<Document> _relatedArticles = [];
+  String _authorName = '';
+  String? _authorProfilePic;
 
   @override
   void initState() {
@@ -45,6 +49,8 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
     _checkLikeStatus();
     _checkBookmarkStatus();
     _fetchLikeCount();
+    _fetchRelatedArticles();
+    _fetchAuthorInfo();
   }
 
   @override
@@ -122,6 +128,143 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
         // This ensures we keep the previous count until we can successfully fetch
       }
     }
+  }
+
+  Future<void> _fetchRelatedArticles() async {
+    if (widget.document.tags.isEmpty) return;
+
+    try {
+      final allArticles = await DocumentRepo().getAllDocuments();
+      final relatedArticles = allArticles.where((article) {
+        // Exclude current article and check for matching tags
+        return article.documentID != widget.document.documentID &&
+            article.tags.any((tag) => widget.document.tags.contains(tag));
+      }).toList();
+
+      // Sort by number of matching tags and take top 3
+      relatedArticles.sort((a, b) {
+        final aMatches =
+            a.tags.where((tag) => widget.document.tags.contains(tag)).length;
+        final bMatches =
+            b.tags.where((tag) => widget.document.tags.contains(tag)).length;
+        return bMatches.compareTo(aMatches);
+      });
+
+      setState(() {
+        _relatedArticles = relatedArticles.take(3).toList();
+      });
+    } catch (e) {
+      // Handle error silently
+    }
+  }
+
+  Future<void> _fetchAuthorInfo() async {
+    try {
+      final user = await UsersRepo().getAUserByID(widget.document.authorID);
+      if (mounted) {
+        setState(() {
+          _authorName = user.fullName;
+          _authorProfilePic = user.profileImagePath;
+        });
+      }
+    } catch (e) {
+      // Handle error silently
+    }
+  }
+
+  Widget _buildRelatedArticles() {
+    if (_relatedArticles.isEmpty) return const SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Text(
+            'Related Articles',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 200,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            itemCount: _relatedArticles.length,
+            itemBuilder: (context, index) {
+              final article = _relatedArticles[index];
+              return Container(
+                width: 200,
+                margin: const EdgeInsets.only(right: 16),
+                child: Card(
+                  clipBehavior: Clip.antiAlias,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ArticleDetailPage(document: article),
+                        ),
+                      );
+                    },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (article.coverImagePath != null)
+                          Image.network(
+                            article.coverImagePath!,
+                            height: 100,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                height: 100,
+                                color: Colors.grey[200],
+                                child: const Icon(Icons.image_not_supported),
+                              );
+                            },
+                          ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                article.title,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                article.tags.join(', '),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
   }
 
   // Helper to get the category image URL based on the first tag
@@ -278,23 +421,23 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
                   // final imageUrl = _getCategoryImageUrl();
                   if (widget.document.coverImagePath != null) {
                     return Image.network(
-                              widget.document.coverImagePath!,
-                              height: 250,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  height: 250,
-                                  color: Colors.grey[200],
-                                  child: const Center(
-                                    child: Icon(
-                                      Icons.article_outlined,
-                                      size: 48,
-                                      color: Colors.black54,
-                                    ),
-                                  ),
-                                );
-                              },
+                      widget.document.coverImagePath!,
+                      height: 250,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          height: 250,
+                          color: Colors.grey[200],
+                          child: const Center(
+                            child: Icon(
+                              Icons.article_outlined,
+                              size: 48,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        );
+                      },
                     );
                   }
                   // Fallback if image URL is null (tag not found in map)
@@ -367,12 +510,39 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
                     ),
                   ),
                   const SizedBox(height: 8),
+                  // Author information
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 16,
+                        backgroundColor: Colors.grey[200],
+                        backgroundImage: _authorProfilePic != null
+                            ? NetworkImage(_authorProfilePic!)
+                            : null,
+                        child: _authorProfilePic == null
+                            ? const Icon(Icons.person,
+                                size: 20, color: Colors.grey)
+                            : null,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        _authorName.isNotEmpty ? _authorName : 'Unknown Author',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.black87,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
                   // Display formatted date
                   Text(
                     DateFormat('EEE, MMM d, yyyy').format(
                         DateTime.parse(widget.document.registrationDate)),
                     style: const TextStyle(fontSize: 14, color: Colors.black54),
                   ),
+                  
                   const SizedBox(height: 24),
                   if (widget.document.content != null)
                     Text(
@@ -534,6 +704,7 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
                   ],
                 ),
               ),
+            _buildRelatedArticles(),
           ],
         ),
       ),
