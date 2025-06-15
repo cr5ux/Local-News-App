@@ -256,8 +256,8 @@ class _CommentsPageState extends State<CommentsPage> {
                                                     size: 20),
                                               ),
                                               const SizedBox(width: 4),
-                                              Text('0',
-                                                  style: const TextStyle(
+                                              const Text('0',
+                                                  style: TextStyle(
                                                       color: Colors.black,
                                                       fontSize: 13)),
                                             ],
@@ -457,8 +457,7 @@ class _CommentsPageState extends State<CommentsPage> {
                                                         } catch (e) {
                                                           if (mounted) {
                                                             // ignore: use_build_context_synchronously
-                                                            ScaffoldMessenger
-                                                                    .of(context)
+                                                            ScaffoldMessenger.of(context)
                                                                 .showSnackBar(
                                                               const SnackBar(
                                                                 content: Text(
