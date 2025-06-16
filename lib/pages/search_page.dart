@@ -29,13 +29,17 @@ class _SearchPageState extends State<SearchPage> {
   // Available tags from your categories
   final List<String> _availableTags = [
     'politics',
-    'technology',
-    'business',
-    'sports',
     'entertainment',
+    'technology',
+    'sports',
     'health',
+    'education',
+    'business',
     'science',
-    'environment'
+    'local',
+    'environment',
+    'fashion',
+    'international',
   ];
 
   @override
@@ -130,7 +134,8 @@ class _SearchPageState extends State<SearchPage> {
       // Apply tag filter
       if (_selectedTags.isNotEmpty) {
         results = results.where((doc) {
-          return doc.tags.any((tag) => _selectedTags.contains(tag));
+          return doc.tags
+              .any((tag) => _selectedTags.contains(tag.toLowerCase()));
         }).toList();
       }
 
@@ -346,6 +351,7 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget _buildFilterSection() {
     return Container(
+      width: double.infinity,
       color: const Color(0xFF2D2D2D),
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -377,7 +383,7 @@ class _SearchPageState extends State<SearchPage> {
           runSpacing: 8,
           children: [
             _buildFilterChip(
-              'any_time'.tr(),
+              Text('any_time'.tr()),
               _selectedTimeFilter == 'any_time',
               () {
                 setState(() {
@@ -389,7 +395,7 @@ class _SearchPageState extends State<SearchPage> {
               },
             ),
             _buildFilterChip(
-              'past_24_hours'.tr(),
+              Text('past_24_hours'.tr()),
               _selectedTimeFilter == '24h',
               () {
                 setState(() {
@@ -401,7 +407,7 @@ class _SearchPageState extends State<SearchPage> {
               },
             ),
             _buildFilterChip(
-              'past_week'.tr(),
+              Text('past_week'.tr()),
               _selectedTimeFilter == 'week',
               () {
                 setState(() {
@@ -413,7 +419,7 @@ class _SearchPageState extends State<SearchPage> {
               },
             ),
             _buildFilterChip(
-              'past_month'.tr(),
+              Text('past_month'.tr()),
               _selectedTimeFilter == 'month',
               () {
                 setState(() {
@@ -442,7 +448,7 @@ class _SearchPageState extends State<SearchPage> {
           runSpacing: 8,
           children: _availableTags.map((tag) {
             return _buildFilterChip(
-              tag.tr(),
+              Text('filters.$tag'.tr()),
               _selectedTags.contains(tag),
               () {
                 setState(() {
@@ -463,9 +469,9 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  Widget _buildFilterChip(String label, bool isSelected, VoidCallback onTap) {
+  Widget _buildFilterChip(Widget label, bool isSelected, VoidCallback onTap) {
     return FilterChip(
-      label: Text(label),
+      label: label,
       labelStyle: TextStyle(
         color: isSelected ? Colors.black : Colors.white,
       ),

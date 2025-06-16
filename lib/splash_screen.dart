@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:localnewsapp/pages/interests_selection_page.dart';
 import 'package:localnewsapp/constants/app_colors.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -53,14 +54,14 @@ class _SplashScreenState extends State<SplashScreen> {
               children: [
                 // App logo from assets
                 Image(
-                  image: AssetImage('logo.png'),
+                  image: AssetImage('assets/logo.png'),
                   width: 150,
                   height: 150,
                 ),
                 SizedBox(height: 20),
                 // App name
                 Text(
-                  'Local News',
+                  'ጦቢያ',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -97,38 +98,38 @@ class _SplashScreenState extends State<SplashScreen> {
                     padding: EdgeInsets.only(top: 20.0),
                     child: Center(
                       child: Image(
-                        image: AssetImage('both.png'),
+                        image: AssetImage('assets/both.png'),
                         fit: BoxFit.contain,
                       ),
                     ),
                   ),
                 ),
-                const Expanded(
+                Expanded(
                   flex: 4,
                   child: Padding(
-                    padding: EdgeInsets.only(top: 20.0),
+                    padding: const EdgeInsets.only(top: 20.0),
                     child: SingleChildScrollView(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            'Welcome to Local News',
-                            style: TextStyle(
+                            'welcome_to_tobia'.tr(),
+                            style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          SizedBox(height: 16),
+                          const SizedBox(height: 16),
                           Text(
-                            'Stay informed with the latest news and updates from your local community. Our app brings you the most relevant stories that matter to you.',
-                            style: TextStyle(fontSize: 16),
+                            'info_one'.tr(),
+                            style: const TextStyle(fontSize: 16),
                             textAlign: TextAlign.center,
                           ),
-                          SizedBox(height: 12),
+                          const SizedBox(height: 12),
                           Text(
-                            'Discover stories from various categories including politics, sports, entertainment, and more. All tailored to your local interests and preferences.',
-                            style: TextStyle(fontSize: 16),
+                            'info_two'.tr(),
+                            style: const TextStyle(fontSize: 16),
                             textAlign: TextAlign.center,
                           ),
                         ],
@@ -150,7 +151,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       backgroundColor:AppColors.primary,
                       foregroundColor: Colors.white,
                     ),
-                    child: const Text('Next'),
+                    child: Text('next'.tr()),
                   ),
                 ),
               ],
@@ -169,38 +170,38 @@ class _SplashScreenState extends State<SplashScreen> {
                     padding: EdgeInsets.only(top: 20.0),
                     child: Center(
                       child: Image(
-                        image: AssetImage('female.png'),
+                        image: AssetImage('assets/female.png'),
                         fit: BoxFit.contain,
                       ),
                     ),
                   ),
                 ),
-                const Expanded(
+                Expanded(
                   flex: 4,
                   child: Padding(
-                    padding: EdgeInsets.only(top: 20.0),
+                    padding: const EdgeInsets.only(top: 20.0),
                     child: SingleChildScrollView(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            'Personalized Experience',
-                            style: TextStyle(
+                            'personalized_experience'.tr(),
+                            style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          SizedBox(height: 16),
+                          const SizedBox(height: 16),
                           Text(
-                            'Our app learns from your reading habits to deliver a personalized news feed that matches your interests and preferences.',
-                            style: TextStyle(fontSize: 16),
+                            'info_three'.tr(),
+                            style: const TextStyle(fontSize: 16),
                             textAlign: TextAlign.center,
                           ),
-                          SizedBox(height: 12),
+                          const SizedBox(height: 12),
                           Text(
-                            'Connect with your community, share important stories, and stay updated with what matters most to you and your neighbors.',
-                            style: TextStyle(fontSize: 16),
+                            'info_four'.tr(),
+                            style: const TextStyle(fontSize: 16),
                             textAlign: TextAlign.center,
                           ),
                         ],
@@ -221,7 +222,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       backgroundColor: AppColors.primary,
                       foregroundColor: Colors.white,
                     ),
-                    child: const Text('Next'),
+                    child: Text('next'.tr()),
                   ),
                 ),
               ],

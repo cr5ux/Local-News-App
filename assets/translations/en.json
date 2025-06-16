@@ -104,7 +104,33 @@
     "articles": "articles",
     "reference": "Reference",
 
-    "no_restults_found": "No results found",
+    "sort_by": "Sort by",
+    "newest_first": "Newest first",
+    "most_liked": "Most liked",
+    "most_viewed": "Most viewed",
+
+    "filter_results": "Filter results",
+    "time": "Time",
+    "tags": "Tags",
+    "any_time": "Any time",
+    "past_24_hours": "Past 24 hours",
+    "past_week": "Past week",
+    "past_month": "Past month",
+    "past_year": "Past year",
+
+    "change_profile_picture": "Change profile picture",
+
+    "welcome_to_tobia": "Welcome to ጦቢያ",
+    "info_one": "Stay informed with the latest news and updates from your local community. Our app brings you the most relevant stories that matter to you.",
+    "info_two": "Discover stories from various categories including politics, sports, entertainment, and more. All tailored to your local interests and preferences.",
+
+    "info_three": "Our app learns from your reading habits to deliver a personalized news feed that matches your interests and preferences.",
+    "info_four": "Connect with your community, share important stories, and stay updated with what matters most to you and your neighbors.",
+
+    "next": "Next",
+
+    "personalized_experience": "Personalized Experience",
+
     "search_news": "Search News",
     "not_available": "Not Available",
     "no_results_found": "No results found",
