@@ -6,9 +6,7 @@ import 'package:localnewsapp/dataAccess/document_repo.dart'; // Import DocumentR
 import 'package:localnewsapp/dataAccess/model/ls.dart'; // Import LS model
 import 'package:localnewsapp/dataAccess/users_repo.dart'; // Import UsersRepo
 import 'package:localnewsapp/singleton/identification.dart';
-// import 'package:localnewsapp/dataAccess/model/users.dart'; // Import Users model
-import 'package:video_thumbnail/video_thumbnail.dart'; // Import video_thumbnail
-import 'dart:typed_data'; // Import Uint8List
+// import 'package:localnewsapp/dataAccess/model/users.dart'; // Import Users model// Import video_thumbnail
 // import 'package:localnewsapp/constants/categories.dart';
 import 'package:easy_localization/easy_localization.dart'; // Import EasyLocalization for translations
 
