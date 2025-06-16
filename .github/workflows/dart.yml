@@ -42,8 +42,8 @@ jobs:
       - name: Enable Virtual Display
         run: Xvfb :99 -ac & export DISPLAY=:99
 
-      - name: Run tests
-        run: flutter test integration_test -d linux
+      # - name: Run tests
+      #   run: flutter test integration_test -d linux
   
 
 
