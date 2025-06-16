@@ -37,8 +37,8 @@ jobs:
 
       # Consider passing '--fatal-infos' for slightly stricter analysis.
       - name: Analyze project source
-        run: flutter analyze
-             flutter doctor
+        run:  flutter analyze
+             
 
       - name: Linux Dependencies
         run: sudo apt-get install libgtk-3-dev libssl-dev pkg-config
