@@ -6,9 +6,7 @@ import 'package:localnewsapp/dataAccess/document_repo.dart'; // Import DocumentR
 import 'package:localnewsapp/dataAccess/model/ls.dart'; // Import LS model
 import 'package:localnewsapp/dataAccess/users_repo.dart'; // Import UsersRepo
 import 'package:localnewsapp/singleton/identification.dart';
-// import 'package:localnewsapp/dataAccess/model/users.dart'; // Import Users model
-import 'package:video_thumbnail/video_thumbnail.dart'; // Import video_thumbnail
-import 'dart:typed_data'; // Import Uint8List
+// import 'package:localnewsapp/dataAccess/model/users.dart'; // Import Users model// Import video_thumbnail
 // import 'package:localnewsapp/constants/categories.dart';
 import 'package:easy_localization/easy_localization.dart'; // Import EasyLocalization for translations
 
@@ -200,148 +198,93 @@ class _ArticleCardState extends State<ArticleCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Image/Video Preview Section with Category Overlay
-            if (widget.document.documentPath.isNotEmpty ||
-                (widget.document.documentType.toLowerCase() == 'text' &&
-                    widget.document.tags.isNotEmpty &&
-                     widget.document.coverImagePath != null)) //_getCategoryImageUrl()
-              Stack(
-                children: [
-                  if (widget.document.documentType.toLowerCase() == 'video')
-                    FutureBuilder<Uint8List?>(
-                      future: VideoThumbnail.thumbnailData(
-                        video: widget.document.documentPath[0],
-                        imageFormat: ImageFormat.JPEG,
-                        quality: 50,
-                      ),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done &&
-                            snapshot.hasData) {
-                          return Image.memory(
-                            snapshot.data!,
-                            height: 200,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          );
-                        } else if (snapshot.hasError) {
+            Builder(
+              builder: (context) {
+                String? imageUrl = widget.document.coverImagePath;
+                if (imageUrl == null || imageUrl.isEmpty) {
+                  if (widget.document.documentPath.isNotEmpty) {
+                    imageUrl = widget.document.documentPath[0];
+                  }
+                }
+                return Stack(
+                  children: [
+                    if (imageUrl != null && imageUrl.isNotEmpty)
+                      Image.network(
+                        imageUrl,
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
                           return Container(
                             height: 200,
                             color: Colors.grey[200],
                             child: const Center(
                               child: Icon(
-                                Icons.videocam_off,
+                                Icons.article_outlined,
                                 size: 48,
                                 color: Colors.black54,
                               ),
                             ),
                           );
-                        } else {
-                          return Container(
-                            height: 200,
-                            color: Colors.grey[200],
-                            child: const Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                          );
-                        }
-                      },
-                    )
-                  else if (widget.document.documentType.toLowerCase() ==
-                          'text' &&
-                      widget.document.tags.isNotEmpty)
-                    Builder(
-                      builder: (context) {
-                        // final imageUrl = _getCategoryImageUrl();
-                        if (widget.document.coverImagePath != null) {
-                          return Image.network(
-                                widget.document.coverImagePath!,
-                                height: 250,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Container(
-                                    height: 250,
-                                    color: Colors.grey[200],
-                                    child: const Center(
-                                      child: Icon(
-                                        Icons.article_outlined,
-                                        size: 48,
-                                        color: Colors.black54,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              );
-                        }
-                        return Container(
-                          height: 200,
-                          color: Colors.grey[200],
-                          child: const Center(
-                            child: Icon(
-                              Icons.article_outlined,
-                              size: 48,
-                              color: Colors.black54,
-                            ),
+                        },
+                      )
+                    else
+                      Container(
+                        height: 200,
+                        color: Colors.grey[200],
+                        child: const Center(
+                          child: Icon(
+                            Icons.article_outlined,
+                            size: 48,
+                            color: Colors.black54,
                           ),
-                        );
-                      },
-                    )
-                  else if (widget.document.documentPath.isNotEmpty)
-                    Image.network(
-                      widget.document.documentPath[0],
-                      height: 200,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          height: 200,
-                          color: Colors.grey[200],
-                          child:
-                              const Center(child: Text('Image not available')),
-                        );
-                      },
-                    ),
-                  Positioned(
-                    top: 12,
-                    right: 12,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        widget.document.tags.isNotEmpty
-                            ? widget.document.tags[0]
-                            : widget.document.documentType,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
                         ),
                       ),
-                    ),
-                  ),
-                  // Add play button overlay for video type
-                  if (widget.document.documentType.toLowerCase() == 'video')
-                    Positioned.fill(
-                      child: Center(
+                    // Small video icon overlay if video
+                    if (widget.document.documentType.toLowerCase() == 'video')
+                      Positioned(
+                        top: 10,
+                        left: 10,
                         child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: const BoxDecoration(
-                            color: Colors.black,
-                            shape: BoxShape.circle,
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: Colors.black54,
+                            borderRadius: BorderRadius.circular(6),
                           ),
                           child: const Icon(
-                            Icons.play_arrow,
+                            Icons.videocam,
                             color: Colors.white,
-                            size: 32,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    // Tag overlay (top right)
+                    Positioned(
+                      top: 12,
+                      right: 12,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          widget.document.tags.isNotEmpty
+                              ? widget.document.tags[0]
+                              : widget.document.documentType,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
                     ),
-                ],
-              ),
+                  ],
+                );
+              },
+            ),
 
             // Text Content Section
             Padding(
