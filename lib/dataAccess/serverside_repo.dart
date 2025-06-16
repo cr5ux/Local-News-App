@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 
+// import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
 import 'package:crypto/crypto.dart';
 import 'package:localnewsapp/singleton/identification.dart';
@@ -47,10 +48,11 @@ class ServerRepo
       Uri uri=Uri.https('local-news-app-server.vercel.app','/authentication/otp_verification');
       
 
-      var time="${DateTime.now()}";
+      // var date=DateFormat.yMMMMEEEEd().format(DateTime.now());
+      // var time=DateFormat.jms().format(DateTime.now());
+
+      var date = "${DateTime.now().subtract(const Duration(hours:3))}";
       
-   
-    
       var response= await http.post(uri, 
 
                 headers: {
@@ -62,7 +64,7 @@ class ServerRepo
                   { 
                       "otp":otp,
                       "phonenumber":phonenumber,
-                      "otpExpirationTime":time
+                      "otpExpirationTime":date
                   }
                     
                 )
