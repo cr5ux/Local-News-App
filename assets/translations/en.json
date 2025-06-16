@@ -104,6 +104,22 @@
     "articles": "articles",
     "reference": "Reference",
 
+    "sort_by": "Sort by",
+    "newest_first": "Newest first",
+    "most_liked": "Most liked",
+    "most_viewed": "Most viewed",
+
+    "filter_results": "Filter results",
+    "time": "Time",
+    "tags": "Tags",
+    "any_time": "Any time",
+    "past_24_hours": "Past 24 hours",
+    "past_week": "Past week",
+    "past_month": "Past month",
+    "past_year": "Past year",
+
+    "change_profile_picture": "Change profile picture",
+
     "no_restults_found": "No results found",
     "search_news": "Search News",
     "not_available": "Not Available",

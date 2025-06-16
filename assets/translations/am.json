@@ -101,6 +101,22 @@
   "articles": "መጣጥፍ",
   "reference": "ማጣቀሻ",
 
+  "sort_by": "ቅደም ተከተል",
+  "newest_first": "የቅርብ ጊዜ",
+  "most_liked": "የተወደዱ",
+  "most_viewed": "በብዛት የታዩ",
+
+  "filter_results": "ውጤት ያጣጣሩ",
+  "time": "ጊዜ",
+  "tags": "መለያዎች",
+  "any_time": "በሁሉም ጊዜ",
+  "past_24_hours": "በቅርብ ጊዜ ላይ",
+  "past_week": "በሳምንት ጊዜ ላይ",
+  "past_month": "በወር ጊዜ ላይ",
+  "past_year": "በዓመት ጊዜ ላይ",
+
+  "change_profile_picture": "የመልያ ፎቶ ይቀይሩ",
+
   "no_restults_found": "ምንም ውጤት አልተገኘም",
   "search_news": "ፈልግ",
   "not_available": "አልተገኘም",
